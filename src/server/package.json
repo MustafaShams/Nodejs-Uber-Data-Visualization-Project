@@ -1,0 +1,19 @@
+{
+  "name": "nodeserver180",
+  "version": "1.0.0",
+  "description": "A simple server for client connection",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1",
+    "geocoder": "^0.2.3",
+    "latlng-to-zip": "0.0.2",
+    "node-fetch": "^2.6.1",
+    "xmlhttprequest": "^1.8.0"
+  }
+}
