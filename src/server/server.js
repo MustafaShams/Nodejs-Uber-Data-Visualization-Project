@@ -4,7 +4,7 @@ const callInfo = require('./dataFrameClass.js') //call the class File and store 
 //READ CSV FILE
 const fs = require('fs');
 
-fs.readFile('inputFile/other-Highclass_B01717.csv', 'utf8', function (err, data) {
+fs.readFile('inputFile/other-Dial7_B00887.csv', 'utf8', function (err, data) {
   if (err) {
     console.error(err)
     return
@@ -16,36 +16,27 @@ fs.readFile('inputFile/other-Highclass_B01717.csv', 'utf8', function (err, data)
 var dataFrame = [];
 var key;
 async function processData(allText) {
-  allText = allText.replace(/['"]+/g, '')                        //remove all " from input
-  var allTextLines = allText.split(/\r\n|\n/);                   //Split the input based on new lines
-  var headers = allTextLines[0].split(',');                      //Split the first line and get the headers based on comma
-  for (var i = 1; i < allTextLines.length; i++) {                //travarse all lines
-    var data = allTextLines[i].split(',');                       //split each line based on comma
-    if (data.length >= headers.length) {                         //make sure to check if data exists
-      var e = new callInfo();                                    //create a new callInfo object
-      var res = data[1].split(" ");                              //split the date and timew
-      Object.assign(e.Date = data[0]);                           //assign the date
-      Object.assign(e.Time = res[0]);                            //assign time
-      Object.assign(e.AMPM = res[1]);                            //assign am or pm
-      if(data.length == 3){                                      // Some data has city with a comma vs no comma so we have 2 different cases 3 or 4 //get the city name and address split
-        var n = data[2].split(" ");
-        var CityName = n[n.length-1]
-        var lastIndex = data[2].lastIndexOf(" ");
-        var firstAddress = data[2].substring(0, lastIndex);
-        CityName = CityName.trim();
-        firstAddress = firstAddress.trim();
-        Object.assign(e.Address = firstAddress);
-        Object.assign(e.City = CityName); 
+  allText = allText.replace(/['"]+/g, '') //remove all " from input
+  allText = allText.toLowerCase();
+  var allTextLines = allText.split(/\r\n|\n/); //Split the input based on new lines
+  var headers = allTextLines[0].split(','); //Split the first line and get the headers based on comma
+  for (var i = 1; i < allTextLines.length-1; i++) { //travarse all lines
+    var data = allTextLines[i].split(',');
+
+      if(data[4].trim() != ""){
+        try {
+          var e = new callInfo();                                    //create a new callInfo object
+          Object.assign(e.Date = data[0].trim());                           //assign the date
+          Object.assign(e.Time = data[1].trim());                            //assign time
+          Object.assign(e.State = data[2].trim());   
+          Object.assign(e.City = data[3].trim());   
+          Object.assign(e.Address = data[4].trim()+" "+data[5].trim());
+          dataFrame.push(e); 
+        }
+        catch(err){
+          console.log('PROBLEM')
+        }
       }
-      if(data.length == 4){
-        data[2] = data[2].trim();
-        data[3] = data[3].trim();
-        Object.assign(e.Address = data[2]);
-        Object.assign(e.City = data[3]);
-      }
-     
-      dataFrame.push(e); //Push the object callInfo into the data frame
-    }
   }
   //console.log(dataFrame);
   key = "BX";	//for testing search function, need to get real input from client
@@ -62,6 +53,32 @@ function searchDataFrame(dataFrame, key) {		//returns an array of callInfo that 
 	}
 	return tempDF;
 }
+
+/* FUNCTION TO FIND UNIQUE CITIES IN DATAFRAME
+function uniqueValues(dataFrame) {
+  var tempDF = [];
+  var times = [];
+  for (var i = 0; i < dataFrame.length; ++i) {
+    if (tempDF.indexOf(dataFrame[i].City) == -1) {
+      tempDF.push(dataFrame[i].City);
+      times.push('1');
+    } else {
+      times[tempDF.indexOf(dataFrame[i].City)] = parseInt(times[tempDF.indexOf(dataFrame[i].City)]) + parseInt(1);
+    }
+  }
+  
+  console.log(tempDF);
+  require('fs').writeFile('./my.json', JSON.stringify(tempDF),
+    function (err) {
+      if (err) {
+        console.error('Crap happens');
+      }
+    }
+  );
+  for (var x = 0; x < tempDF.length; x++) {
+    console.log(tempDF[x], ":", times[x]);
+  }
+}*/
 
 
 var http = require('http')
