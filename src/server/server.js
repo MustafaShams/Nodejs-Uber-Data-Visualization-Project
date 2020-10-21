@@ -1,5 +1,5 @@
 const callInfo = require('./dataFrameClass.js') //call the class File and store in callInfo
-
+const { parse } = require('querystring'); //for parsing client-side html body for key
 
 //READ CSV FILE
 const fs = require('fs');
@@ -38,14 +38,11 @@ async function processData(allText) {
         }
       }
   }
-  //console.log(dataFrame);
-  key = "BX";	//for testing search function, need to get real input from client
-  var temp = searchDataFrame(dataFrame, key);
-  console.log(temp);
 }
 
 function searchDataFrame(dataFrame, key) {		//returns an array of callInfo that matches key
 	var tempDF = [];
+	key = key.toLowerCase();
 	for (var i = 1; i < dataFrame.length; ++i) {
 		if (key == dataFrame[i].City) {
 			tempDF.push(dataFrame[i]);
@@ -106,6 +103,19 @@ const server = http.createServer(function (req, res) {
     })
     res.write('<p>Hello From the Server</p>')
   }
+	
+	if (req.url === '/search') {
+		console.log('\nsearching...\n'); //for testing purposes: checking to see if it works
+		getKey(req, input => {
+			key = input.searchBar;
+			var temp = searchDataFrame(dataFrame, key);
+			res.write(`Searched for ${input.searchBar}`); //change this to actual output!
+/* ---------------- BELOW IS FOR TESTING PURPOSES ONLY ---------------------------*/
+			console.log(temp);
+			console.log(temp.length);
+			//res.write(temp.toString());
+		});
+	}
 })
 
 server.listen(port, function (error) {
@@ -115,3 +125,10 @@ server.listen(port, function (error) {
     console.log('Server is listening on port', port)
   }
 });
+
+function getKey(request, returnValue) { // parses the html body to get searchBar key from client (nodejs doesn't allow document.getElementById)
+	const urlencoded = 'application/x-www-form-urlencoded';
+	var parser = '';
+	request.on('data', data => { parser += data.toString(); });
+	request.on('end', () => { returnValue(parse(parser)); });
+}

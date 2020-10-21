@@ -1,12 +1,16 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="UTF-8">
-    <title>Client-Server Connection</title>
-  </head>
-  <body>
-		 <form action="http://localhost:3000/response" method="POST"> 
-		  <button>Call server</button> 
-		</form> 
-  </body>
+	<head>
+		<meta charset="UTF-8">
+    		<title>Client-Server Connection</title>
+  	</head>
+  	<body>
+		<form action="http://localhost:3000/response" method="POST"> 
+			<button>Call server</button> 
+		</form>
+		<form action="http://localhost:3000/search" method="POST">
+			<input type="text" placeholder="Search for a City" name ="searchBar">
+			<button>Submit</button>
+		</form>
+  	</body>
 </html>
