@@ -1,16 +1,20 @@
 const callInfo = require('./dataFrameClass.js') //call the class File and store in callInfo
 const { parse } = require('querystring'); //for parsing client-side html body for key
 
-//READ CSV FILE
+var JSZip = require("jszip");
 const fs = require('fs');
 
-fs.readFile('inputFile/other-Dial7_B00887.csv', 'utf8', function (err, data) {
-  if (err) {
-    console.error(err)
-    return
-  }
-  processData(data)
-  
+var new_zip = new JSZip();
+// more files !
+fs.readFile("inputFile/other-Dial7_B00887.zip", function(err, data) {
+  if (err) throw err;
+  JSZip.loadAsync(data).then(function (zip) {
+    zip.files['other-Dial7_B00887.csv'].async("string")
+    .then(function (data) {                    
+            processData(data);
+        });  
+      
+  });
 });
 
 var dataFrame = [];
@@ -51,7 +55,7 @@ function searchDataFrame(dataFrame, key) {		//returns an array of callInfo that 
 	return tempDF;
 }
 
-/* FUNCTION TO FIND UNIQUE CITIES IN DATAFRAME
+// FUNCTION TO FIND UNIQUE CITIES IN DATAFRAME
 function uniqueValues(dataFrame) {
   var tempDF = [];
   var times = [];
@@ -64,18 +68,23 @@ function uniqueValues(dataFrame) {
     }
   }
   
-  console.log(tempDF);
-  require('fs').writeFile('./my.json', JSON.stringify(tempDF),
-    function (err) {
-      if (err) {
-        console.error('Crap happens');
-      }
-    }
-  );
   for (var x = 0; x < tempDF.length; x++) {
     console.log(tempDF[x], ":", times[x]);
   }
-}*/
+}
+
+
+
+function createJSON(tempDF){
+  var shortArray = [];
+  for (i = 0; i < 20; i++) {
+    shortArray.push(tempDF[i]);
+  }
+  var arrayToString = JSON.stringify(Object.assign({}, shortArray));
+  var stringToJsonObject = JSON.parse(arrayToString);
+  console.log(stringToJsonObject);
+  return stringToJsonObject;
+}
 
 
 var http = require('http')
@@ -111,9 +120,14 @@ const server = http.createServer(function (req, res) {
 			var temp = searchDataFrame(dataFrame, key);
 			res.write(`Searched for ${input.searchBar}`); //change this to actual output!
 /* ---------------- BELOW IS FOR TESTING PURPOSES ONLY ---------------------------*/
-			console.log(temp);
-			console.log(temp.length);
-			//res.write(temp.toString());
+			//console.log(temp);
+      //console.log(temp.length);
+
+      var resJSON = createJSON(temp);
+      for (i = 0; i < 20; i++) {
+        res.write('<p>' + JSON.stringify(resJSON[i]).toUpperCase() + '</p>');
+      }
+      
 		});
 	}
 })

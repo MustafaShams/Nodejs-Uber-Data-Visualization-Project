@@ -12,6 +12,7 @@
   "dependencies": {
     "express": "^4.17.1",
     "geocoder": "^0.2.3",
+    "jszip": "^3.5.0",
     "latlng-to-zip": "0.0.2",
     "node-fetch": "^2.6.1",
     "xmlhttprequest": "^1.8.0"
