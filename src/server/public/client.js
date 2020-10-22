@@ -1,12 +1,14 @@
 $(document).ready(function(){
-    //createChart();
+    // createChart();
 	var sendKey;
 	$("#submit").click(function(){
         sendKey=$("#searchBar").val();
-        if(sendKey.trim()){
+        if(sendKey){
             console.log("button",sendKey);
             var url = "http://localhost:3000/search?id=" + sendKey
             $.get(url, function(data){
+                ProcessData(data);
+                
                 console.log(data.slice(0,20));
                 var parent = document.getElementById('table');
                 console.log(parent);
@@ -18,7 +20,7 @@ $(document).ready(function(){
                 }
                 else{
                     parent.appendChild(buildHtmlTable(data.slice(0,20)));
-                }	
+                    }	
             });
         }
     else{
@@ -28,6 +30,8 @@ $(document).ready(function(){
         _table_.innerHTML = "Please Enter A City!!!"
         parent.appendChild(_table_)
     }
+    
+    console.log('output');
 		
 	});
 });
@@ -77,24 +81,54 @@ var _table_ = document.createElement('table'),
  }
 
 
+const x_Axis = [];
+const y_Axis = [];
+function ProcessData(Text){
+    console.log("passed");
+    const size = Text.length;
+    console.log(Text[0].city);
+    if(Search(x_Axis,Text) != 1){
+        x_Axis.push(Text[0].city);
+        y_Axis.push(size);
+    }
+    else{
+        console.log("input already in array");
+    }
+    console.log(x_Axis);
+    console.log(y_Axis);
+    createChart();
+}
+function Search(Arr, Text){
+    console.log(Arr);
+    console.log(Text);
+    for(var i = 0; i < Arr.length; ++i){
+        if(Arr[i].city == Text[i].city){
+            return 1;
+        } 
+        
 
+    }
+    return 0;
+}
+//  function Random_Color(value){
+//     value = Math.floor(Math.random() * 255) + 1);
 
+//     return value;
+//  }
 
-
-
-
-
- 
-
- function createChart(){
+function createChart(){
+     console.log("printing");
+    //await ProcessData();
+     console.log("waited");
     var ctx = document.getElementById('myChart').getContext('2d');
     var myChart = new Chart(ctx, {
         type: 'bar',
         data: {
-            labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
-            datasets: [{
-                label: '# of Votes',
-                data: [12, 19, 3, 5, 2, 3],
+            labels: x_Axis ,
+            datasets: [
+                {
+                label: 'Call of Cities',
+                data: y_Axis,
                 backgroundColor: [
                     'rgba(255, 99, 132, 0.2)',
                     'rgba(54, 162, 235, 0.2)',
@@ -114,14 +148,7 @@ var _table_ = document.createElement('table'),
                 borderWidth: 1
             }]
         },
-        options: {
-            scales: {
-                yAxes: [{
-                    ticks: {
-                        beginAtZero: true
-                    }
-                }]
-            }
-        }
+        
     });
+    //myChart.render();
  }
