@@ -74,15 +74,18 @@ function uniqueValues(dataFrame) {
 }
 
 
+
 function createJSON(tempDF){
-  require('fs').writeFile('./my.json', JSON.stringify(tempDF),
-    function (err) {
-      if (err) {
-        console.error('Crap happens');
-      }
-    }
-  );
+  var shortArray = [];
+  for (i = 0; i < 20; i++) {
+    shortArray.push(tempDF[i]);
+  }
+  var arrayToString = JSON.stringify(Object.assign({}, shortArray));
+  var stringToJsonObject = JSON.parse(arrayToString);
+  console.log(stringToJsonObject);
+  return stringToJsonObject;
 }
+
 
 var http = require('http')
 const port = 3000
@@ -117,9 +120,14 @@ const server = http.createServer(function (req, res) {
 			var temp = searchDataFrame(dataFrame, key);
 			res.write(`Searched for ${input.searchBar}`); //change this to actual output!
 /* ---------------- BELOW IS FOR TESTING PURPOSES ONLY ---------------------------*/
-			console.log(temp);
-			console.log(temp.length);
-			//res.write(temp.toString());
+			//console.log(temp);
+      //console.log(temp.length);
+
+      var resJSON = createJSON(temp);
+      for (i = 0; i < 20; i++) {
+        res.write('<p>' + JSON.stringify(resJSON[i]).toUpperCase() + '</p>');
+      }
+      
 		});
 	}
 })
