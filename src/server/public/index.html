@@ -2,15 +2,41 @@
 <html>
 	<head>
 		<meta charset="UTF-8">
-    		<title>Client-Server Connection</title>
+			<title>Client-Server Connection</title>
+			<link rel="stylesheet" href="styles.css"></link>
+
+		</head>
+	  
+		  
   	</head>
   	<body>
+		<header class="main_header">
+			<nav class="nav main_nav">
+	   
+			  <ul>
+				<li>
+				 <a  href = "Uber.html">Uber</a> 
+				 </li>
+				 
+				 <li>
+				   <a href = "Non_Uber.html"> Non-Uber </a> 
+				 </li>
+	   
+				</ul>
+	   
+	   
+			</nav>
+	   
+		<h1  class = "project_name" ></h1>Project Name</h1>
+			  
 		<form action="http://localhost:3000/response" method="POST"> 
 			<button>Call server</button> 
 		</form>
-		<form action="http://localhost:3000/search" method="POST">
-			<input type="text" placeholder="Search for a City" name ="searchBar">
-			<button>Submit</button>
-		</form>
+		<div class="search_bar">
+			<form action="http://localhost:3000/search" method="POST">
+				<button>Go</button>
+				<input type="Search" placeholder="Search.." name ="searchBar">
+			</form>
+		</div>
   	</body>
 </html>
