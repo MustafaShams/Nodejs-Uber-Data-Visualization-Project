@@ -1,16 +1,20 @@
 const callInfo = require('./dataFrameClass.js') //call the class File and store in callInfo
 const { parse } = require('querystring'); //for parsing client-side html body for key
 
-//READ CSV FILE
+var JSZip = require("jszip");
 const fs = require('fs');
 
-fs.readFile('inputFile/other-Dial7_B00887.csv', 'utf8', function (err, data) {
-  if (err) {
-    console.error(err)
-    return
-  }
-  processData(data)
-  
+var new_zip = new JSZip();
+// more files !
+fs.readFile("inputFile/other-Dial7_B00887.zip", function(err, data) {
+  if (err) throw err;
+  JSZip.loadAsync(data).then(function (zip) {
+    zip.files['other-Dial7_B00887.csv'].async("string")
+    .then(function (data) {                    
+            processData(data);
+        });  
+      
+  });
 });
 
 var dataFrame = [];
@@ -51,7 +55,7 @@ function searchDataFrame(dataFrame, key) {		//returns an array of callInfo that 
 	return tempDF;
 }
 
-/* FUNCTION TO FIND UNIQUE CITIES IN DATAFRAME
+// FUNCTION TO FIND UNIQUE CITIES IN DATAFRAME
 function uniqueValues(dataFrame) {
   var tempDF = [];
   var times = [];
@@ -64,7 +68,13 @@ function uniqueValues(dataFrame) {
     }
   }
   
-  console.log(tempDF);
+  for (var x = 0; x < tempDF.length; x++) {
+    console.log(tempDF[x], ":", times[x]);
+  }
+}
+
+
+function createJSON(tempDF){
   require('fs').writeFile('./my.json', JSON.stringify(tempDF),
     function (err) {
       if (err) {
@@ -72,11 +82,7 @@ function uniqueValues(dataFrame) {
       }
     }
   );
-  for (var x = 0; x < tempDF.length; x++) {
-    console.log(tempDF[x], ":", times[x]);
-  }
-}*/
-
+}
 
 var http = require('http')
 const port = 3000
