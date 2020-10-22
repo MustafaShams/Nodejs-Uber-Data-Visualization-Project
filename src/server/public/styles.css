@@ -1,10 +1,6 @@
 *{
     box-sizing: border-box;
-<<<<<<< HEAD
     color: #f8f8f8
-=======
-    color: #777777
->>>>>>> 19c3152c3498208c8a19a3f1fc924669081699bd
 
 }
 html,body{
@@ -13,21 +9,12 @@ html,body{
 }
 .main_header{
     
-<<<<<<< HEAD
     background-image: linear-gradient(
         rgba(0, 0, 0, 0.7),
         rgba(0, 0, 0, 0.7)
       ),
       url("NY_night.jpg");
     background-size: 100%;
-=======
-    background-image: url("NY_night.jpg");
-    background-size: cover;
-    padding-top: 55px;
-    padding-bottom: 55px;
-    
-
->>>>>>> 19c3152c3498208c8a19a3f1fc924669081699bd
 }
 .nav li{
     display: inline;
@@ -65,13 +52,9 @@ html,body{
 }
 
 .search_bar {
-<<<<<<< HEAD
     float: left;
     position: relative;
     left: 40%;
-=======
-    float: right;
->>>>>>> 19c3152c3498208c8a19a3f1fc924669081699bd
     margin-top: 15px;
 }
 
