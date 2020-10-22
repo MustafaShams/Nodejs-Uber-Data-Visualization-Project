@@ -1,0 +1,110 @@
+*{
+    box-sizing: border-box;
+    color: #f8f8f8
+
+}
+html,body{
+    margin: 0;
+    padding: 0;
+}
+.main_header{
+    
+    background-image: linear-gradient(
+        rgba(0, 0, 0, 0.7),
+        rgba(0, 0, 0, 0.7)
+      ),
+      url("NY_night.jpg");
+    background-size: 100%;
+}
+.nav li{
+    display: inline;
+}
+.nav a{
+    padding: .5em;
+    color: white;
+    display: inline-block;
+    text-decoration: none;
+}
+.nav a:hover{
+    background-color: rgba(255, 255,255,.5);
+}
+.nav ul{
+    margin: 0;
+}
+.main_nav{
+    text-align: left;
+    font-size: 1.1m;
+    font-weight: lighter;
+    border-bottom: 1px solid rgba(255, 255,255,.5);
+
+}
+.main_nav{
+    padding: 0 5%;
+}
+.project_name{
+    text-align: center;
+    margin: 0;
+    font-size: 40cm;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-weight: normal;
+    color: aliceblue;
+    
+}
+
+.search_bar {
+    float: left;
+    position: relative;
+    left: 40%;
+    margin-top: 15px;
+}
+
+.search_bar input[type=search] {
+    float: right;
+    padding: 6px;
+    border: none;
+    margin-top: 8px;
+    margin-right: 2px;
+    font-size: 17px;
+    width: 300px;
+    color: black;
+}
+
+.search_bar button {
+    float: right;
+    padding: 6px;
+    margin-top: 8px;
+    margin-right: 20px;
+    background: rgb(19, 19, 19);
+    font-size: 17px;
+    border: none;
+    cursor: pointer;
+}
+.tableHolder{
+    color: #ddd;
+    margin-top: 100px;
+    margin-left: 35%;
+    width: 550px;
+    height: 800px;
+    text-align:center;
+}
+
+.search_bar button:hover {
+    background: #ccc;
+}
+
+
+table {
+
+  }
+  
+  th, td {
+      padding-left: 20px;
+      font-size: 20px;
+
+  }
+  
+  tr:nth-child(even){
+    }
+  
+  th {
+  }

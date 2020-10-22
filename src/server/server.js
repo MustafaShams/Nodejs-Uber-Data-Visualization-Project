@@ -27,7 +27,7 @@ async function processData(allText) {
   for (var i = 1; i < allTextLines.length-1; i++) { //travarse all lines
     var data = allTextLines[i].split(',');
 
-      if(data[4].trim() != ""){
+      if(data[3].trim() != "" && data[4].trim() != ""){
         try {
           var e = new callInfo();                                    //create a new callInfo object
           Object.assign(e.Date = data[0].trim());                           //assign the date
@@ -67,10 +67,16 @@ function uniqueValues(dataFrame) {
       times[tempDF.indexOf(dataFrame[i].City)] = parseInt(times[tempDF.indexOf(dataFrame[i].City)]) + parseInt(1);
     }
   }
-  
+  var newArray = []
   for (var x = 0; x < tempDF.length; x++) {
-    console.log(tempDF[x], ":", times[x]);
+     newArray[x] = tempDF[x]+" : "+times[x];
   }
+  var json = JSON.stringify(newArray);
+  fs.writeFile('myjsonfile.json', json, 'utf8', function(err) {
+    if (err) throw err;
+    console.log('complete');
+    });
+  
 }
 
 
@@ -87,7 +93,7 @@ function createJSON(tempDF){
 }
 
 
-var http = require('http')
+/*var http = require('http')
 const port = 3000
 
 
@@ -119,7 +125,7 @@ const server = http.createServer(function (req, res) {
 			key = input.searchBar;
 			var temp = searchDataFrame(dataFrame, key);
 			res.write(`Searched for ${input.searchBar}`); //change this to actual output!
-/* ---------------- BELOW IS FOR TESTING PURPOSES ONLY ---------------------------*/
+/* ---------------- BELOW IS FOR TESTING PURPOSES ONLY ---------------------------
 			//console.log(temp);
       //console.log(temp.length);
 
@@ -127,9 +133,15 @@ const server = http.createServer(function (req, res) {
       for (i = 0; i < 20; i++) {
         res.write('<p>' + JSON.stringify(resJSON[i]).toUpperCase() + '</p>');
       }
-      
-		});
-	}
+    });
+  }
+
+  if (req.url == '/data') { //check the URL of the current request
+    res.writeHead(200, { 'Content-Type': 'application/json' });
+    res.write(JSON.stringify({ message: "Hello World"}));  
+    res.end();  
+  }
+    
 })
 
 server.listen(port, function (error) {
@@ -138,7 +150,34 @@ server.listen(port, function (error) {
   } else {
     console.log('Server is listening on port', port)
   }
+});*/
+
+const express = require('express');
+const { callbackify } = require('util');
+const app = express();
+const PORT = 3000;
+
+app.use(express.static('public'))
+app.use(express.json());       // to support JSON-encoded bodies
+app.use(express.urlencoded({ extended: true })) // to support URL-encoded bodies
+
+app.get('/', (req, res) => {
+    res.send('Working!');
 });
+
+app.get('/search',(req, res) => {
+  var id = req.query.id;
+  console.log(id);
+  var key_name = id;
+  console.log("key name = "+ key_name);
+  var data = searchDataFrame(dataFrame, key_name);
+  res.header("Content-Type",'application/json');
+  res.json(data);
+});
+
+
+
+app.listen(PORT, () => console.log('Listening on port',PORT));
 
 function getKey(request, returnValue) { // parses the html body to get searchBar key from client (nodejs doesn't allow document.getElementById)
 	const urlencoded = 'application/x-www-form-urlencoded';
