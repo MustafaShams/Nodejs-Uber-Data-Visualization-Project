@@ -54,12 +54,14 @@ html,body{
 .search_bar {
     float: left;
     position: relative;
-    left: 40%;
+    left: 32%;
     margin-top: 15px;
+    width: 45%;
 }
 
 .search_bar input[type=search] {
-    float: right;
+    float: left;
+    padding-right: 5px;
     padding: 6px;
     border: none;
     margin-top: 8px;
@@ -70,15 +72,30 @@ html,body{
 }
 
 .search_bar button {
-    float: right;
+    float: left;
     padding: 6px;
     margin-top: 8px;
     margin-right: 20px;
-    background: rgb(19, 19, 19);
+    background: rgb(50, 50, 50);
     font-size: 17px;
     border: none;
     cursor: pointer;
 }
+
+.search_bar dropdown {
+    float: right;
+}
+
+.search_bar dropdown input[type=text], select{
+    padding: 5px 5px;
+    margin: 8px 0;
+    display: inline-block;
+    color: black;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
 .tableHolder{
     color: #ddd;
     margin-top: 100px;

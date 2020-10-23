@@ -28,10 +28,25 @@
 			</nav>
 	   
 		<h1  class = "project_name" ></h1></h1>
+
 		<div class="search_bar">
-				<button id="submit">Go</button>
-				<input type="Search" placeholder="Search For A City" name ="searchBar" id="searchBar">
+			<input type="Search" placeholder="Search" name ="searchBar" id="searchBar">
+			<button id="submit">Go</button>
+			<div class="dropdown">
+				<form action="/action_page.php">
+					<!--<button id="submit">Select</button>		idk if we'll need this..-->
+					<label for="data_selection">Choose a dataset</label>
+					<select name="data_selection" id="data_selection">
+						<option value="address">Address</option>
+						<option value="city">City</option>
+						<option value="time">Time</option>
+						<option value="date">Date</option>
+						<option value="state">State</option>
+					</select>
+				</form>
+			</div>
 		</div>
+
 		<div class="tableHolder">
 			<a id="table"></a>
 		</div>
