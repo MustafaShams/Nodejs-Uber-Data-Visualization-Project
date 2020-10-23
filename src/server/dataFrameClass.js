@@ -18,6 +18,13 @@ class callInfo {
   set Address(Address){
     this.address = Address;
   }
+  set Street(Street){
+    this.street = Street;
+  }
+  get Street(){
+    return this.street;
+  }
+  
 
   set Zip(Zip) {
     this.zip = Zip;

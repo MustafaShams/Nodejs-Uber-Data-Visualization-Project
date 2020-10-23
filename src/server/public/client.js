@@ -19,7 +19,7 @@ $(document).ready(function(){
                     parent.appendChild(_table_)
                 }
                 else{
-                    ProcessData(data);
+                    //ProcessData(data);
                     parent.appendChild(buildHtmlTable(data.slice(0,20)));
                     }	
             });
@@ -99,15 +99,19 @@ function ProcessData(Text){
     }
     console.log(x_Axis);
     console.log(y_Axis);
-    //createChart();
+    createChart();
 }
 function Search(Arr, Text){
-    
     console.log(Text[0]);
-    for(var i = 0; i < Arr.length; ++i){
-        for(var j = 0; j < Text.length; ++j){
-            if(Arr[i] == Text[j].city){
+    for(var i = 0; i < Text.length; ++i){
+        for(var j = 0; j < Arr.length; ++j){
+            console.log("Searching for City from Data:",Text[i].city)
+            console.log("Searching for city in arr:", Arr[j])
+            if(Text[i] == Arr[j].city){
                 return 1;
+            }
+            else{
+                return 0;
             } 
         }
         

@@ -1,0 +1,10 @@
+10/23/2020 11:09 AM
+
+*Added*
+Added functionality for street Name and year and MONTH!!!
+
+*To Do*
+Table to show needs a better design
+Process data is currently commented out
+Graph functionality needs certain rules, how many data to show, what type of data to show, need fix for search based on anything besides city
+Sprint 4

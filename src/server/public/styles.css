@@ -86,7 +86,12 @@ html,body{
     float: right;
 }
 
+#data_selection option{
+    color: black;
+}
+
 .search_bar dropdown input[type=text], select{
+    background-color: white;
     padding: 5px 5px;
     margin: 8px 0;
     display: inline-block;
