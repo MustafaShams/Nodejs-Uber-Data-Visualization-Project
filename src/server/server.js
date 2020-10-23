@@ -19,6 +19,7 @@ fs.readFile("inputFile/other-Dial7_B00887.zip", function(err, data) {
 
 var dataFrame = [];
 var key;
+var field;
 async function processData(allText) {
   allText = allText.replace(/['"]+/g, '') //remove all " from input
   allText = allText.toLowerCase();
@@ -44,13 +45,44 @@ async function processData(allText) {
   }
 }
 
-function searchDataFrame(dataFrame, key) {		//returns an array of callInfo that matches key
+function searchDataFrame(dataFrame, key, field) {		//returns an array of callInfo that matches key
 	var tempDF = [];
 	key = key.toLowerCase();
-	for (var i = 1; i < dataFrame.length; ++i) {
-		if (key == dataFrame[i].City) {
-			tempDF.push(dataFrame[i]);
+	if (field == "Date") {
+		for (var i = 1; i < dataFrame.length; ++i) {
+			if (key == dataFrame[i].Date) {
+				tempDF.push(dataFrame[i]);
+			}
 		}
+	}
+	else if (field == "Time") {
+              	for (var i = 1; i < dataFrame.length; ++i) {
+                        if (key == dataFrame[i].Time) {
+				tempDF.push(dataFrame[i]);
+                        }
+                }
+	}
+	else if (field == "State") {
+                for (var i = 1; i < dataFrame.length; ++i) {
+                        if (key == dataFrame[i].State) {
+				tempDF.push(dataFrame[i]);
+			}
+		}        
+	}
+	else if (field == "City") {
+		for (var i = 1; i < dataFrame.length; ++i) {
+			if (key == dataFrame[i].City) {
+				tempDF.push(dataFrame[i]);	
+			}
+		}
+	}
+	else if (field == "Address") {
+		for (var i = 1; i < dataFrame.length; ++i) {
+			if (key == dataFrame[i].Address) {
+                                tempDF.push(dataFrame[i]);
+			}
+                }
+		console.log(tempDF.length);
 	}
 	return tempDF;
 }
@@ -167,10 +199,13 @@ app.get('/', (req, res) => {
 
 app.get('/search',(req, res) => {
   var id = req.query.id;
+  field = req.query.field; //already init field
+  console.log(field);
   console.log(id);
   var key_name = id;
   console.log("key name = "+ key_name);
-  var data = searchDataFrame(dataFrame, key_name);
+  console.log("field name = "+ field);
+  var data = searchDataFrame(dataFrame, key_name, field);
   res.header("Content-Type",'application/json');
   res.json(data);
 });

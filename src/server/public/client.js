@@ -1,24 +1,25 @@
 $(document).ready(function(){
     // createChart();
 	var sendKey;
+	var sendField;
 	$("#submit").click(function(){
-        sendKey=$("#searchBar").val();
+    sendKey=$("#searchBar").val();
+	sendField=$("#data_selection").val();
+	console.log(sendField);
         if(sendKey){
             console.log("button",sendKey);
-            var url = "http://localhost:3000/search?id=" + sendKey
+            var url = "http://localhost:3000/search?field=" + sendField + "&id=" + sendKey;
             $.get(url, function(data){
-                ProcessData(data);
-                
-                console.log(data.slice(0,20));
                 var parent = document.getElementById('table');
                 console.log(parent);
                 parent.innerHTML = "";
                 if(data.length == 0){
                     var _table_ = document.createElement('table');
-                    _table_.innerHTML = "No City Exists"
+                    _table_.innerHTML = "No Data Found, Check Spelling."
                     parent.appendChild(_table_)
                 }
                 else{
+                    ProcessData(data);
                     parent.appendChild(buildHtmlTable(data.slice(0,20)));
                     }	
             });
@@ -27,7 +28,7 @@ $(document).ready(function(){
         var parent = document.getElementById('table');
         parent.innerHTML = "";
         var _table_ = document.createElement('table');
-        _table_.innerHTML = "Please Enter A City!!!"
+        _table_.innerHTML = "Please Enter A Keyword!"
         parent.appendChild(_table_)
     }
     
@@ -86,7 +87,9 @@ const y_Axis = [];
 function ProcessData(Text){
     console.log("passed");
     const size = Text.length;
-    console.log(Text[0].city);
+    console.log("size:",size);
+    //console.log(Text);
+    //console.log(Text[0].city);
     if(Search(x_Axis,Text) != 1){
         x_Axis.push(Text[0].city);
         y_Axis.push(size);
@@ -96,17 +99,18 @@ function ProcessData(Text){
     }
     console.log(x_Axis);
     console.log(y_Axis);
-    createChart();
+    //createChart();
 }
 function Search(Arr, Text){
-    console.log(Arr);
-    console.log(Text);
+    
+    console.log(Text[0]);
     for(var i = 0; i < Arr.length; ++i){
-        if(Arr[i].city == Text[i].city){
-            return 1;
-        } 
+        for(var j = 0; j < Text.length; ++j){
+            if(Arr[i] == Text[j].city){
+                return 1;
+            } 
+        }
         
-
     }
     return 0;
 }

@@ -1,47 +1,52 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<meta charset="UTF-8">
-			<title>Uber Team Dataset</title>
-			<link rel="stylesheet" href="styles.css"></link>
-			<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js">  </script>
-			<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.1.6/Chart.bundle.min.js"></script>
-			<script src = "client.js"></script>
-		</head>
-  	</head>
-  	<body>
-		<header class="main_header">
-			<nav class="nav main_nav">
-			  <ul>
-					<li>
-						<a href = "index.html"> Home </a> 
-					</li>
+
+<head>
+	<meta charset="UTF-8">
+	<title>Uber Team Dataset</title>
+	<link rel="stylesheet" href="styles.css">
+	</link>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"> </script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.1.6/Chart.bundle.min.js">
+	</script>
+	<script src="client.js"></script>
+</head>
+</head>
+
+<body>
+	<header class="main_header">
+		<nav class="nav main_nav">
+			<ul>
 				<li>
-				 <a  href = "Uber.html">Uber</a> 
-				 </li>
-				 
-				 <li>
-				   <a href = "Non_Uber.html"> Non-Uber </a> 
-				 </li>
-	   
-				</ul>
-			</nav>
-	   
-		<h1  class = "project_name" ></h1></h1>
+					<a href="index.html"> Home </a>
+				</li>
+				<li>
+					<a href="Uber.html">Uber</a>
+				</li>
+
+				<li>
+					<a href="Non_Uber.html"> Non-Uber </a>
+				</li>
+
+			</ul>
+		</nav>
+
+		<h1 class="project_name"></h1>
+		</h1>
 
 		<div class="search_bar">
-			<input type="Search" placeholder="Search" name ="searchBar" id="searchBar">
+			<input type="Search" placeholder="Search" name="searchBar" id="searchBar">
 			<button id="submit">Go</button>
 			<div class="dropdown">
 				<form action="/action_page.php">
 					<!--<button id="submit">Select</button>		idk if we'll need this..-->
 					<label for="data_selection">Choose a dataset</label>
 					<select name="data_selection" id="data_selection">
-						<option value="address">Address</option>
-						<option value="city">City</option>
-						<option value="time">Time</option>
-						<option value="date">Date</option>
-						<option value="state">State</option>
+						<option value="Date">Date</option>
+						<option value="Time">Time</option>
+						<option value="State">State</option>
+						<option value="City">City</option>
+						<option value="Address">Address</option>
 					</select>
 				</form>
 			</div>
@@ -50,9 +55,10 @@
 		<div class="tableHolder">
 			<a id="table"></a>
 		</div>
-		<div class = "graphHolder">
-			
+		<div class="graphHolder">
+			<canvas id="myChart"></canvas>
 		</div>
-		
-  	</body>
+
+</body>
+
 </html>
