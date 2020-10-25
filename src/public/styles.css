@@ -72,6 +72,7 @@ html,body{
 }
 
 .search_bar button {
+    
     float: left;
     padding: 6px;
     margin-top: 8px;
@@ -104,29 +105,57 @@ html,body{
 .tableHolder{
     color: #ddd;
     margin-top: 100px;
-    margin-left: 35%;
-    width: 550px;
+    margin-left: 20px;
+    width: 1100px;
     height: 800px;
     text-align:center;
+    overflow:auto;
 }
 
 .search_bar button:hover {
     background: #ccc;
 }
 
-
-table {
-
+  table {
+    background: rgba(255,255,255,0.1);
+    font-family: Arial, Helvetica, sans-serif;
+    border: 5px solid #000000;
+    /*background-color: #4A4A4A; */
+    width: 100%;
+    height: 200px;
+    text-align: center;
+    border-collapse: collapse;
+    text-transform: capitalize;
+  }
+  table td, table th {
+    border: 1px solid #4A4A4A;
+    padding: 9px 5px;
+  }
+  table tbody td {
+    font-size: 15px;
+    color: #E6E6E6;
+  }
+  table tr:nth-child(even) {
+    background: #7D7D7D;
+  }
+  table thead {
+    background: #000000;
+    background: -moz-linear-gradient(top, #404040 0%, #191919 66%, #000000 100%);
+    background: -webkit-linear-gradient(top, #404040 0%, #191919 66%, #000000 100%);
+    background: linear-gradient(to bottom, #404040 0%, #191919 66%, #000000 100%);
+    border-bottom: 3px solid #000000;
+  }
+  table thead th {
+    font-size: 15px;
+    font-weight: bold;
+    color: #E6E6E6;
+    text-align: center;
+    border-left: 3px solid #4A4A4A;
+  }
+  table thead th:first-child {
+    border-left: none;
   }
   
-  th, td {
-      padding-left: 20px;
-      font-size: 20px;
-
-  }
-  
-  tr:nth-child(even){
-    }
-  
-  th {
+  table tfoot td {
+    font-size: 12px;
   }
