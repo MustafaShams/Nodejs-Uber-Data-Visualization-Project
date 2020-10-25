@@ -15,7 +15,6 @@ fs.readFile("inputFile/other-Dial7_B00887.zip", function (err, data) {
       .then(function (data) {
         processData(data);
       });
-
   });
 });
 
