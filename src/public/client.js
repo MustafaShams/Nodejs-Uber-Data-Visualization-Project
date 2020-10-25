@@ -20,7 +20,7 @@ $(document).ready(function(){
                 }
                 else{
                     //ProcessData(data);
-                    parent.appendChild(buildHtmlTable(data));
+                    parent.appendChild(buildHtmlTable(data.slice(0, 20)));
                     }	
             });
         }
