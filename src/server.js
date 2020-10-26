@@ -21,7 +21,7 @@ fs.readFile("inputFile/other-Dial7_B00887.zip", function (err, data) {
 var dataFrame = [];
 var key;
 var field;
-async function processData(allText) {
+function processData(allText) {
   allText = allText.replace(/['"]+/g, '') //remove all " from input
   allText = allText.toLowerCase();
   var allTextLines = allText.split(/\r\n|\n/); //Split the input based on new lines
@@ -37,16 +37,22 @@ async function processData(allText) {
         Object.assign(e.State = data[2].trim());
         Object.assign(e.City = data[3].trim());
         Object.assign(e.Address = data[4].trim() + " " + data[5].trim());
+        Object.assign(e.House = data[4].trim());
         Object.assign(e.Street = data[5].trim());
+        Object.defineProperty(e, "houseNum", {
+          enumerable: false
+        });
         Object.defineProperty(e, "street", {
           enumerable: false
         });
         dataFrame.push(e);
       } catch (err) {
-        console.log('PROBLEM', err)
+        console.log('PROBLEM Creating Data Frame', err)
       }
     }
   }
+  //console.log(dataFrame);
+  //exportData(dataFrame);
 }
 
 function searchDataFrame(dataFrame, key, field) { //returns an array of callInfo that matches key
@@ -140,6 +146,21 @@ function uniqueValues(dataFrame) {
 }
 
 
+function exportData(arr){
+  let csvContent = "Date, Time, State, City, Address, Street\n";
+
+  for(var x = 0; x < arr.length; x++){
+    csvContent += arr[x].Date + "," + arr[x].Time + "," + arr[x].State + "," + arr[x].City + "," + arr[x].houseNum + "," +  arr[x].street + "\n";
+  }
+  fs.writeFile('dataFrame.csv', csvContent, 'utf8', function (err) {
+    if (err) {
+      console.log('Some error occured - file either not saved or corrupted file saved.');
+    } else{
+      console.log('It\'s saved!');
+    }
+  });
+}
+
 
 function createJSON(tempDF) {
   var shortArray = [];
@@ -151,6 +172,53 @@ function createJSON(tempDF) {
   console.log(stringToJsonObject);
   return stringToJsonObject;
 }
+
+
+
+
+const express = require('express');
+const {
+  callbackify
+} = require('util');
+const app = express();
+const PORT = 3000;
+
+app.use(express.static('public'))
+app.use(express.json()); // to support JSON-encoded bodies
+app.use(express.urlencoded({
+  extended: true
+})) // to support URL-encoded bodies
+
+app.get('/', (req, res) => {
+  res.send('Working!');
+});
+
+app.get('/search', (req, res) => {
+  var id = req.query.id;
+  field = req.query.field; //already init field
+  var key_name = id;
+  console.log("key name = " + key_name);
+  console.log("field name = " + field);
+  var data = searchDataFrame(dataFrame, key_name, field);
+  res.header("Content-Type", 'application/json');
+  res.json(data);
+});
+
+
+
+app.listen(PORT, () => console.log('Listening on port', PORT));
+
+function getKey(request, returnValue) { // parses the html body to get searchBar key from client (nodejs doesn't allow document.getElementById)
+  const urlencoded = 'application/x-www-form-urlencoded';
+  var parser = '';
+  request.on('data', data => {
+    parser += data.toString();
+  });
+  request.on('end', () => {
+    returnValue(parse(parser));
+  });
+}
+
 
 
 /*var http = require('http')
@@ -211,46 +279,3 @@ server.listen(port, function (error) {
     console.log('Server is listening on port', port)
   }
 });*/
-
-const express = require('express');
-const {
-  callbackify
-} = require('util');
-const app = express();
-const PORT = 3000;
-
-app.use(express.static('public'))
-app.use(express.json()); // to support JSON-encoded bodies
-app.use(express.urlencoded({
-  extended: true
-})) // to support URL-encoded bodies
-
-app.get('/', (req, res) => {
-  res.send('Working!');
-});
-
-app.get('/search', (req, res) => {
-  var id = req.query.id;
-  field = req.query.field; //already init field
-  var key_name = id;
-  console.log("key name = " + key_name);
-  console.log("field name = " + field);
-  var data = searchDataFrame(dataFrame, key_name, field);
-  res.header("Content-Type", 'application/json');
-  res.json(data);
-});
-
-
-
-app.listen(PORT, () => console.log('Listening on port', PORT));
-
-function getKey(request, returnValue) { // parses the html body to get searchBar key from client (nodejs doesn't allow document.getElementById)
-  const urlencoded = 'application/x-www-form-urlencoded';
-  var parser = '';
-  request.on('data', data => {
-    parser += data.toString();
-  });
-  request.on('end', () => {
-    returnValue(parse(parser));
-  });
-}
