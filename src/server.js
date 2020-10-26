@@ -6,17 +6,31 @@ const {
 var JSZip = require("jszip");
 const fs = require('fs');
 
+
+function getBackUp(){
+  fs.readFile('inputFile/dataFrame.csv', 'utf8', function (err, data) {
+    if (err) {
+      console.error(err)
+      return
+    }
+    processData(data)
+  });
+}
+
+function getRealData(){
+  fs.readFile("inputFile/other-Dial7_B00887.zip", function (err, data) {
+    if (err) throw err;
+    JSZip.loadAsync(data).then(function (zip) {
+      zip.files['other-Dial7_B00887.csv'].async("string")
+        .then(function (data) {
+          processData(data);
+        });
+    });
+  });
+}
 var new_zip = new JSZip();
 // more files !
-fs.readFile("inputFile/other-Dial7_B00887.zip", function (err, data) {
-  if (err) throw err;
-  JSZip.loadAsync(data).then(function (zip) {
-    zip.files['other-Dial7_B00887.csv'].async("string")
-      .then(function (data) {
-        processData(data);
-      });
-  });
-});
+
 
 var dataFrame = [];
 var key;
@@ -149,6 +163,15 @@ function uniqueValues(dataFrame) {
 
 }
 
+function checkBackUp(){
+  if (fs.existsSync('inputFile/dataFrame.csv')) {
+    return true;
+  }
+  else{
+    return false;
+  }
+}
+
 
 function exportData(arr){
   let csvContent = "Date, Time, State, City, Address, Street\n";
@@ -163,7 +186,7 @@ function exportData(arr){
   }
 
   
-  fs.writeFile('dataFrame.csv', csvContent, 'utf8', function (err) {
+  fs.writeFile('inputFile/dataFrame.csv', csvContent, 'utf8', function (err) {
     if (err) {
       console.log('Some error occured - file either not saved or corrupted file saved.');
     } else{
@@ -213,6 +236,21 @@ app.get('/search', (req, res) => {
   var data = searchDataFrame(dataFrame, key_name, field);
   res.header("Content-Type", 'application/json');
   res.json(data);
+});
+
+app.get('/checkBackup', (req, res) => {
+  var exists = checkBackUp();
+  res.send(exists);
+});
+
+app.get('/getBackup', (req, res) => {
+  console.log("Getting Backup");
+    getBackUp();
+});
+
+app.get('/noBackup', (req, res) => {
+  console.log("Getting Real");
+    getRealData();
 });
 
 
