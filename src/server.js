@@ -39,6 +39,9 @@ function processData(allText) {
         Object.assign(e.Address = data[4].trim() + " " + data[5].trim());
         Object.assign(e.House = data[4].trim());
         Object.assign(e.Street = data[5].trim());
+        if(data[4].size > 1){
+          console.log("MORE",data[4], data[4].length);
+        }
         Object.defineProperty(e, "houseNum", {
           enumerable: false
         });
@@ -51,8 +54,9 @@ function processData(allText) {
       }
     }
   }
+  console.log("Finished Parsing Data");
   //console.log(dataFrame);
-  //exportData(dataFrame);
+  exportData(dataFrame);
 }
 
 function searchDataFrame(dataFrame, key, field) { //returns an array of callInfo that matches key
@@ -149,9 +153,16 @@ function uniqueValues(dataFrame) {
 function exportData(arr){
   let csvContent = "Date, Time, State, City, Address, Street\n";
 
+
   for(var x = 0; x < arr.length; x++){
-    csvContent += arr[x].Date + "," + arr[x].Time + "," + arr[x].State + "," + arr[x].City + "," + arr[x].houseNum + "," +  arr[x].street + "\n";
+    var address = arr[x].Address
+    var index = address.indexOf(" ");
+    var house = address.substr(0,index);
+    var street = address.substr(index + 1);
+    csvContent += arr[x].Date + "," + arr[x].Time + "," + arr[x].State + "," + arr[x].City + "," + house + "," +  street + "\n";
   }
+
+  
   fs.writeFile('dataFrame.csv', csvContent, 'utf8', function (err) {
     if (err) {
       console.log('Some error occured - file either not saved or corrupted file saved.');
