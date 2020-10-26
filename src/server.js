@@ -56,7 +56,7 @@ function processData(allText) {
   }
   console.log("Finished Parsing Data");
   //console.log(dataFrame);
-  exportData(dataFrame);
+  //exportData(dataFrame);
 }
 
 function searchDataFrame(dataFrame, key, field) { //returns an array of callInfo that matches key
