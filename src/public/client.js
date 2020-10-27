@@ -34,7 +34,8 @@ $(document).ready(function(){
     
     console.log('output');
 		
-	});
+    });
+    
 });
 
 
@@ -55,11 +56,43 @@ var _table_ = document.createElement('table'),
              td.appendChild(document.createTextNode(arr[i][columns[j]] || ''));
              tr.appendChild(td);
          }
+
+         tr = addEdit(tr);
+         tr = addDel(tr);
+
          table.appendChild(tr);
      }
      return table;
  }
  
+
+ // NOTE: these functionalities are separated so I can add a popup item to edit. May or may not be the way it will be implemented
+ // Add edit buttons to each row of table
+ function addEdit(tr) {
+     var td = _td_.cloneNode(false);
+     var btn = document.createElement('input');
+     btn.type = "button";
+     btn.className = "editbtn";
+     //editbtn.value = 
+     td.appendChild(btn);
+     tr.appendChild(td);
+
+     return tr;
+ }
+
+// Add delete buttons to each row of table
+function addDel(tr) {
+    var td = _td_.cloneNode(false);
+    var btn = document.createElement('input');
+    btn.type = "button";
+    btn.className = "delbtn";
+    //editbtn.value = 
+    td.appendChild(btn);
+    tr.appendChild(td);
+
+    return tr;
+}
+
  // Adds a header row to the table and returns the set of columns.
  // Need to do union of keys from all records as some records may not contain
  // all records
@@ -77,6 +110,14 @@ var _table_ = document.createElement('table'),
              }
          }
      }
+     var editth = _th_.cloneNode(false);
+     editth.appendChild(document.createTextNode("Edit"));
+     tr.appendChild(editth);
+
+     var delth = _th_.cloneNode(false);
+     delth.appendChild(document.createTextNode("Delete"));
+     tr.appendChild(delth);
+
      table.appendChild(tr);
      return columnSet;
  }
