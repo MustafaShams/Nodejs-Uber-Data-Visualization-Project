@@ -24,6 +24,12 @@ class callInfo {
   get Street(){
     return this.street;
   }
+  set House(House){
+    this.houseNum = House;
+  }
+  get House(){
+    return this.houseNum;
+  }
   
 
   set Zip(Zip) {

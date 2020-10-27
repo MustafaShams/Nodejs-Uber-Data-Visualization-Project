@@ -51,12 +51,25 @@ add col in table w/ 2 buttons modify and delete-->
 			</div>
 		</div>
 
-		<div class="tableHolder">
-			<a id="table"></a>
+		<div id="myModal" class="modal">
+			<!-- Modal content -->
+			<div class="modal-content">
+				<span class="close">&times;</span>
+				<p>You have a previous backup saved. Would you like to load that backup?</p>
+				<button id="backupYes">Yes</button>
+				<button id="backupNo">No</button>
+			</div>
 		</div>
-		<div class="graphHolder">
-			<canvas id="myChart"></canvas>
+
+		<div id="container">
+			<div class="tableHolder">
+				<a id="table"></a>
+			</div>
+			<div class="graphHolder">
+				<canvas id="myChart"></canvas>
+			</div>
 		</div>
+
 
 </body>
 

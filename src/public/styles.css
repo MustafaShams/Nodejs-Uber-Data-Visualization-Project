@@ -1,54 +1,61 @@
-*{
+* {
     box-sizing: border-box;
     color: #f8f8f8
-
 }
-html,body{
+
+html,
+body {
     margin: 0;
     padding: 0;
 }
-.main_header{
-    
-    background-image: linear-gradient(
-        rgba(0, 0, 0, 0.7),
-        rgba(0, 0, 0, 0.7)
-      ),
-      url("NY_night.jpg");
+
+.main_header {
+
+    background-image: linear-gradient(rgba(0, 0, 0, 0.7),
+            rgba(0, 0, 0, 0.7)),
+        url("NY_night.jpg");
     background-size: 100%;
 }
-.nav li{
+
+.nav li {
     display: inline;
 }
-.nav a{
+
+.nav a {
     padding: .5em;
     color: white;
     display: inline-block;
     text-decoration: none;
 }
-.nav a:hover{
-    background-color: rgba(255, 255,255,.5);
+
+.nav a:hover {
+    background-color: rgba(255, 255, 255, .5);
 }
-.nav ul{
+
+.nav ul {
     margin: 0;
 }
-.main_nav{
+
+.main_nav {
     text-align: left;
     font-size: 1.1m;
     font-weight: lighter;
-    border-bottom: 1px solid rgba(255, 255,255,.5);
+    border-bottom: 1px solid rgba(255, 255, 255, .5);
 
 }
-.main_nav{
+
+.main_nav {
     padding: 0 5%;
 }
-.project_name{
+
+.project_name {
     text-align: center;
     margin: 0;
     font-size: 40cm;
     font-family: Verdana, Geneva, Tahoma, sans-serif;
     font-weight: normal;
     color: aliceblue;
-    
+
 }
 
 .search_bar {
@@ -72,7 +79,7 @@ html,body{
 }
 
 .search_bar button {
-    
+
     float: left;
     padding: 6px;
     margin-top: 8px;
@@ -87,11 +94,12 @@ html,body{
     float: right;
 }
 
-#data_selection option{
+#data_selection option {
     color: black;
 }
 
-.search_bar dropdown input[type=text], select{
+.search_bar dropdown input[type=text],
+select {
     background-color: white;
     padding: 5px 5px;
     margin: 8px 0;
@@ -102,22 +110,42 @@ html,body{
     box-sizing: border-box;
 }
 
-.tableHolder{
-    color: #ddd;
-    margin-top: 100px;
-    margin-left: 20px;
-    width: 1100px;
-    height: 800px;
-    text-align:center;
-    overflow:auto;
-}
+
 
 .search_bar button:hover {
     background: #ccc;
 }
 
-  table {
-    background: rgba(255,255,255,0.1);
+#container {
+    margin-top: 100px;
+    width: 100%;
+    /*background-color: red;*/
+    height: 800px;
+}
+.tableHolder {
+    width: 60%;
+    float: left;
+    height: 300px;
+    /*background-color: blue;*/
+    color: #ddd;
+    text-align: center;
+    overflow: auto;
+    height: 100%;
+}
+
+.graphHolder {
+    
+    width: 35%;
+    float: right;
+    margin-right: 50px;
+    height: 100%;
+    /*
+    background-color: green;*/
+    text-align: center;
+}
+
+table {
+    background: rgba(255, 255, 255, 0.1);
     font-family: Arial, Helvetica, sans-serif;
     border: 5px solid #000000;
     /*background-color: #4A4A4A; */
@@ -126,36 +154,90 @@ html,body{
     text-align: center;
     border-collapse: collapse;
     text-transform: capitalize;
-  }
-  table td, table th {
+}
+
+table td,
+table th {
     border: 1px solid #4A4A4A;
     padding: 9px 5px;
-  }
-  table tbody td {
+}
+
+table tbody td {
     font-size: 15px;
     color: #E6E6E6;
-  }
-  table tr:nth-child(even) {
+}
+
+table tr:nth-child(even) {
     background: #7D7D7D;
-  }
-  table thead {
+}
+
+table thead {
     background: #000000;
     background: -moz-linear-gradient(top, #404040 0%, #191919 66%, #000000 100%);
     background: -webkit-linear-gradient(top, #404040 0%, #191919 66%, #000000 100%);
     background: linear-gradient(to bottom, #404040 0%, #191919 66%, #000000 100%);
     border-bottom: 3px solid #000000;
-  }
-  table thead th {
+}
+
+table thead th {
     font-size: 15px;
     font-weight: bold;
     color: #E6E6E6;
     text-align: center;
     border-left: 3px solid #4A4A4A;
-  }
-  table thead th:first-child {
+}
+
+table thead th:first-child {
     border-left: none;
+}
+
+table tfoot td {
+    font-size: 12px;
+}
+
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    padding-top: 100px; /* Location of the box */
+    padding-right: 600px;
+    padding-left: 600px;
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
   }
   
-  table tfoot td {
-    font-size: 12px;
+  /* Modal Content */
+  .modal-content {
+    background-color: black;
+    margin: auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    font-size: 20px;
+  }
+
+  .modal-content button{
+    background-color: black;
+    margin: center;
+    font-size: 15px;
+  }
+  
+  /* The Close Button */
+  .close {
+    color: #aaaaaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+  }
+  
+  .close:hover,
+  .close:focus {
+    color: rgb(77, 77, 77);
+    text-decoration: none;
+    cursor: pointer;
   }

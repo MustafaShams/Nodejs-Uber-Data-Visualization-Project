@@ -6,22 +6,36 @@ const {
 var JSZip = require("jszip");
 const fs = require('fs');
 
+
+function getBackUp(){
+  fs.readFile('inputFile/dataFrame.csv', 'utf8', function (err, data) {
+    if (err) {
+      console.error(err)
+      return
+    }
+    processData(data)
+  });
+}
+
+function getRealData(){
+  fs.readFile("inputFile/other-Dial7_B00887.zip", function (err, data) {
+    if (err) throw err;
+    JSZip.loadAsync(data).then(function (zip) {
+      zip.files['other-Dial7_B00887.csv'].async("string")
+        .then(function (data) {
+          processData(data);
+        });
+    });
+  });
+}
 var new_zip = new JSZip();
 // more files !
-fs.readFile("inputFile/other-Dial7_B00887.zip", function (err, data) {
-  if (err) throw err;
-  JSZip.loadAsync(data).then(function (zip) {
-    zip.files['other-Dial7_B00887.csv'].async("string")
-      .then(function (data) {
-        processData(data);
-      });
-  });
-});
+
 
 var dataFrame = [];
 var key;
 var field;
-async function processData(allText) {
+function processData(allText) {
   allText = allText.replace(/['"]+/g, '') //remove all " from input
   allText = allText.toLowerCase();
   var allTextLines = allText.split(/\r\n|\n/); //Split the input based on new lines
@@ -37,16 +51,26 @@ async function processData(allText) {
         Object.assign(e.State = data[2].trim());
         Object.assign(e.City = data[3].trim());
         Object.assign(e.Address = data[4].trim() + " " + data[5].trim());
+        Object.assign(e.House = data[4].trim());
         Object.assign(e.Street = data[5].trim());
+        if(data[4].size > 1){
+          console.log("MORE",data[4], data[4].length);
+        }
+        Object.defineProperty(e, "houseNum", {
+          enumerable: false
+        });
         Object.defineProperty(e, "street", {
           enumerable: false
         });
         dataFrame.push(e);
       } catch (err) {
-        console.log('PROBLEM', err)
+        console.log('PROBLEM Creating Data Frame', err)
       }
     }
   }
+  console.log("Finished Parsing Data");
+  //console.log(dataFrame);
+  //exportData(dataFrame);
 }
 
 function searchDataFrame(dataFrame, key, field) { //returns an array of callInfo that matches key
@@ -139,6 +163,37 @@ function uniqueValues(dataFrame) {
 
 }
 
+function checkBackUp(){
+  if (fs.existsSync('inputFile/dataFrame.csv')) {
+    return true;
+  }
+  else{
+    return false;
+  }
+}
+
+
+function exportData(arr){
+  let csvContent = "Date, Time, State, City, Address, Street\n";
+
+
+  for(var x = 0; x < arr.length; x++){
+    var address = arr[x].Address
+    var index = address.indexOf(" ");
+    var house = address.substr(0,index);
+    var street = address.substr(index + 1);
+    csvContent += arr[x].Date + "," + arr[x].Time + "," + arr[x].State + "," + arr[x].City + "," + house + "," +  street + "\n";
+  }
+
+  
+  fs.writeFile('inputFile/dataFrame.csv', csvContent, 'utf8', function (err) {
+    if (err) {
+      console.log('Some error occured - file either not saved or corrupted file saved.');
+    } else{
+      console.log('It\'s saved!');
+    }
+  });
+}
 
 
 function createJSON(tempDF) {
@@ -151,6 +206,68 @@ function createJSON(tempDF) {
   console.log(stringToJsonObject);
   return stringToJsonObject;
 }
+
+
+
+
+const express = require('express');
+const {
+  callbackify
+} = require('util');
+const app = express();
+const PORT = 3000;
+
+app.use(express.static('public'))
+app.use(express.json()); // to support JSON-encoded bodies
+app.use(express.urlencoded({
+  extended: true
+})) // to support URL-encoded bodies
+
+app.get('/', (req, res) => {
+  res.send('Working!');
+});
+
+app.get('/search', (req, res) => {
+  var id = req.query.id;
+  field = req.query.field; //already init field
+  var key_name = id;
+  console.log("key name = " + key_name);
+  console.log("field name = " + field);
+  var data = searchDataFrame(dataFrame, key_name, field);
+  res.header("Content-Type", 'application/json');
+  res.json(data);
+});
+
+app.get('/checkBackup', (req, res) => {
+  var exists = checkBackUp();
+  res.send(exists);
+});
+
+app.get('/getBackup', (req, res) => {
+  console.log("Getting Backup");
+    getBackUp();
+});
+
+app.get('/noBackup', (req, res) => {
+  console.log("Getting Real");
+    getRealData();
+});
+
+
+
+app.listen(PORT, () => console.log('Listening on port', PORT));
+
+function getKey(request, returnValue) { // parses the html body to get searchBar key from client (nodejs doesn't allow document.getElementById)
+  const urlencoded = 'application/x-www-form-urlencoded';
+  var parser = '';
+  request.on('data', data => {
+    parser += data.toString();
+  });
+  request.on('end', () => {
+    returnValue(parse(parser));
+  });
+}
+
 
 
 /*var http = require('http')
@@ -211,46 +328,3 @@ server.listen(port, function (error) {
     console.log('Server is listening on port', port)
   }
 });*/
-
-const express = require('express');
-const {
-  callbackify
-} = require('util');
-const app = express();
-const PORT = 3000;
-
-app.use(express.static('public'))
-app.use(express.json()); // to support JSON-encoded bodies
-app.use(express.urlencoded({
-  extended: true
-})) // to support URL-encoded bodies
-
-app.get('/', (req, res) => {
-  res.send('Working!');
-});
-
-app.get('/search', (req, res) => {
-  var id = req.query.id;
-  field = req.query.field; //already init field
-  var key_name = id;
-  console.log("key name = " + key_name);
-  console.log("field name = " + field);
-  var data = searchDataFrame(dataFrame, key_name, field);
-  res.header("Content-Type", 'application/json');
-  res.json(data);
-});
-
-
-
-app.listen(PORT, () => console.log('Listening on port', PORT));
-
-function getKey(request, returnValue) { // parses the html body to get searchBar key from client (nodejs doesn't allow document.getElementById)
-  const urlencoded = 'application/x-www-form-urlencoded';
-  var parser = '';
-  request.on('data', data => {
-    parser += data.toString();
-  });
-  request.on('end', () => {
-    returnValue(parse(parser));
-  });
-}
