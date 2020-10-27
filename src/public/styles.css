@@ -241,3 +241,15 @@ table tfoot td {
     text-decoration: none;
     cursor: pointer;
   }
+
+  .editbtn{
+      color: black;
+  }
+
+  .delbtn{
+    background-color: red;
+  }
+
+  td[contenteditable="true"] {
+    background-color: green;
+}

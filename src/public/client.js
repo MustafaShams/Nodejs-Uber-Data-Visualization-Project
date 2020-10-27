@@ -1,11 +1,11 @@
-$(document).ready(function () {
-    backupCheck();
-    searchTableCreate();
+var edited = false;
+backupCheck();
 
+$(document).ready(function () {
+    searchTableCreate();
 });
 
 function backupCheck() {
-
     var url = "http://localhost:3000/checkBackup";
     $.get(url, function (data) {
         if(data == true){
@@ -35,8 +35,7 @@ function backupCheck() {
             $.get(url, function (data) {});
         }
     });
-    /*
-    */
+
 }
 
 
@@ -54,7 +53,6 @@ function searchTableCreate() {
             var url = "http://localhost:3000/search?field=" + sendField + "&id=" + sendKey;
             $.get(url, function (data) {
                 var parent = document.getElementById('table');
-                console.log(parent);
                 parent.innerHTML = "";
                 if (data.length == 0) {
                     var _table_ = document.createElement('table');
@@ -100,7 +98,53 @@ var _table_ = document.createElement('table'),
 
          table.appendChild(tr);
      }
+     console.log("table done");
+
+
+
      return table;
+ }
+
+ function extractRowData(row){
+    var topParent = $(row).parents("tr");
+    var children = topParent.children("td");
+    var dataInfo = []
+    for(var x = 0; x < children.length - 2; x++){
+        dataInfo[x] = children[x].textContent
+    }
+    return dataInfo;
+ }
+
+ function deleteData(row){
+    var data = extractRowData(row);         //what is inside the Data,  an array [date, time, state, city, address]  format...send this to server saying this was deleted to be deleted from dataframe
+    $(row).parents("tr").remove();
+ }
+
+ var previousData = []
+ function editData(row){    //get which row, then after row is changed get what changed and send to server
+    previousData = extractRowData(row);
+    var topParent = $(row).parents("tr");
+    var children = topParent.children("td");
+    if(row.value == "Edit"){
+        previousData = [];
+        row.value  = "Save"
+        for(var x = 0; x < children.length - 2; x++){
+            children[x].contentEditable = true;
+        }
+        
+    }
+    else if(row.value == "Save"){
+        row.value = "Edit";
+        for(var x = 0; x < children.length - 2; x++){
+            children[x].contentEditable = false;
+        }
+        var updatedData = extractRowData(row);
+        console.log(previousData);
+        console.log(updatedData);                               
+        if(previousData.toString() != updatedData.toString()){
+            console.log("it was updated")                       ///JASON HERE the previousData holds the previousData and updatedData holds the updated
+        }
+    }
  }
  
 
@@ -111,7 +155,8 @@ var _table_ = document.createElement('table'),
      var btn = document.createElement('input');
      btn.type = "button";
      btn.className = "editbtn";
-     //editbtn.value = 
+     btn.onclick = function() { editData(this);};
+     btn.value  = "Edit"
      td.appendChild(btn);
      tr.appendChild(td);
 
@@ -124,7 +169,8 @@ function addDel(tr) {
     var btn = document.createElement('input');
     btn.type = "button";
     btn.className = "delbtn";
-    //editbtn.value = 
+    btn.onclick = function() { deleteData(this);};
+    
     td.appendChild(btn);
     tr.appendChild(td);
 

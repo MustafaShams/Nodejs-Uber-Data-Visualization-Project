@@ -1,4 +1,6 @@
 const callInfo = require('./dataFrameClass.js') //call the class File and store in callInfo
+
+
 const {
   parse
 } = require('querystring'); //for parsing client-side html body for key
@@ -36,6 +38,7 @@ var dataFrame = [];
 var key;
 var field;
 function processData(allText) {
+  dataFrame = [];
   allText = allText.replace(/['"]+/g, '') //remove all " from input
   allText = allText.toLowerCase();
   var allTextLines = allText.split(/\r\n|\n/); //Split the input based on new lines
@@ -53,9 +56,6 @@ function processData(allText) {
         Object.assign(e.Address = data[4].trim() + " " + data[5].trim());
         Object.assign(e.House = data[4].trim());
         Object.assign(e.Street = data[5].trim());
-        if(data[4].size > 1){
-          console.log("MORE",data[4], data[4].length);
-        }
         Object.defineProperty(e, "houseNum", {
           enumerable: false
         });
