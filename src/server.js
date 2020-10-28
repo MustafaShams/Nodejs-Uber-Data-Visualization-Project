@@ -74,16 +74,10 @@ function processData(allText) {
   //exportData(dataFrame);
 }
 
-
-//KHUAJA - 10/28 - REPLACED IF STATEMENTS WITH KEYCLASS
 function searchDataFrame(dataFrame, key, field) { //returns an array of callInfo that matches key
   var tempDF = [];
-  key = key.toLowerCase();
-
-  let keycls = new keyClass(field, key);
+  let keycls = new keyClass(field, key.toLowerCase());
   tempDF = keycls.keySearch(dataFrame);
-
-  console.log(keycls.field + keycls.key);
   console.log(tempDF.length);
   return tempDF;
 }
@@ -236,6 +230,7 @@ app.get('/search', (req, res) => {
   var key_name = id;
   console.log("key name = " + key_name);
   console.log("field name = " + field);
+  
   var data = searchDataFrame(dataFrame, key_name, field);
   res.header("Content-Type", 'application/json');
   res.json(data);
