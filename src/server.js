@@ -139,6 +139,60 @@ function searchDataFrame(dataFrame, key, field) { //returns an array of callInfo
   return tempDF;
 }
 
+function addData(dataFrame, date, time, state, city, address) {
+	var e = new callInfo();
+	date = date.toLowerCase();
+	time = time.toLowerCase();
+	state = state.toLowerCase();
+	city = city.toLowerCase();
+	address = address.toLowerCase();
+	Object.assign(e.Date = date);
+	Object.assign(e.Time = time);
+	Object.assign(e.State = state);
+	Object.assign(e.City = city);
+	Object.assign(e.Address = address);
+	var index = address.indexOf(" ");
+	Object.assign(e.House = address.substr(0, index));
+	Object.assign(e.Street = address.substr(index + 1));
+	Object.defineProperty(e, "houseNum", {
+		enumerable: false
+	});
+	Object.defineProperty(e, "street", {
+		enumerable: false
+	});
+	dataFrame.push(e);
+	return true;
+}
+
+function deleteData(dataFrame, date, time, state, city, address) {
+	for (var i = 0; i < dataFrame.length; ++i) {
+		if (date == dataFrame[i].Date && time == dataFrame[i].Time && state == dataFrame[i].State && city == dataFrame[i].City && address == dataFrame[i].Address) {
+			dataFrame.splice(i, 1); //.splice(index, how many to delete)
+			return true;
+		}
+	}
+	return false;
+}
+
+function editData(dataFrame, tempOld, tempNew) {
+	var editOld = tempOld.split(",");
+	var editNew = tempNew.split(",");
+	for (var i = 0; i < dataFrame.length; ++i) {
+		if (editOld[0] == dataFrame[i].Date && editOld[1] == dataFrame[i].Time && editOld[2] == dataFrame[i].State && editOld[3] == dataFrame[i].City && editOld[4] == dataFrame[i].Address) {
+			dataFrame[i].Date = editNew[0].toLowerCase();
+			dataFrame[i].Time = editNew[1].toLowerCase();
+			dataFrame[i].State = editNew[2].toLowerCase();
+			dataFrame[i].City = editNew[3].toLowerCase();
+			dataFrame[i].Address = editNew[4].toLowerCase();
+			var index = editNew[4].indexOf(" ");
+			dataFrame[i].House = editNew[4].substr(0, index).toLowerCase();
+			dataFrame[i].Street = editNew[4].substr(index + 1).toLowerCase();
+			return true;
+		}
+	}
+	return false;
+}
+
 // FUNCTION TO FIND UNIQUE CITIES IN DATAFRAME
 function uniqueValues(dataFrame) {
   var tempDF = [];
@@ -251,22 +305,54 @@ app.get('/noBackup', (req, res) => {
   res.send(true);
 });
 
+app.get('/add', (req, res) => {
+	var tempDate = req.query.date;
+	var tempTime = req.query.time;
+	var tempState = req.query.state;
+	var tempCity = req.query.city;
+	var tempAddress = req.query.address;
+	console.log("Adding this: ", tempDate, tempTime, tempState, tempCity, tempAddress);
+	var data = addData(dataFrame, tempDate, tempTime, tempState, tempCity, tempAddress);
+	res.header("Content-Type", 'application/json');
+	res.json(data);
+});
 
+app.get('/delete', (req, res) => {
+	var tempDate = req.query.date;
+	var tempTime = req.query.time;
+	var tempState = req.query.state;
+	var tempCity = req.query.city;
+	var tempAddress = req.query.address;
+	console.log("Deleting this: ", tempDate, tempTime, tempState, tempCity, tempAddress);
+	var data = deleteData(dataFrame, tempDate, tempTime, tempState, tempCity, tempAddress);
+	res.header("Content-Type", 'application/json');
+	res.json(data);
+});
+
+app.get('/edit', (req, res) => {
+        if (req.query.new == null) { var data = false; //more than one edit check
+		                res.header("Content-Type", 'application/json');
+		                res.json(data);
+	}
+	else {	//single edits
+		var tempOld = req.query.old;
+		var tempNew = req.query.new;
+		if (tempOld.toLowerCase() == tempNew.toLowerCase()) {
+			var data = false;
+			res.header("Content-Type", 'application/json');
+			res.json(data);
+		}
+		else {
+			console.log("Editing this: ", tempOld);
+			console.log("To look like this: ", tempNew);
+        		var data = editData(dataFrame, tempOld, tempNew);
+        		res.header("Content-Type", 'application/json');
+        		res.json(data);
+		}
+	}
+});
 
 app.listen(PORT, () => console.log('Listening on port', PORT));
-
-function getKey(request, returnValue) { // parses the html body to get searchBar key from client (nodejs doesn't allow document.getElementById)
-  const urlencoded = 'application/x-www-form-urlencoded';
-  var parser = '';
-  request.on('data', data => {
-    parser += data.toString();
-  });
-  request.on('end', () => {
-    returnValue(parse(parser));
-  });
-}
-
-
 
 /*var http = require('http')
 const port = 3000

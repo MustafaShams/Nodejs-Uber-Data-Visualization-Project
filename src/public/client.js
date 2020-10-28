@@ -73,7 +73,7 @@ function searchTableCreate() {
             _table_.innerHTML = "Please Enter A Keyword!"
             parent.appendChild(_table_)
         }
-
+	editing = false;
         console.log('output');
     });
 }
@@ -118,29 +118,55 @@ var _table_ = document.createElement('table'),
     return dataInfo;
  }
 
- function deleteData(row){
-    var data = extractRowData(row);         //what is inside the Data,  an array [date, time, state, city, address]  format...send this to server saying this was deleted to be deleted from dataframe
+function deleteData(row) {
+	if (editing == false) {
+    var tempData = extractRowData(row);	//an array [date, time, state, city, address]
+    console.log("Deleting: ", tempData[0], tempData[1], tempData[2], tempData[3], tempData[4]);
+    var url = "http://localhost:3000/delete?date=" + tempData[0] + "&time=" + tempData[1] + "&state=" + tempData[2] + "&city=" + tempData[3] + "&address=" + tempData[4];
+    $.get(url, function(data) {
+	    var parent = document.getElementById('table');
+	    if (data == false) {
+		    var _table_ = document.createElement('table');
+		    _table_.innerHTML = "Error: Couldn't find any matching data."
+		    parent.appendChild(_table_)
+	    }
+	    else {
+		    var _table_ = document.createElement('table');
+		    _table_.innerHTML = "Success! Ride was deleted."
+		    parent.appendChild(_table_)
+	    }
+    });
     $(row).parents("tr").remove();
+	}
  }
 
- var previousData = []
- var editing = false;
- function editData(row){    //get which row, then after row is changed get what changed and send to server
+var previousData = []
+var editing = false;
+function editData(row){    //get which row, then after row is changed get what changed and send to server
     var topParent = $(row).parents("tr");
     var children = topParent.children("td");
     if(row.value == "Edit"){
-        if(editing == false){
-            previousData = [];
-            previousData = extractRowData(row);
-            row.value  = "Save"
-            for(var x = 0; x < children.length - 2; x++){
-                children[x].contentEditable = true;
-            }
-            editing = true;
-        }
-        else{
-            console.log("ALREADY EDITING ANOTHER ONE");
-        }
+	    	if (editing == false) {
+			previousData = [];
+		    	previousData = extractRowData(row);
+			row.value  = "Save"
+        		for(var x = 0; x < children.length - 2; x++){
+            			children[x].contentEditable = true;
+        		}
+			editing = true;
+		}
+		else {
+			var url = "http://localhost:3000/edit?old=" + previousData;
+			$.get(url, function(data) {
+				var parent = document.getElementById('table');
+				if (data == false) {
+					var _table_ = document.createElement('table');
+					_table_.innerHTML = "Error: Please only edit one entry at a time."
+					parent.appendChild(_table_)
+				}
+			});
+			console.log("Error: Please only edit one entry at a time.")
+		}
     }
     else if(row.value == "Save"){
         row.value = "Edit";
@@ -148,16 +174,29 @@ var _table_ = document.createElement('table'),
             children[x].contentEditable = false;
         }
         var updatedData = extractRowData(row);
-                                      
-        if(previousData.toString() != updatedData.toString()){
-            console.log("it was updated")                       ///JASON HERE the previousData holds the previousData and updatedData holds the updated
-            console.log(previousData);
-            console.log(updatedData); 
-        }
-        editing = false;
+        console.log("Old: ", previousData);
+        console.log("New: ", updatedData);                               
+	console.log(url);
+	    //if (previousData.toString() != updatedData.toString()) { //check on server side instead
+	var url = "http://localhost:3000/edit?old=" + previousData + "&new=" + updatedData;
+	console.log("updating");
+	$.get(url, function(data) {
+		var parent = document.getElementById('table');
+		if (data == false) {
+			var _table_ = document.createElement('table');
+			_table_.innerHTML = "Error: Your new entry looks the same as before!"
+			parent.appendChild(_table_)
+		}
+                else if (data == true) {
+                 	var _table_ = document.createElement('table');
+	                _table_.innerHTML = "Success! Ride was edited."
+	                parent.appendChild(_table_)
+		}
+	});
+	editing = false;
     }
  }
- 
+
 
  // NOTE: these functionalities are separated so I can add a popup item to edit. May or may not be the way it will be implemented
  // Add edit buttons to each row of table
@@ -167,7 +206,7 @@ var _table_ = document.createElement('table'),
      btn.type = "button";
      btn.className = "editbtn";
      btn.onclick = function() { editData(this);};
-     btn.value  = "Edit"
+     btn.value  = "Edit";
      td.appendChild(btn);
      tr.appendChild(td);
 
@@ -181,7 +220,7 @@ function addDel(tr) {
     btn.type = "button";
     btn.className = "delbtn";
     btn.onclick = function() { deleteData(this);};
-    
+    btn.value = "Delete";
     td.appendChild(btn);
     tr.appendChild(td);
 
