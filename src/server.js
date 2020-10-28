@@ -78,7 +78,7 @@ function searchDataFrame(dataFrame, key, field) { //returns an array of callInfo
   var tempDF = [];
   let keycls = new keyClass(field, key.toLowerCase());
   tempDF = keycls.keySearch(dataFrame);
-  console.log(tempDF.length);
+  //console.log(tempDF.length);
   return tempDF;
 }
 
@@ -192,6 +192,17 @@ function exportData(arr){
   });
 }
 
+function deleteBackup(){
+  const path = 'inputFile/dataFrame.csv'
+
+  try {
+    fs.unlinkSync(path)
+    //file removed
+  } catch(err) {
+    console.error(err)
+  }
+}
+
 
 function createJSON(tempDF) {
   var shortArray = [];
@@ -246,6 +257,18 @@ app.get('/getBackup', (req, res) => {
 app.get('/noBackup', (req, res) => {
   console.log("Getting Real");
   getRealData();
+  res.send(true);
+});
+
+app.get('/exportData', (req, res) => {
+  console.log("exporting data");
+  exportData(dataFrame);
+  res.send(true);
+});
+
+app.get('/deleteBackup', (req, res) => {
+  console.log("deleting backup data");
+  deleteBackup();
   res.send(true);
 });
 

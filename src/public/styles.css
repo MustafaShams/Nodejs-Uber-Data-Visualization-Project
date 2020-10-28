@@ -19,6 +19,7 @@ body {
 
 .nav li {
     display: inline;
+    padding-right: 10px;
 }
 
 .nav a {
@@ -30,10 +31,12 @@ body {
 
 .nav a:hover {
     background-color: rgba(255, 255, 255, .5);
+    cursor: pointer;
 }
 
 .nav ul {
     margin: 0;
+    
 }
 
 .main_nav {
@@ -41,11 +44,13 @@ body {
     font-size: 1.1m;
     font-weight: lighter;
     border-bottom: 1px solid rgba(255, 255, 255, .5);
+    
 
 }
 
 .main_nav {
     padding: 0 5%;
+    
 }
 
 .project_name {
@@ -251,5 +256,29 @@ table tfoot td {
   }
 
   td[contenteditable="true"] {
-    background-color: green;
+    background-color: rgb(14, 124, 14);
+    
 }
+td[contenteditable="true"]:focus {
+    border: 3px solid white;
+    border-radius: 6px;
+}
+
+
+
+.popup {
+    margin-top: 10px;
+    position: absolute;
+    overflow:hidden;
+    border: 2px double white;
+    border-radius: 6px;
+    padding: 5px;
+    display: none;
+  }
+
+  .popup .popuptext{
+    margin: auto;
+    color : white;
+  }
+
+  
