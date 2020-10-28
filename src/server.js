@@ -1,4 +1,5 @@
 const callInfo = require('./dataFrameClass.js') //call the class File and store in callInfo
+const keyClass = require('./keyClass.js')
 
 
 const {
@@ -75,66 +76,8 @@ function processData(allText) {
 
 function searchDataFrame(dataFrame, key, field) { //returns an array of callInfo that matches key
   var tempDF = [];
-  key = key.toLowerCase();
-  if (field == "Date") {
-    for (var i = 1; i < dataFrame.length; ++i) {
-      if (key == dataFrame[i].Date) {
-        tempDF.push(dataFrame[i]);
-      }
-    }
-  } else if (field == "Time") {
-    for (var i = 1; i < dataFrame.length; ++i) {
-      if (key == dataFrame[i].Time) {
-        tempDF.push(dataFrame[i]);
-      }
-    }
-  } else if (field == "State") {
-    for (var i = 1; i < dataFrame.length; ++i) {
-      if (key == dataFrame[i].State) {
-        tempDF.push(dataFrame[i]);
-      }
-    }
-  } else if (field == "City") {
-    for (var i = 1; i < dataFrame.length; ++i) {
-      if (key == dataFrame[i].City) {
-        tempDF.push(dataFrame[i]);
-      }
-    }
-  } else if (field == "Address") {
-    for (var i = 1; i < dataFrame.length; ++i) {
-      if (key == dataFrame[i].Address) {
-        tempDF.push(dataFrame[i]);
-      }
-    }
-    console.log(tempDF.length);
-  } else if (field == "Year") {
-    for (var i = 1; i < dataFrame.length; ++i) {
-      var date = dataFrame[i].Date;
-      date = date.split('.');
-      var year = date[0];
-      if (key == year) {
-        tempDF.push(dataFrame[i]);
-      }
-    }
-    console.log(tempDF.length);
-  } else if (field == "Month") {
-    for (var i = 1; i < dataFrame.length; ++i) {
-      var date = dataFrame[i].Date;
-      date = date.split('.');
-      var month = date[1];
-      if (key == month) {
-        tempDF.push(dataFrame[i]);
-      }
-    }
-    console.log(tempDF.length);
-  } 
-  else if (field == "Street") {
-    for (var i = 1; i < dataFrame.length; ++i) {
-      if (key == dataFrame[i].street) {
-        tempDF.push(dataFrame[i]);
-      }
-    }
-  }
+  let keycls = new keyClass(field, key.toLowerCase());
+  tempDF = keycls.keySearch(dataFrame);
   console.log(tempDF.length);
   return tempDF;
 }
@@ -283,6 +226,7 @@ app.get('/search', (req, res) => {
   var key_name = id;
   console.log("key name = " + key_name);
   console.log("field name = " + field);
+  
   var data = searchDataFrame(dataFrame, key_name, field);
   res.header("Content-Type", 'application/json');
   res.json(data);
