@@ -183,13 +183,20 @@ function exportData(arr){
   }
 
   
-  fs.writeFile('inputFile/dataFrame.csv', csvContent, 'utf8', function (err) {
-    if (err) {
-      console.log('Some error occured - file either not saved or corrupted file saved.');
-    } else{
-      console.log('It\'s saved!');
-    }
-  });
+  try{
+      fs.writeFile('inputFile/dataFrame.csv', csvContent, 'utf8', function (err) {
+      if (err) {
+        console.log('Some error occured - file either not saved or corrupted file saved.');
+      } else{
+        console.log('It\'s saved!');
+      }
+    });
+  }
+  catch(err){
+    console.log(err);
+    return false;
+  }
+  return true;
 }
 
 function deleteBackup(){
@@ -199,8 +206,11 @@ function deleteBackup(){
     fs.unlinkSync(path)
     //file removed
   } catch(err) {
-    console.error(err)
+    if(err.code == 'ENOENT'){
+      return false;
+    }
   }
+  return true;
 }
 
 
@@ -262,14 +272,14 @@ app.get('/noBackup', (req, res) => {
 
 app.get('/exportData', (req, res) => {
   console.log("exporting data");
-  exportData(dataFrame);
-  res.send(true);
+  var completed = exportData(dataFrame);
+  res.send(completed);
 });
 
 app.get('/deleteBackup', (req, res) => {
   console.log("deleting backup data");
-  deleteBackup();
-  res.send(true);
+  var completed = deleteBackup();
+  res.send(completed);
 });
 
 app.get('/add', (req, res) => {
