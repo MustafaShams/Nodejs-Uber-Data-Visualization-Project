@@ -13,26 +13,29 @@ function backupCheck() {
             modal.style.display = "block";
             var span = document.getElementsByClassName("close")[0];
             span.onclick = function () {
+                console.log("Called3");
                 var url = "http://localhost:3000/noBackup";
-                $.get(url, function (data) {})
+                $.get(url)
                 modal.style.display = "none";
             }
             $("#backupNo").click(function(){
+                console.log("Called2");
                 console.log("No");
                 var url = "http://localhost:3000/noBackup";
-                $.get(url, function (data) {});
+                $.get(url);
                 modal.style.display = "none";
             });
             $("#backupYes").click(function(){
                 var url = "http://localhost:3000/getBackup";
-                $.get(url, function (data) {});
+                $.get(url);
                 console.log("YES");
                 modal.style.display = "none";
             });
         }
         else{
+            console.log("Called1");
             var url = "http://localhost:3000/noBackup";
-            $.get(url, function (data) {});
+            $.get(url);
         }
     });
 
@@ -121,17 +124,23 @@ var _table_ = document.createElement('table'),
  }
 
  var previousData = []
+ var editing = false;
  function editData(row){    //get which row, then after row is changed get what changed and send to server
-    previousData = extractRowData(row);
     var topParent = $(row).parents("tr");
     var children = topParent.children("td");
     if(row.value == "Edit"){
-        previousData = [];
-        row.value  = "Save"
-        for(var x = 0; x < children.length - 2; x++){
-            children[x].contentEditable = true;
+        if(editing == false){
+            previousData = [];
+            previousData = extractRowData(row);
+            row.value  = "Save"
+            for(var x = 0; x < children.length - 2; x++){
+                children[x].contentEditable = true;
+            }
+            editing = true;
         }
-        
+        else{
+            console.log("ALREADY EDITING ANOTHER ONE");
+        }
     }
     else if(row.value == "Save"){
         row.value = "Edit";
@@ -139,11 +148,13 @@ var _table_ = document.createElement('table'),
             children[x].contentEditable = false;
         }
         var updatedData = extractRowData(row);
-        console.log(previousData);
-        console.log(updatedData);                               
+                                      
         if(previousData.toString() != updatedData.toString()){
             console.log("it was updated")                       ///JASON HERE the previousData holds the previousData and updatedData holds the updated
+            console.log(previousData);
+            console.log(updatedData); 
         }
+        editing = false;
     }
  }
  

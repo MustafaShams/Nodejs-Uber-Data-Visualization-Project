@@ -223,10 +223,6 @@ app.use(express.urlencoded({
   extended: true
 })) // to support URL-encoded bodies
 
-app.get('/', (req, res) => {
-  res.send('Working!');
-});
-
 app.get('/search', (req, res) => {
   var id = req.query.id;
   field = req.query.field; //already init field
@@ -246,11 +242,13 @@ app.get('/checkBackup', (req, res) => {
 app.get('/getBackup', (req, res) => {
   console.log("Getting Backup");
     getBackUp();
+    res.send(true);
 });
 
 app.get('/noBackup', (req, res) => {
   console.log("Getting Real");
-    getRealData();
+  getRealData();
+  res.send(true);
 });
 
 
