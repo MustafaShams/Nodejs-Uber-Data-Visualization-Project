@@ -223,6 +223,7 @@ function buildHtmlTable(arr) {
         table.appendChild(tr);
     }
     console.log("table done");
+    Unique(arr);
 
 
 
@@ -235,7 +236,10 @@ function extractRowData(row) {
     var dataInfo = []
     for (var x = 0; x < children.length - 2; x++) {
         dataInfo[x] = children[x].textContent
+        
     }
+    //console.log("THIS IS TOP PARENT",topParent);
+    //console.log("DATAINFO!!!!!!!!", dataInfo);
     return dataInfo;
 }
 
@@ -257,6 +261,9 @@ function deleteData(row) {
     else{
         showPopUp("Please save your edit first!")
     }
+   // console.log("THE DELETED DATA CHECKING HOW ITS DISPLAY",tempData);
+    delete_Elemet(tempData);
+   // console.log("WHAT IS PARENT",parent);
 }
 
 var previousData = []
@@ -292,6 +299,7 @@ function editData(row) { //get which row, then after row is changed get what cha
         var updatedData = extractRowData(row);
         console.log("Old: ", previousData);
         console.log("New: ", updatedData);
+        edit_Element(previousData, updatedData);
         console.log(url);
         //if (previousData.toString() != updatedData.toString()) { //check on server side instead
         var url = "http://localhost:3000/edit?old=" + previousData + "&new=" + updatedData;
@@ -371,84 +379,198 @@ function addAllColumnHeaders(arr, table) {
     return columnSet;
 }
 
-
-const x_Axis = [];
-const y_Axis = [];
-
-function ProcessData(Text) {
-    console.log("passed");
-    const size = Text.length;
-    console.log("size:", size);
-    //console.log(Text);
-    //console.log(Text[0].city);
-    if (Search(x_Axis, Text) != 1) {
-        x_Axis.push(Text[0].city);
-        y_Axis.push(size);
-    } else {
-        console.log("input already in array");
+function search_Unique(check_Arr,value){
+    //console.log('search array');
+    for(var i = 0; i < check_Arr.length; ++i){
+        //console.log('searching');
+        if(check_Arr[i] == value){
+            
+            return 0;
+        }
+      
     }
-    console.log(x_Axis);
-    console.log(y_Axis);
-    createChart();
+    return 1;
+
+}
+const unique_Arr = [ [],[],[],[],[] ]; 
+function Unique(arr){
+   //const unique_Arr = [ [],[],[],[],[] ]; 
+    //console.log(arr.length);
+    for(var i = 0; i < arr.length; ++i){
+        //console.log("in for loop ");
+        const str_check = arr[i];
+        //console.log(Object.keys(str_check));
+        const var_length = Object.keys(str_check).length;
+       // console.log("This is the length of KEYS :",var_length);
+       // console.log("this is string check",str_check);
+        for(const[key,value] of Object.entries(str_check) ){
+           
+           if(key == 'date'){
+               if(search_Unique(unique_Arr[0],value ) != 0){
+                 unique_Arr[0].push(value);   
+               }
+
+           }
+           if(key == 'time'){
+               if(search_Unique(unique_Arr[1],value ) != 0){
+                unique_Arr[1].push(value);   
+               }
+           }
+
+           if(key == 'state'){
+               if(search_Unique(unique_Arr[2],value ) != 0){
+                unique_Arr[2].push(value);   
+               }
+           
+               
+           }
+           if(key == 'city'){
+               if(search_Unique(unique_Arr[3],value ) != 0){
+                unique_Arr[3].push(value);    
+               }
+               
+           }
+           if(key == 'address'){
+               if(search_Unique(unique_Arr[4],value ) != 0){
+                unique_Arr[4].push(value);
+               }
+               
+           }
+
+        }
+   
+    }
+   //console.log('worked');
+    Assigning_Display(unique_Arr);
 }
 
-function Search(Arr, Text) {
-    console.log(Text[0]);
-    for (var i = 0; i < Text.length; ++i) {
-        for (var j = 0; j < Arr.length; ++j) {
-            console.log("Searching for City from Data:", Text[i].city)
-            console.log("Searching for city in arr:", Arr[j])
-            if (Text[i] == Arr[j].city) {
-                return 1;
-            } else {
-                return 0;
+
+function Assigning_Display(arr_Value){
+    //console.log(arr_Value);
+    const x_Axis = ['Data','Time','State','City','Address'];
+    //console.log(x_Axis);
+
+    const y_Axis = [];
+    for(var i = 0; i < arr_Value.length; ++i ){
+       var count = 0;
+        for(var j = 0; j < arr_Value[i].length; ++j){
+            //console.log(arr_Value[i]);
+            ++count;
+            if(j == arr_Value[i].length-1){
+                y_Axis.push(count);
+            }
+           
+
+        }
+    }
+    //console.log(y_Axis);
+
+    createChart(x_Axis, y_Axis);
+}
+
+
+
+function createChart(x_Axis, y_Axis){
+  
+   var ctx = document.getElementById('myChart').getContext('2d');
+   var myChart = new Chart(ctx, {
+       type: 'bar',
+       data: {
+           labels: x_Axis ,
+           datasets: [
+               {
+               label: 'Unq',
+               data: y_Axis,
+               backgroundColor: [
+                   'rgba(255, 99, 132, 0.2)',
+                   'rgba(54, 162, 235, 0.2)',
+                   'rgba(255, 206, 86, 0.2)',
+                   'rgba(75, 192, 192, 0.2)',
+                   'rgba(153, 102, 255, 0.2)',
+                   'rgba(255, 159, 64, 0.2)'
+               ],
+               borderColor: [
+                   'rgba(255, 99, 132, 1)',
+                   'rgba(54, 162, 235, 1)',
+                   'rgba(255, 206, 86, 1)',
+                   'rgba(75, 192, 192, 1)',
+                   'rgba(153, 102, 255, 1)',
+                   'rgba(255, 159, 64, 1)'
+               ],
+               borderWidth: 1
+           }]
+       },
+       
+   });
+ 
+}
+//NEED TO FIX ISSUE WITH SINGLE ENTERY 
+function delete_Elemet(deleted_Arr){
+    for(var i = 0; i < unique_Arr.length; ++i){
+        for(var j = 0; j < unique_Arr[i].length;++j){
+           //console.log("CHECK THIS HERE",unique_Arr[i][j]);
+           if(unique_Arr[i][j] == deleted_Arr[i]){
+                //console.log("IT IS A MATCH");
+                if(unique_Arr[i].length == 1){
+                    //console.log("DID IT WORK");
+                    break;
+                }
+                else{
+                    unique_Arr[i].splice(j,1);
+                }                
+           }
+        }
+    }
+  //console.log("cleaned array:", unique_Arr);
+    Assigning_Display(unique_Arr);
+}
+function edit_Element(old_Arr,   new_Arr){
+    var tmp_Val = 0;
+    var lookup_Val = 0
+    for(var i = 0; i < old_Arr.length; ++i){
+        if(old_Arr[i] != new_Arr[i]){
+            if(new_Arr[i] == " "){
+                tmp_Val = 0;
+            }
+            else{
+            lookup_Val = old_Arr[i];
+            tmp_Val = new_Arr[i];
             }
         }
-
+        
     }
-    return 0;
+    console.log(tmp_Val);
+    console.log('LOOK UP VAL',lookup_Val);
+    console.log("unquie arr:", unique_Arr);
+    for(var j = 0; j < unique_Arr.length; ++j){
+        for(var k = 0; k < unique_Arr[j].length; ++k){
+            console.log("old values",old_Arr[k]);
+            if( unique_Arr[j][k] == lookup_Val && unique_Arr[j].length != 1  && tmp_Val  != 0){
+                unique_Arr[j][k] = tmp_Val;
+                console.log('assigned');
+
+            }
+            if(unique_Arr[j].length == 1 && unique_Arr[j][k] == lookup_Val){
+                console.log("HERE");
+                unique_Arr[j].push(tmp_Val);
+
+            }
+            if(unique_Arr[j][k] == lookup_Val && unique_Arr[j].length != 1 && tmp_Val == 0 ) {
+
+                // unique_Arr[j][k] = tmp_Val;
+                console.log('SUDO DELETE');
+                unique_Arr[j].splice(k,1);
+
+            }
+            
+        }
+    }
+     console.log(tmp_Val);
+    Assigning_Display(unique_Arr);
+
 }
-//  function Random_Color(value){
-//     value = Math.floor(Math.random() * 255) + 1);
 
-//     return value;
-//  }
 
-function createChart() {
-    console.log("printing");
-    //await ProcessData();
-    console.log("waited");
-    var ctx = document.getElementById('myChart').getContext('2d');
-    var myChart = new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: x_Axis,
-            datasets: [{
-                label: 'Call of Cities',
-                data: y_Axis,
-                backgroundColor: [
-                    'rgba(255, 99, 132, 0.2)',
-                    'rgba(54, 162, 235, 0.2)',
-                    'rgba(255, 206, 86, 0.2)',
-                    'rgba(75, 192, 192, 0.2)',
-                    'rgba(153, 102, 255, 0.2)',
-                    'rgba(255, 159, 64, 0.2)'
-                ],
-                borderColor: [
-                    'rgba(255, 99, 132, 1)',
-                    'rgba(54, 162, 235, 1)',
-                    'rgba(255, 206, 86, 1)',
-                    'rgba(75, 192, 192, 1)',
-                    'rgba(153, 102, 255, 1)',
-                    'rgba(255, 159, 64, 1)'
-                ],
-                borderWidth: 1
-            }]
-        },
-
-    });
-    //myChart.render();
-}
 
 
 function saveBackup() {
