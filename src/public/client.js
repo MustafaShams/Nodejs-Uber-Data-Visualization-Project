@@ -82,8 +82,74 @@ function searchTableCreate() {
 }
 
 function addData() {
-    // input code to add item to the table here
-    showPopUp("data submitted!");
+    var extractedDate = $("#date").val();
+    var extractedTime = $("#time").val();
+    var extractedState = $("#state").val();
+    var extractedCity = $("#city").val();
+    var extractedAddress = $("#address").val();
+    var url = "http://localhost:3000/add?date=" + extractedDate + "&time=" + extractedTime + "&state=" + extractedState + "&city=" + extractedCity + "&address=" + extractedAddress;
+	console.log(url);
+	var tempArr = [];
+	tempArr.push(extractedDate);
+	tempArr.push(extractedTime);
+	tempArr.push(extractedState);
+	tempArr.push(extractedCity);
+	tempArr.push(extractedAddress);
+    $.get(url, function (data, tempArr) {
+	if (data == true) {
+		var sendKey = $("#searchBar").val();
+		var sendField = $("#data_selection").val();
+		function buildMiniTable() {
+			var table = document.getElementById('table').childNodes[0];
+			var tr = _tr_.cloneNode(false);
+			var tempArr = [];
+			tempArr.push(extractedDate);
+		        tempArr.push(extractedTime);
+		        tempArr.push(extractedState.charAt(0).toUpperCase() + extractedState.slice(1).toLowerCase());
+		        tempArr.push(extractedCity.charAt(0).toUpperCase() + extractedCity.slice(1).toLowerCase());
+		        tempArr.push(extractedAddress);
+			for (var j = 0, maxj = tempArr.length; j < maxj; ++j) {
+				var td = _td_.cloneNode(false);
+				td.appendChild(document.createTextNode(tempArr[j] || ''));
+				tr.appendChild(td);
+			}
+			tr = addEdit(tr);
+			tr = addDel(tr);
+			table.appendChild(tr);
+		}
+		switch(sendField) {
+			case "Date":
+				if (sendKey.toLowerCase() == extractedDate.toLowerCase()) {
+					buildMiniTable();
+				}
+				break;
+			case "Time":
+                                if (sendKey.toLowerCase() == extractedTime.toLowerCase()) {
+	                                buildMiniTable();
+                                }
+                                break;
+			case "State":
+                                if (sendKey.toLowerCase() == extractedState.toLowerCase()) {
+                                        buildMiniTable();
+                                }
+                                break;
+			case "City":
+				if (sendKey.toLowerCase() == extractedCity.toLowerCase()) {
+					buildMiniTable();
+				}
+				break;
+			case "Address":
+				if (sendKey.toLowerCase() == extractedAddress.toLowerCase()) {
+					buildMiniTable();
+				}
+				break;
+		}
+	    showPopUp("Data Submitted!");
+	}
+	else {
+	    showPopUp("Please Fill Out All Fields");
+	}
+    });
 }
 
 var _textTable_ = document.createElement('textTable');
@@ -102,13 +168,18 @@ function addEntry() {
         var url = "http://localhost:3000/search?field=" + sendField + "&id=" + sendKey;
         $.get(url, function (data) {
             var textTable = _textTable_.cloneNode(false);
-
+		
+		
             // add text boxes
             for(var key in data[0]) {
                 var inputBox = document.createElement('input');
                 inputBox.type = "text";
+		inputBox.id = key.toString(); //lower cases: date time state city address
+		inputBox.placeholder = key.charAt(0).toUpperCase() + key.slice(1);
                 textTable.appendChild(inputBox);
             }
+		
+	    
 
             //add save button
             var submitAdd = document.createElement('input');

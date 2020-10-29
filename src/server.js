@@ -84,6 +84,10 @@ function searchDataFrame(dataFrame, key, field) { //returns an array of callInfo
 
 function addData(dataFrame, date, time, state, city, address) {
 	var e = new callInfo();
+	if (date == "" || time == "" || state == "" || city == "" || address == "") {
+		console.log("Error not adding anymore");
+		return false;
+	}
 	date = date.toLowerCase();
 	time = time.toLowerCase();
 	state = state.toLowerCase();
