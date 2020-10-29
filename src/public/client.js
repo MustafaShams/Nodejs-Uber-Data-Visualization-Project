@@ -5,6 +5,18 @@ backupCheck();
 $(document).ready(function () {
     searchTableCreate();
     addEntry();
+
+
+    var timepicker = new TimePicker('time', {
+        lang: 'en',
+        theme: 'dark'
+      });
+      timepicker.on('change', function(evt) {
+        
+        var value = (evt.hour || '00') + ':' + (evt.minute || '00');
+        evt.element.value = value;
+      
+      });
 });
 
 function backupCheck() {
@@ -15,14 +27,11 @@ function backupCheck() {
             modal.style.display = "block";
             var span = document.getElementsByClassName("close")[0];
             span.onclick = function () {
-                console.log("Called3");
                 var url = "http://localhost:3000/noBackup";
                 $.get(url)
                 modal.style.display = "none";
             }
             $("#backupNo").click(function () {
-                console.log("Called2");
-                console.log("No");
                 var url = "http://localhost:3000/noBackup";
                 $.get(url);
                 modal.style.display = "none";
@@ -30,11 +39,9 @@ function backupCheck() {
             $("#backupYes").click(function () {
                 var url = "http://localhost:3000/getBackup";
                 $.get(url);
-                console.log("YES");
                 modal.style.display = "none";
             });
         } else {
-            console.log("Called1");
             var url = "http://localhost:3000/noBackup";
             $.get(url);
         }
@@ -56,33 +63,29 @@ function searchTableCreate() {
                 var parent = document.getElementById('table');
                 parent.innerHTML = "";
                 if (data.length == 0) {
+                    $("#addEntry").hide();
                     showPopUp("No Data Found, Check Spelling.");
                 } else {
                     //ProcessData(data);
                     parent.appendChild(buildHtmlTable(data.slice(0, 100)));
-
+                    getUniqueValues();
                     // when search goes through, turn on addEntry button
-                    var addEntry = document.getElementById('addEntry');
-                    addEntry.style.display = 'block';
+                    $("#addEntry").show();
                 }
             });
         } else {
             var parent = document.getElementById('table');
             parent.innerHTML = "";
+            $("#addEntry").hide();
             showPopUp("Please Enter A Keyword!");
-            /*
-            
-            var _table_ = document.createElement('table');
-            _table_.innerHTML = "Please Enter A Keyword!"
-            parent.appendChild(_table_)*/
+
         }
         editing = false;
-        console.log('output');
     });
 }
 
 function addData() {
-    var extractedDate = $("#date").val();
+    var extractedDate = $("#date").val().replace(/[-]+/g, '.')
     var extractedTime = $("#time").val();
     var extractedState = $("#state").val();
     var extractedCity = $("#city").val();
@@ -97,6 +100,7 @@ function addData() {
 	tempArr.push(extractedAddress);
     $.get(url, function (data, tempArr) {
 	if (data == true) {
+        $(".entryText").fadeOut(300);
 		var sendKey = $("#searchBar").val();
 		var sendField = $("#data_selection").val();
 		function buildMiniTable() {
@@ -144,7 +148,8 @@ function addData() {
 				}
 				break;
 		}
-	    showPopUp("Data Submitted!");
+        showPopUp("Data Submitted!");
+        getUniqueValues()
 	}
 	else {
 	    showPopUp("Please Fill Out All Fields");
@@ -156,6 +161,9 @@ var _textTable_ = document.createElement('textTable');
 
 function addEntry() {
     $("#addEntry").click(function(data) {
+        $(".entryText").fadeIn(500);
+    })
+    /*
         var sendKey;
         var sendField;
         sendKey = $("#searchBar").val();
@@ -168,14 +176,17 @@ function addEntry() {
         var url = "http://localhost:3000/search?field=" + sendField + "&id=" + sendKey;
         $.get(url, function (data) {
             var textTable = _textTable_.cloneNode(false);
-		
-		
+            
+            var h1 = document.createElement("H3");
+            var t = document.createTextNode("Add A New Entry:");
+            h1.appendChild(t);
+            textTable.appendChild(h1);
             // add text boxes
             for(var key in data[0]) {
                 var inputBox = document.createElement('input');
                 inputBox.type = "text";
-		inputBox.id = key.toString(); //lower cases: date time state city address
-		inputBox.placeholder = key.charAt(0).toUpperCase() + key.slice(1);
+		        inputBox.id = key.toString(); //lower cases: date time state city address
+		        inputBox.placeholder = key.charAt(0).toUpperCase() + key.slice(1);
                 textTable.appendChild(inputBox);
             }
 		
@@ -194,7 +205,7 @@ function addEntry() {
         
             parent.appendChild(textTable);
         });
-    });
+    });*/
 }
 
 var _table_ = document.createElement('table'),
@@ -222,8 +233,7 @@ function buildHtmlTable(arr) {
 
         table.appendChild(tr);
     }
-    console.log("table done");
-    Unique(arr);
+    //Unique(arr);
 
 
 
@@ -262,7 +272,8 @@ function deleteData(row) {
         showPopUp("Please save your edit first!")
     }
    // console.log("THE DELETED DATA CHECKING HOW ITS DISPLAY",tempData);
-    delete_Elemet(tempData);
+    //delete_Elemet(tempData);
+    getUniqueValues()
    // console.log("WHAT IS PARENT",parent);
 }
 
@@ -299,7 +310,8 @@ function editData(row) { //get which row, then after row is changed get what cha
         var updatedData = extractRowData(row);
         console.log("Old: ", previousData);
         console.log("New: ", updatedData);
-        edit_Element(previousData, updatedData);
+        getUniqueValues();
+        //edit_Element(previousData, updatedData);
         console.log(url);
         //if (previousData.toString() != updatedData.toString()) { //check on server side instead
         var url = "http://localhost:3000/edit?old=" + previousData + "&new=" + updatedData;
@@ -396,6 +408,7 @@ const unique_Arr = [ [],[],[],[],[] ];
 function Unique(arr){
    //const unique_Arr = [ [],[],[],[],[] ]; 
     //console.log(arr.length);
+    console.log(unique_Arr)
     for(var i = 0; i < arr.length; ++i){
         //console.log("in for loop ");
         const str_check = arr[i];
@@ -447,7 +460,7 @@ function Unique(arr){
 
 function Assigning_Display(arr_Value){
     //console.log(arr_Value);
-    const x_Axis = ['Data','Time','State','City','Address'];
+    const x_Axis = ['Date','Time','State','City','Address'];
     //console.log(x_Axis);
 
     const y_Axis = [];
@@ -468,38 +481,103 @@ function Assigning_Display(arr_Value){
     createChart(x_Axis, y_Axis);
 }
 
+function getUniqueValues(){
+    bigArray = [];
+    for(var x = 1; x < 6; x++){
+        var arr = [];
+        $("table td:nth-child("+x+")").each(function() {
+            if ($.inArray($(this).text().toLowerCase(), arr) == -1)
+            arr.push($(this).text());
+        });
+        bigArray.push(arr);
+    }
+    console.log(bigArray);
+    const x_Axis = ['Date','Time','State','City','Address'];
+    const y_Axis = [];
+    for(var j = 0; j < bigArray.length; j++){
+        y_Axis[j] = bigArray[j].length;
+    }
+    createChart(x_Axis, y_Axis);
+}
+
 
 
 function createChart(x_Axis, y_Axis){
-  
-   var ctx = document.getElementById('myChart').getContext('2d');
+    console.log(x_Axis);
+    console.log(y_Axis);
+    
+    
+   
+   
+   var bgColor = [
+    'rgba(255, 99, 132, 0.2)',
+    'rgba(54, 162, 235, 0.2)',
+    'rgba(255, 206, 86, 0.2)',
+    'rgba(75, 192, 192, 0.2)',
+    'rgba(153, 102, 255, 0.2)',
+    'rgba(255, 159, 64, 0.2)'
+];
+   var bdColor = [
+    'rgba(255, 99, 132, 1)',
+    'rgba(54, 162, 235, 1)',
+    'rgba(255, 206, 86, 1)',
+    'rgba(75, 192, 192, 1)',
+    'rgba(153, 102, 255, 1)',
+    'rgba(255, 159, 64, 1)'
+];
+    $('#myChart').remove();
+    $('.graphHolder').html('<canvas id="myChart"></canvas>')
+    var ctx = document.getElementById('myChart').getContext('2d');
    var myChart = new Chart(ctx, {
        type: 'bar',
        data: {
-           labels: x_Axis ,
+           labels : ['Columns'],
            datasets: [
                {
-               label: 'Unq',
-               data: y_Axis,
-               backgroundColor: [
-                   'rgba(255, 99, 132, 0.2)',
-                   'rgba(54, 162, 235, 0.2)',
-                   'rgba(255, 206, 86, 0.2)',
-                   'rgba(75, 192, 192, 0.2)',
-                   'rgba(153, 102, 255, 0.2)',
-                   'rgba(255, 159, 64, 0.2)'
-               ],
-               borderColor: [
-                   'rgba(255, 99, 132, 1)',
-                   'rgba(54, 162, 235, 1)',
-                   'rgba(255, 206, 86, 1)',
-                   'rgba(75, 192, 192, 1)',
-                   'rgba(153, 102, 255, 1)',
-                   'rgba(255, 159, 64, 1)'
-               ],
-               borderWidth: 1
-           }]
+                label:x_Axis[0],
+                data: [y_Axis[0]],
+                backgroundColor: bgColor[0],
+                borderColor: bdColor[0],
+                borderWidth: 1
+               },
+               {
+                label:x_Axis[1],
+                data: [y_Axis[1]],
+                backgroundColor: bgColor[1],
+                borderColor: bdColor[1],
+                borderWidth: 1
+               },
+               {
+                label:x_Axis[2],
+                data: [y_Axis[2]],
+                backgroundColor: bgColor[2],
+                borderColor: bdColor[2],
+                borderWidth: 1
+               },
+               {
+                label:x_Axis[3],
+                data: [y_Axis[3]],
+                backgroundColor: bgColor[3],
+                borderColor: bdColor[3],
+                borderWidth: 1
+               },
+               {
+                label:x_Axis[4],
+                data: [y_Axis[4]],
+                backgroundColor: bgColor[4],
+                borderColor: bdColor[4],
+                borderWidth: 1
+               }],
        },
+       options: {
+        legend: {
+          display: true,
+          position: 'bottom',
+          labels: {
+            fontColor: "#ffffff",
+          }
+        }
+        }   
        
    });
  
