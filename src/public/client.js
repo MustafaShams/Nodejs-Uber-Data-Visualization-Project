@@ -117,8 +117,8 @@ function extractRowData(row) {
         dataInfo[x] = children[x].textContent
         
     }
-    
-    console.log("DATAINFO!!!!!!!!", dataInfo);
+    //console.log("THIS IS TOP PARENT",topParent);
+    //console.log("DATAINFO!!!!!!!!", dataInfo);
     return dataInfo;
 }
 
@@ -140,8 +140,9 @@ function deleteData(row) {
     else{
         showPopUp("Please save your edit first!")
     }
-    console.log("THE DELETED DATA CHECKING HOW ITS DISPLAY",tempData);
-    console.log("WHAT IS PARENT",parent);
+   // console.log("THE DELETED DATA CHECKING HOW ITS DISPLAY",tempData);
+    delete_Elemet(tempData);
+   // console.log("WHAT IS PARENT",parent);
 }
 
 var previousData = []
@@ -177,6 +178,7 @@ function editData(row) { //get which row, then after row is changed get what cha
         var updatedData = extractRowData(row);
         console.log("Old: ", previousData);
         console.log("New: ", updatedData);
+        edit_Element(previousData, updatedData);
         console.log(url);
         //if (previousData.toString() != updatedData.toString()) { //check on server side instead
         var url = "http://localhost:3000/edit?old=" + previousData + "&new=" + updatedData;
@@ -269,8 +271,9 @@ function search_Unique(check_Arr,value){
     return 1;
 
 }
+const unique_Arr = [ [],[],[],[],[] ]; 
 function Unique(arr){
-   const unique_Arr = [ [],[],[],[],[] ]; 
+   //const unique_Arr = [ [],[],[],[],[] ]; 
     //console.log(arr.length);
     for(var i = 0; i < arr.length; ++i){
         //console.log("in for loop ");
@@ -380,6 +383,74 @@ function createChart(x_Axis, y_Axis){
    });
  
 }
+//NEED TO FIX ISSUE WITH SINGLE ENTERY 
+function delete_Elemet(deleted_Arr){
+    for(var i = 0; i < unique_Arr.length; ++i){
+        for(var j = 0; j < unique_Arr[i].length;++j){
+           //console.log("CHECK THIS HERE",unique_Arr[i][j]);
+           if(unique_Arr[i][j] == deleted_Arr[i]){
+                //console.log("IT IS A MATCH");
+                if(unique_Arr[i].length == 1){
+                    //console.log("DID IT WORK");
+                    break;
+                }
+                else{
+                    unique_Arr[i].splice(j,1);
+                }                
+           }
+        }
+    }
+  //console.log("cleaned array:", unique_Arr);
+    Assigning_Display(unique_Arr);
+}
+function edit_Element(old_Arr,   new_Arr){
+    var tmp_Val = 0;
+    var lookup_Val = 0
+    for(var i = 0; i < old_Arr.length; ++i){
+        if(old_Arr[i] != new_Arr[i]){
+            if(new_Arr[i] == " "){
+                tmp_Val = 0;
+            }
+            else{
+            lookup_Val = old_Arr[i];
+            tmp_Val = new_Arr[i];
+            }
+        }
+        
+    }
+    console.log(tmp_Val);
+    console.log('LOOK UP VAL',lookup_Val);
+    console.log("unquie arr:", unique_Arr);
+    for(var j = 0; j < unique_Arr.length; ++j){
+        for(var k = 0; k < unique_Arr[j].length; ++k){
+            console.log("old values",old_Arr[k]);
+            if( unique_Arr[j][k] == lookup_Val && unique_Arr[j].length != 1  && tmp_Val  != 0){
+                unique_Arr[j][k] = tmp_Val;
+                console.log('assigned');
+
+            }
+            if(unique_Arr[j].length == 1 && unique_Arr[j][k] == lookup_Val){
+                console.log("HERE");
+                unique_Arr[j].push(tmp_Val);
+
+            }
+            if(unique_Arr[j][k] == lookup_Val && unique_Arr[j].length != 1 && tmp_Val == 0 ) {
+
+                // unique_Arr[j][k] = tmp_Val;
+                console.log('SUDO DELETE');
+                unique_Arr[j].splice(k,1);
+
+            }
+            
+        }
+    }
+     console.log(tmp_Val);
+    Assigning_Display(unique_Arr);
+
+}
+
+
+
 
 function saveBackup() {
     console.log("SAVING");
