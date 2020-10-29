@@ -84,7 +84,6 @@ body {
 }
 
 .search_bar button {
-
     float: left;
     padding: 6px;
     margin-top: 8px;
@@ -115,10 +114,43 @@ select {
     box-sizing: border-box;
 }
 
-
-
 .search_bar button:hover {
     background: #ccc;
+}
+
+.addButton {
+    float: left;
+    left: 0%;
+    margin-top: 65px;
+    width: 45%;
+}
+
+.addButton button{
+    display: none;
+    position: left;
+    padding: 6px;
+    margin-top: 8px;
+    margin-right: 20px;
+    background: rgb(50, 50, 50);
+    font-size: 17px;
+    border: none;
+    cursor: pointer;
+}
+
+.addButton button:hover {
+    background: #ccc;
+}
+
+
+.entryText {
+    float: left;
+    left: 0%;
+    margin-top: 80px;
+    width: 70%;
+}
+
+.submitAdd {
+    color: black;
 }
 
 #container {
@@ -127,6 +159,7 @@ select {
     /*background-color: red;*/
     height: 800px;
 }
+
 .tableHolder {
     width: 60%;
     float: left;

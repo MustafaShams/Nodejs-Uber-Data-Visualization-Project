@@ -1,8 +1,10 @@
 var edited = false;
+var textBoxes = 0;
 backupCheck();
 
 $(document).ready(function () {
     searchTableCreate();
+    addEntry();
 });
 
 function backupCheck() {
@@ -40,9 +42,6 @@ function backupCheck() {
 
 }
 
-
-
-
 function searchTableCreate() {
     var sendKey;
     var sendField;
@@ -61,6 +60,10 @@ function searchTableCreate() {
                 } else {
                     //ProcessData(data);
                     parent.appendChild(buildHtmlTable(data.slice(0, 100)));
+
+                    // when search goes through, turn on addEntry button
+                    var addEntry = document.getElementById('addEntry');
+                    addEntry.style.display = 'block';
                 }
             });
         } else {
@@ -78,6 +81,51 @@ function searchTableCreate() {
     });
 }
 
+function addData() {
+    // input code to add item to the table here
+    showPopUp("data submitted!");
+}
+
+var _textTable_ = document.createElement('textTable');
+
+function addEntry() {
+    $("#addEntry").click(function(data) {
+        var sendKey;
+        var sendField;
+        sendKey = $("#searchBar").val();
+        sendField = $("#data_selection").val();
+
+        var parent = document.getElementById('textTable');
+        parent.innerHTML = "";
+
+        // so I'm basically re-querying the data just to get how many columns. If we store th data in the future, I can change this
+        var url = "http://localhost:3000/search?field=" + sendField + "&id=" + sendKey;
+        $.get(url, function (data) {
+            var textTable = _textTable_.cloneNode(false);
+
+            // add text boxes
+            for(var key in data[0]) {
+                var inputBox = document.createElement('input');
+                inputBox.type = "text";
+                textTable.appendChild(inputBox);
+            }
+
+            //add save button
+            var submitAdd = document.createElement('input');
+            submitAdd.type = "button";
+            submitAdd.className = "submitAdd";
+            submitAdd.onclick = function() {
+                addData();
+            }
+            submitAdd.value = "Save";
+
+            textTable.appendChild(submitAdd);
+        
+            parent.appendChild(textTable);
+        });
+    });
+}
+
 var _table_ = document.createElement('table'),
     _tr_ = document.createElement('tr'),
     _th_ = document.createElement('th'),
@@ -85,8 +133,10 @@ var _table_ = document.createElement('table'),
 
 // Builds the HTML Table out of myList json data from Ivy restful service.
 function buildHtmlTable(arr) {
+    //textBoxes = arr[0].length;
     var table = _table_.cloneNode(false),
         columns = addAllColumnHeaders(arr, table);
+        textBoxes = columns.length;
     for (var i = 0, maxi = arr.length; i < maxi; ++i) {
         var tr = _tr_.cloneNode(false);
         for (var j = 0, maxj = columns.length; j < maxj; ++j) {
@@ -363,3 +413,4 @@ function showPopUp(text) {
     $("#myPopup").html(text);
     $('.popup').fadeIn(800).delay(4000).fadeOut(800);
 }
+
