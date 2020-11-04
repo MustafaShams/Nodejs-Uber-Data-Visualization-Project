@@ -648,9 +648,6 @@ function edit_Element(old_Arr,   new_Arr){
 
 }
 
-
-
-
 function saveBackup() {
     console.log("SAVING");
     var url = "http://localhost:3000/exportData";
