@@ -22,13 +22,22 @@ class analyticsClass {
                 }
             }
         }        
-        console.log(this.tempDF.length)
+        //console.log(this.tempDF.length)
         
         return this.tempDF;
     }
 
     weekDaysSearch(dataFrame) {
-        return;
+        this.tempDF = [0,0,0,0,0,0,0];
+    
+        for (var i = 0; i < dataFrame.length; i++) {
+            if (this.key == dataFrame[i].State) {
+                var date = new Date(dataFrame[i].date);
+                this.tempDF[date.getDay()]++;
+            }
+        }
+
+        return this.tempDF;
     }
 }
 

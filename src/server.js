@@ -189,20 +189,36 @@ function processData(allText) {
 function searchDataFrame(dataFrame, key, field) { //returns an array of callInfo that matches key
   var tempDF = [];
   let keycls = new keyClass(field, key.toLowerCase());
-  tempDF = keycls.keySearch(dataFrame);
-  //console.log(tempDF.length);
+  
+  //tempDF = searchPopulatedCities(dataFrame, key, field);
+  //tempDF = searchDaysOfWeek(dataFrame, key, field);
 
-  var tempDF2 = searchPopulatedCities(dataFrame, key, field);
-  console.log("Length: " + tempDF2.length + " Test: " + tempDF2[0]);
+  tempDF = keycls.keySearch(dataFrame);
+
   return tempDF;
 }
 
 function searchPopulatedCities(dataFrame, key, field) {
   var tempDF = [];
+  var count = [];
+
   let analyticscls = new analyticsClass(field, key.toLowerCase());
   tempDF = analyticscls.popCitiesSearch(dataFrame);
-  console.log("Count: " + analyticscls.count[0]);
+  count = analyticscls.count; 
+
+  //console.dir(count);
+  //console.dir(tempDF);
   return tempDF;
+}
+
+function searchDaysOfWeek(dataFrame, key, field) {
+  var days = [];
+  
+  let analyticscls = new analyticsClass(field, key.toLowerCase());
+  days = analyticscls.weekDaysSearch(dataFrame);
+  
+  //console.dir(days);
+  return days;
 }
 
 function addData(dataFrame, date, time, state, city, address) {
