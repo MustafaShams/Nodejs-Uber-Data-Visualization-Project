@@ -20,7 +20,7 @@ function getBackUp(){
   });
 }
 
-function getRealData(){
+function getRawData(){
   fs.readFile("inputFile/other-Dial7_B00887.zip", function (err, data) {
     if (err) throw err;
     JSZip.loadAsync(data).then(function (zip) {
@@ -30,14 +30,99 @@ function getRealData(){
         });
     });
   });
+  fs.readFile("inputFile/uber-raw-data-jul14.zip", function (err, data) {
+    if (err) throw err;
+    JSZip.loadAsync(data).then(function (zip) {
+      zip.files['uber-raw-data-jul14.csv'].async("string")
+        .then(function (data) {
+          processUberData(data);
+        });
+    });
+  });
+  fs.readFile("inputFile/uber-raw-data-aug14.zip", function (err, data) {
+    if (err) throw err;
+    JSZip.loadAsync(data).then(function (zip) {
+      zip.files['uber-raw-data-aug14.csv'].async("string")
+        .then(function (data) {
+          processUberData(data);
+        });
+    });
+  });
+  fs.readFile("inputFile/uber-raw-data-sep14.zip", function (err, data) {
+    if (err) throw err;
+    JSZip.loadAsync(data).then(function (zip) {
+      zip.files['uber-raw-data-sep14.csv'].async("string")
+        .then(function (data) {
+          processUberData(data);
+        });
+    });
+  });
+  fs.readFile("inputFile/other-Lyft_B02510.zip", function (err, data) {
+    if (err) throw err;
+    JSZip.loadAsync(data).then(function (zip) {
+      zip.files['other-Lyft_B02510.csv'].async("string")
+        .then(function (data) {
+          processLyftData(data);
+          console.log("All Datasets ready for use");
+        });
+    });
+  });
+  
 }
-var new_zip = new JSZip();
-// more files !
 
 
+var uberFrame = []
+var lyftFrame = []
 var dataFrame = [];
 var key;
 var field;
+
+
+function processUberData(allText) {
+  allText = allText.replace(/['"]+/g, '') //remove all " from input
+  allText = allText.toLowerCase();
+  var allTextLines = allText.split(/\r\n|\n/); //Split the input based on new lines
+  var headers = allTextLines[0].split(',');   //Split the first line and get the headers based on comma
+  for (var i = 1; i < allTextLines.length; i++) {   //travarse all lines
+    var data = allTextLines[i].split(',');          //split each line based on comma
+    if (data.length == headers.length) {          //make sure to check if data exists
+      var e = new callInfo();                     //create a new callInfo object
+      var res = data[0].split(" ");                //split the date and timew
+      Object.assign(e.Date = res[0]);             //assign the date
+      Object.assign(e.Time = res[1].slice(0, -3));              //assign time
+      Object.assign(e.Lat = data[1]);              //assign Latitude
+      Object.assign(e.Lon = data[2]);               //assign Longitude
+      Object.assign(e.Base = data[3]);              //assign Base ID
+      uberFrame.push(e);                            //Push the object callInfo into the data frame
+    }
+  }
+  console.log("Finished Uber Data");
+  console.log(uberFrame.length);
+}
+
+
+function processLyftData(allText) {
+  allText = allText.replace(/['"]+/g, '') //remove all " from input
+  allText = allText.toLowerCase();
+  var allTextLines = allText.split(/\r\n|\n/); //Split the input based on new lines
+  var headers = allTextLines[0].split(',');   //Split the first line and get the headers based on comma
+  for (var i = 1; i < allTextLines.length; i++) {   //travarse all lines
+    var data = allTextLines[i].split(',');          //split each line based on comma
+    if (data.length == headers.length) {          //make sure to check if data exists
+      var e = new callInfo();                     //create a new callInfo object
+      var res = data[0].split(" ");                //split the date and timew
+      Object.assign(e.Date = res[0]);             //assign the date
+      Object.assign(e.Time = res[1]);              //assign time
+      Object.assign(e.Lat = data[1]);              //assign Latitude
+      Object.assign(e.Lon = data[2]);               //assign Longitude
+      //Object.assign(e.Date = data[0]);
+      lyftFrame.push(e);                            //Push the object callInfo into the data frame
+    }
+  }
+  console.log("Finished Lyft Data");
+}
+
+
 function processData(allText) {
   dataFrame = [];
   allText = allText.replace(/['"]+/g, '') //remove all " from input
@@ -69,7 +154,7 @@ function processData(allText) {
       }
     }
   }
-  console.log("Finished Parsing Data");
+  console.log("Finished Dial7 Data");
   //console.log(dataFrame);
   //exportData(dataFrame);
 }
@@ -270,7 +355,7 @@ app.get('/getBackup', (req, res) => {
 
 app.get('/noBackup', (req, res) => {
   console.log("Getting Real");
-  getRealData();
+  getRawData();
   res.send(true);
 });
 

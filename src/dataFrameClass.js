@@ -81,6 +81,9 @@ class callInfo {
   get AMPM(){
     return this.ampm
   }
+  get Type(){
+    return this.type
+  }
 
   constructor() {
 
