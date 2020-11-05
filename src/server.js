@@ -191,7 +191,7 @@ function searchDataFrame(dataFrame, key, field) { //returns an array of callInfo
   let keycls = new keyClass(field, key.toLowerCase());
   
   //tempDF = searchPopulatedCities(dataFrame, key, field);
-  //tempDF = searchDaysOfWeek(dataFrame, key, field);
+  //tempDF = searchDaysOfWeek(dataFrame, key, "Manhattan", "110 Bleecker St", "Bleecker St");
 
   tempDF = keycls.keySearch(dataFrame);
 
@@ -211,11 +211,31 @@ function searchPopulatedCities(dataFrame, key, field) {
   return tempDF;
 }
 
-function searchDaysOfWeek(dataFrame, key, field) {
+function searchDaysOfWeek(dataFrame, state, city, address, street) {
   var days = [];
-  
-  let analyticscls = new analyticsClass(field, key.toLowerCase());
-  days = analyticscls.weekDaysSearch(dataFrame);
+  var searchDF = [];
+  searchDF = dataFrame;
+
+  if (state != null) {
+      let keycls = new keyClass("State", state.toLowerCase());
+      // console.log("State: " + keycls.state)
+      searchDF = keycls.keySearch(searchDF);
+  }
+  if (city != null) {
+      let keycls = new keyClass("City", city.toLowerCase());
+      searchDF = keycls.keySearch(searchDF);
+  }
+  if (address != "") {
+    let keycls = new keyClass("Address", address.toLowerCase());
+    searchDF = keycls.keySearch(searchDF);
+  }
+  if (street != "") {
+    let keycls = new keyClass("Street", street.toLowerCase());
+    searchDF = keycls.keySearch(searchDF);
+  }  
+
+  let analyticscls = new analyticsClass("", "");
+  days = analyticscls.weekDaysSearch(searchDF);
   
   //console.dir(days);
   return days;

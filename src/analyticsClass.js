@@ -27,35 +27,11 @@ class analyticsClass {
         return this.tempDF;
     }
 
-    weekDaysSearch(dataFrame, state, city, address, street) {
+    weekDaysSearch(dataFrame) {
         this.tempDF = [0,0,0,0,0,0,0];
-        var searchDF = [];
-        let keycls = new keyClass();
-        searchDF = dataFrame;
 
-        if (state != null) {
-            keycls.field = "State";
-            keycls.key = state;
-            searchDF = keycls.keySearch(searchDF);
-        }
-        if (city != null) {
-            keycls.field = "City";
-            keycls.key = city;
-            searchDF = keycls.keySearch(searchDF);
-        }
-        if (address != null) {
-            keycls.field = "Address";
-            keycls.key = address;
-            searchDF = keycls.keySearch(searchDF);
-        }
-        if (street != null) {
-            keycls.field = "Street";
-            keycls.key = street;
-            searchDF = keycls.keySearch(searchDF);
-        }
-
-        for (var i = 0; i < searchDF.length; i++) {
-            var date = new Date(searchDF[i].date);
+        for (var i = 0; i < dataFrame.length; i++) {
+            var date = new Date(dataFrame[i].date);
             this.tempDF[date.getDay()]++;
         }
 
