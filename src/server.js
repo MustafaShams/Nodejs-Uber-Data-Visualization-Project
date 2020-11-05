@@ -1,6 +1,6 @@
 const callInfo = require('./dataFrameClass.js') //call the class File and store in callInfo
 const keyClass = require('./keyClass.js')
-
+const analyticsClass = require('./analyticsClass.js')
 
 const {
   parse
@@ -173,6 +173,17 @@ function searchDataFrame(dataFrame, key, field) { //returns an array of callInfo
   let keycls = new keyClass(field, key.toLowerCase());
   tempDF = keycls.keySearch(dataFrame);
   //console.log(tempDF.length);
+
+  var tempDF2 = searchPopulatedCities(dataFrame, key, field);
+  console.log("Length: " + tempDF2.length + " Test: " + tempDF2[0]);
+  return tempDF;
+}
+
+function searchPopulatedCities(dataFrame, key, field) {
+  var tempDF = [];
+  let analyticscls = new analyticsClass(field, key.toLowerCase());
+  tempDF = analyticscls.popCitiesSearch(dataFrame);
+  console.log("Count: " + analyticscls.count[0]);
   return tempDF;
 }
 
