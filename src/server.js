@@ -9,8 +9,19 @@ const {
 var JSZip = require("jszip");
 const fs = require('fs');
 
+var whichData = "none";
+var uberFrame = []
+var lyftFrame = []
+var dataFrame = []
+var key;
+var field;
 
 function getBackUp(){
+  uberFrame = []
+  lyftFrame = []
+  dataFrame = []
+  whichData = "backup";
+  console.log(whichData);
   fs.readFile('inputFile/dataFrame.csv', 'utf8', function (err, data) {
     if (err) {
       console.error(err)
@@ -21,6 +32,10 @@ function getBackUp(){
 }
 
 function getRawData(){
+  uberFrame = []
+  lyftFrame = []
+  dataFrame = []
+  whichData = "real";
   fs.readFile("inputFile/other-Dial7_B00887.zip", function (err, data) {
     if (err) throw err;
     JSZip.loadAsync(data).then(function (zip) {
@@ -63,7 +78,6 @@ function getRawData(){
       zip.files['other-Lyft_B02510.csv'].async("string")
         .then(function (data) {
           processLyftData(data);
-          console.log("All Datasets ready for use");
         });
     });
   });
@@ -71,11 +85,6 @@ function getRawData(){
 }
 
 
-var uberFrame = []
-var lyftFrame = []
-var dataFrame = [];
-var key;
-var field;
 
 
 function processUberData(allText) {
@@ -354,8 +363,10 @@ app.get('/getBackup', (req, res) => {
 });
 
 app.get('/noBackup', (req, res) => {
-  console.log("Getting Real");
-  getRawData();
+  if(whichData != "real"){
+    console.log("Getting Real");
+    getRawData();
+  }
   res.send(true);
 });
 

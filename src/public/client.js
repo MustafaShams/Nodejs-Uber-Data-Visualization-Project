@@ -1,8 +1,9 @@
 var edited = false;
 var textBoxes = 0;
-backupCheck();
+
 
 $(document).ready(function () {
+    backupCheck();
     searchTableCreate();
     addEntry();
 
