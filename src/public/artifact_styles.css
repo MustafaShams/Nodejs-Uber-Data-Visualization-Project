@@ -4,13 +4,13 @@ html, body {
 }
 
 .search_terms {
-    float: left;
-    
+    text-align: center;
 }
 
 .search_terms li {
     display: inline-block;
     color: black;
+    left: 50%;
 }
 
 .search_terms label {
@@ -24,4 +24,3 @@ html, body {
 .search_terms button:hover{
     background: rgb(94, 91, 91);
 }
-

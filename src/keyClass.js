@@ -37,7 +37,7 @@ class keyClass {
                 case "Year":
                     var date = dataFrame[i].Date;
                     date = date.split('.');
-                    var year = date[0];
+                    var year = date[2];
                     if (this.key == year) {
                         tempDF.push(dataFrame[i]);
                     }

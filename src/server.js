@@ -160,6 +160,8 @@ function processData(allText) {
     if (data[3].trim() != "" && data[4].trim() != "" && data[5].trim() != "") {
       try {
         var e = new callInfo(); //create a new callInfo object
+        var newDate = data[0].trim().replace(/\b0/g, '').split('.');
+        data[0] = newDate[2] + "." + newDate[1] + "." + newDate[0];
         Object.assign(e.Date = data[0].trim()); //assign the date
         Object.assign(e.Time = data[1].trim()); //assign time
         Object.assign(e.State = data[2].trim());
@@ -382,6 +384,7 @@ function monthGenerator(startMonth) {
 }
 
 function compareSearch(dataFrame, startDate, endDate) {
+  console.log("DF SIZE: ", dataFrame[0].date, uberFrame[0].date, lyftFrame[0].date);
 	var uberCompArr = [];
 	var lyftCompArr = [];
 	var totalArr = [];
