@@ -692,13 +692,17 @@ function populationSearch() {
                 console.log("Unique City Array: ", citiesInState);
 		console.log("Number of Calls from City Array: ", citiesCount);
                 if (citiesInState != 0 && citiesCount != 0) {
-			//do graph here
+                citiesInState = citiesInState.slice(0, 15);
+                citiesCount = citiesCount.slice(0, 15);
+                
+                citiesChart(citiesInState,citiesCount);
 			showPopUp("Success!");
                 }
                 else {
 			showPopUp("Error: Your Entry Was Not Found In Our Database!");
                 }
         });
+        
 }
 
 function daysArtifact() {
@@ -715,7 +719,8 @@ function daysArtifact() {
 			console.log(data);
             //do graph here
             daysChart(data);
-			showPopUp("Success");
+            showPopUp("Success");
+            
 		}
 	});
 }
@@ -752,10 +757,13 @@ function compareArtifact() {
 }
 function separatorObject(sArr, sArr2){
   const monthVal = [];
+
   for (var i = 0; i < sArr.length; ++i){
       var tmp = sArr[i].split(':');
       var sp = tmp.splice(0,1);
+     
       monthVal.push(sp[0]);
+      
   }
   console.log(monthVal);
 
@@ -841,10 +849,10 @@ function compareChart(y_Ax,uber_Arr,lyft_Arr ){
 }
 //Line chart for busy days 
 function daysChart(y_Axis){
-    console.log("ITS WORKING");
+    
     const  x_Axis = ["Sunday","Monday","Tuesday","Wednesday",
             "Thursday", "Friday", "Saturday"];
-    //figure it out once data is in 
+    
 
     var bgColor = [
     'rgba(255, 99, 132, 0.2)',
@@ -856,7 +864,7 @@ function daysChart(y_Axis){
     'rgba(54, 162, 235, 1)'
     ];
 
-
+    
     var ctx = document.getElementById('busyChart').getContext('2d');
     var busyChart = new Chart(ctx,{
         type: 'line',
@@ -903,4 +911,52 @@ function daysChart(y_Axis){
 
 }
 
-// Popultion chart will go here 
+function citiesChart(x_Axis,y_Axis){
+    
+    var bgColor = [
+        'rgba(255, 99, 235, 0.2)'
+        ];
+    var bdColor = [
+        'rgba(255, 99, 132, 1)'
+           
+        ];
+    $('#populationChart').remove();
+    $('.populationHolder').html('<canvas id="populationChart"></canvas>');
+    var ctx = document.getElementById('populationChart').getContext('2d');
+    var populationChart = new Chart(ctx,{
+        type: 'line',
+        data: {
+            labels: x_Axis,
+            datasets:[
+                {
+                    
+                    data: y_Axis,
+                    backgroundColor: bgColor[0],
+                    borderColor: bdColor[0],
+                    //borderWidth: 1,
+                    //barPercentage: 50,
+                    fill: false,
+                    pointRadius:10,
+                    showLine: false  
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            title:{
+                display: true,
+                text: 'Number of calls per city'
+            },
+            // legend: {
+            //     display: true,
+            //     position: 'bottom',
+            //     labels: {
+            //       fontColor: "#ffffff",
+            //     },
+            
+            // }
+        }
+
+    });
+
+}
