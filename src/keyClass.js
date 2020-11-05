@@ -7,7 +7,7 @@ class keyClass {
     }    
     keySearch(dataFrame) {
         var tempDF = [];
-        for (var i = 1; i < dataFrame.length; ++i) {
+        for (var i = 0; i < dataFrame.length; ++i) {
             switch(this.field) {
                 case "State":
                     if (this.key == dataFrame[i].State) {
@@ -60,9 +60,11 @@ class keyClass {
                     break;
             }
         }
+
         console.log(tempDF.length)
         return tempDF;
     }
+
 }
 
 module.exports = keyClass;
