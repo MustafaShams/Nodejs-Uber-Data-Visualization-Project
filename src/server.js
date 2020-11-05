@@ -387,15 +387,20 @@ function compareSearch(dataFrame, startDate, endDate) {
   console.log("DF SIZE: ", dataFrame[0].date, uberFrame[0].date, lyftFrame[0].date);
 	var uberCompArr = [];
 	var lyftCompArr = [];
-	var totalArr = [];
+  //var totalArr = [];
+  var finalArr = [];
 	var tempField = "Month";
 	var startMonth = startDate;
-	var endMonth = endDate;
+  var endMonth = endDate;
+  //var uberDayCount = [];
+  //var lyftDayCount = [];
 	while (Number(startMonth) != Number(endMonth) + 1) {
 		let keycls = new keyClass(tempField, (Number(startMonth)).toString());
 		console.log("Comparing This Month rn: ", (Number(startMonth)).toString());
 		var uberArr = keycls.keySearch(uberFrame);
-		var lyftArr = keycls.keySearch(lyftFrame);
+    var lyftArr = keycls.keySearch(lyftFrame);
+    //uberDayCount = uberDayCount.concat(findUnqiueDates(uberArr));
+    //lyftDayCount = lyftDayCount.concat(findUnqiueDates(lyftArr));
 		console.log("Uber size for this month: ", uberArr.length);
 		console.log("Lyft size for this month: ", lyftArr.length);
 		uberCompArr.push((monthGenerator(Number(startMonth).toString()) + ": " + uberArr.length).toString());
@@ -403,7 +408,8 @@ function compareSearch(dataFrame, startDate, endDate) {
 		startMonth = Number(startMonth) + 1;
 		startMonth = startMonth.toString();
 	}
-	uberCompArr.push("SEPARATOR");
+  uberCompArr.push("SEPARATOR");
+  //uberDayCount.push("SEPARATOR");
 //-----------------Incase we expand, this block checks to see if one dataset returns null while other does not------------//
 	/*if (uberCompArr.length > 1 && lyftCompArr.length > 0) {
 		totalArr = uberCompArr.concat(lyftCompArr);
@@ -415,8 +421,19 @@ function compareSearch(dataFrame, startDate, endDate) {
 		lyftCompArr = lyftCompArr.unshift("SEPARATOR"); //adds separator to the beginning
 		totalArr = lyftCompArr;
 	}*/
-	totalArr = uberCompArr.concat(lyftCompArr);
+  totalArr = uberCompArr.concat(lyftCompArr);
+  //finalArr = uberDayCount.concat(lyftDayCount);
+  //console.log(finalArr)
 	return totalArr; //will return null if no data in both sets
+}
+
+function findUnqiueDates(set){
+  var counts = {};
+  for (var i = 0; i < set.length; i++) {
+      counts[set[i].date] = 1 + (counts[set[i].date] || 0);
+  }
+  //console.log(counts);
+  return counts;
 }
 
 
@@ -442,6 +459,7 @@ app.get('/search', (req, res) => {
   
   var data = searchDataFrame(dataFrame, key_name, field);
   res.header("Content-Type", 'application/json');
+  
   res.json(data);
 });
 
