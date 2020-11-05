@@ -10,13 +10,13 @@ $(document).ready(function () {
     var timepicker = new TimePicker('time', {
         lang: 'en',
         theme: 'dark'
-      });
-      timepicker.on('change', function(evt) {
-        
+    });
+    timepicker.on('change', function (evt) {
+
         var value = (evt.hour || '00') + ':' + (evt.minute || '00');
         evt.element.value = value;
-      
-      });
+
+    });
 });
 
 function backupCheck() {
@@ -91,76 +91,76 @@ function addData() {
     var extractedCity = $("#city").val();
     var extractedAddress = $("#address").val();
     var url = "http://localhost:3000/add?date=" + extractedDate + "&time=" + extractedTime + "&state=" + extractedState + "&city=" + extractedCity + "&address=" + extractedAddress;
-	console.log(url);
-	var tempArr = [];
-	tempArr.push(extractedDate);
-	tempArr.push(extractedTime);
-	tempArr.push(extractedState);
-	tempArr.push(extractedCity);
-	tempArr.push(extractedAddress);
+    console.log(url);
+    var tempArr = [];
+    tempArr.push(extractedDate);
+    tempArr.push(extractedTime);
+    tempArr.push(extractedState);
+    tempArr.push(extractedCity);
+    tempArr.push(extractedAddress);
     $.get(url, function (data, tempArr) {
-	if (data == true) {
-        $(".entryText").fadeOut(300);
-		var sendKey = $("#searchBar").val();
-		var sendField = $("#data_selection").val();
-		function buildMiniTable() {
-			var table = document.getElementById('table').childNodes[0];
-			var tr = _tr_.cloneNode(false);
-			var tempArr = [];
-			tempArr.push(extractedDate);
-		        tempArr.push(extractedTime);
-		        tempArr.push(extractedState.charAt(0).toUpperCase() + extractedState.slice(1).toLowerCase());
-		        tempArr.push(extractedCity.charAt(0).toUpperCase() + extractedCity.slice(1).toLowerCase());
-		        tempArr.push(extractedAddress);
-			for (var j = 0, maxj = tempArr.length; j < maxj; ++j) {
-				var td = _td_.cloneNode(false);
-				td.appendChild(document.createTextNode(tempArr[j] || ''));
-				tr.appendChild(td);
-			}
-			tr = addEdit(tr);
-			tr = addDel(tr);
-			table.appendChild(tr);
-		}
-		switch(sendField) {
-			case "Date":
-				if (sendKey.toLowerCase() == extractedDate.toLowerCase()) {
-					buildMiniTable();
-				}
-				break;
-			case "Time":
-                                if (sendKey.toLowerCase() == extractedTime.toLowerCase()) {
-	                                buildMiniTable();
-                                }
-                                break;
-			case "State":
-                                if (sendKey.toLowerCase() == extractedState.toLowerCase()) {
-                                        buildMiniTable();
-                                }
-                                break;
-			case "City":
-				if (sendKey.toLowerCase() == extractedCity.toLowerCase()) {
-					buildMiniTable();
-				}
-				break;
-			case "Address":
-				if (sendKey.toLowerCase() == extractedAddress.toLowerCase()) {
-					buildMiniTable();
-				}
-				break;
-		}
-        showPopUp("Data Submitted!");
-        getUniqueValues()
-	}
-	else {
-	    showPopUp("Please Fill Out All Fields");
-	}
+        if (data == true) {
+            $(".entryText").fadeOut(300);
+            var sendKey = $("#searchBar").val();
+            var sendField = $("#data_selection").val();
+
+            function buildMiniTable() {
+                var table = document.getElementById('table').childNodes[0];
+                var tr = _tr_.cloneNode(false);
+                var tempArr = [];
+                tempArr.push(extractedDate);
+                tempArr.push(extractedTime);
+                tempArr.push(extractedState.charAt(0).toUpperCase() + extractedState.slice(1).toLowerCase());
+                tempArr.push(extractedCity.charAt(0).toUpperCase() + extractedCity.slice(1).toLowerCase());
+                tempArr.push(extractedAddress);
+                for (var j = 0, maxj = tempArr.length; j < maxj; ++j) {
+                    var td = _td_.cloneNode(false);
+                    td.appendChild(document.createTextNode(tempArr[j] || ''));
+                    tr.appendChild(td);
+                }
+                tr = addEdit(tr);
+                tr = addDel(tr);
+                table.appendChild(tr);
+            }
+            switch (sendField) {
+                case "Date":
+                    if (sendKey.toLowerCase() == extractedDate.toLowerCase()) {
+                        buildMiniTable();
+                    }
+                    break;
+                case "Time":
+                    if (sendKey.toLowerCase() == extractedTime.toLowerCase()) {
+                        buildMiniTable();
+                    }
+                    break;
+                case "State":
+                    if (sendKey.toLowerCase() == extractedState.toLowerCase()) {
+                        buildMiniTable();
+                    }
+                    break;
+                case "City":
+                    if (sendKey.toLowerCase() == extractedCity.toLowerCase()) {
+                        buildMiniTable();
+                    }
+                    break;
+                case "Address":
+                    if (sendKey.toLowerCase() == extractedAddress.toLowerCase()) {
+                        buildMiniTable();
+                    }
+                    break;
+            }
+            showPopUp("Data Submitted!");
+            getUniqueValues()
+        } else {
+            showPopUp("Please Fill Out All Fields");
+        }
     });
 }
 
 var _textTable_ = document.createElement('textTable');
 
 function addEntry() {
-    $("#addEntry").click(function(data) {
+    $("#addEntry").click(function (data) {
         $(".entryText").fadeIn(500);
     })
     /*
@@ -218,7 +218,7 @@ function buildHtmlTable(arr) {
     //textBoxes = arr[0].length;
     var table = _table_.cloneNode(false),
         columns = addAllColumnHeaders(arr, table);
-        textBoxes = columns.length;
+    textBoxes = columns.length;
     for (var i = 0, maxi = arr.length; i < maxi; ++i) {
         var tr = _tr_.cloneNode(false);
         for (var j = 0, maxj = columns.length; j < maxj; ++j) {
@@ -246,7 +246,7 @@ function extractRowData(row) {
     var dataInfo = []
     for (var x = 0; x < children.length - 2; x++) {
         dataInfo[x] = children[x].textContent
-        
+
     }
     //console.log("THIS IS TOP PARENT",topParent);
     //console.log("DATAINFO!!!!!!!!", dataInfo);
@@ -267,14 +267,13 @@ function deleteData(row) {
             }
         });
         $(row).parents("tr").remove();
-    }
-    else{
+    } else {
         showPopUp("Please save your edit first!")
     }
-   // console.log("THE DELETED DATA CHECKING HOW ITS DISPLAY",tempData);
+    // console.log("THE DELETED DATA CHECKING HOW ITS DISPLAY",tempData);
     //delete_Elemet(tempData);
     getUniqueValues()
-   // console.log("WHAT IS PARENT",parent);
+    // console.log("WHAT IS PARENT",parent);
 }
 
 var previousData = []
@@ -391,88 +390,95 @@ function addAllColumnHeaders(arr, table) {
     return columnSet;
 }
 
-function search_Unique(check_Arr,value){
+function search_Unique(check_Arr, value) {
     //console.log('search array');
-    for(var i = 0; i < check_Arr.length; ++i){
+    for (var i = 0; i < check_Arr.length; ++i) {
         //console.log('searching');
-        if(check_Arr[i] == value){
-            
+        if (check_Arr[i] == value) {
+
             return 0;
         }
-      
+
     }
     return 1;
 
 }
-const unique_Arr = [ [],[],[],[],[] ]; 
-function Unique(arr){
-   //const unique_Arr = [ [],[],[],[],[] ]; 
+const unique_Arr = [
+    [],
+    [],
+    [],
+    [],
+    []
+];
+
+function Unique(arr) {
+    //const unique_Arr = [ [],[],[],[],[] ]; 
     //console.log(arr.length);
     console.log(unique_Arr)
-    for(var i = 0; i < arr.length; ++i){
+    for (var i = 0; i < arr.length; ++i) {
         //console.log("in for loop ");
         const str_check = arr[i];
         //console.log(Object.keys(str_check));
         const var_length = Object.keys(str_check).length;
-       // console.log("This is the length of KEYS :",var_length);
-       // console.log("this is string check",str_check);
-        for(const[key,value] of Object.entries(str_check) ){
-           
-           if(key == 'date'){
-               if(search_Unique(unique_Arr[0],value ) != 0){
-                 unique_Arr[0].push(value);   
-               }
+        // console.log("This is the length of KEYS :",var_length);
+        // console.log("this is string check",str_check);
+        for (const [key, value] of Object.entries(str_check)) {
 
-           }
-           if(key == 'time'){
-               if(search_Unique(unique_Arr[1],value ) != 0){
-                unique_Arr[1].push(value);   
-               }
-           }
+            if (key == 'date') {
+                if (search_Unique(unique_Arr[0], value) != 0) {
+                    unique_Arr[0].push(value);
+                }
 
-           if(key == 'state'){
-               if(search_Unique(unique_Arr[2],value ) != 0){
-                unique_Arr[2].push(value);   
-               }
-           
-               
-           }
-           if(key == 'city'){
-               if(search_Unique(unique_Arr[3],value ) != 0){
-                unique_Arr[3].push(value);    
-               }
-               
-           }
-           if(key == 'address'){
-               if(search_Unique(unique_Arr[4],value ) != 0){
-                unique_Arr[4].push(value);
-               }
-               
-           }
+            }
+            if (key == 'time') {
+                if (search_Unique(unique_Arr[1], value) != 0) {
+                    unique_Arr[1].push(value);
+                }
+            }
+
+            if (key == 'state') {
+                if (search_Unique(unique_Arr[2], value) != 0) {
+                    unique_Arr[2].push(value);
+                }
+
+
+            }
+            if (key == 'city') {
+                if (search_Unique(unique_Arr[3], value) != 0) {
+                    unique_Arr[3].push(value);
+                }
+
+            }
+            if (key == 'address') {
+                if (search_Unique(unique_Arr[4], value) != 0) {
+                    unique_Arr[4].push(value);
+                }
+
+            }
 
         }
-   
+
     }
-   //console.log('worked');
+    //console.log('worked');
     Assigning_Display(unique_Arr);
 }
 
 
-function Assigning_Display(arr_Value){
+function Assigning_Display(arr_Value) {
     //console.log(arr_Value);
-    const x_Axis = ['Date','Time','State','City','Address'];
+    const x_Axis = ['Date', 'Time', 'State', 'City', 'Address'];
     //console.log(x_Axis);
 
     const y_Axis = [];
-    for(var i = 0; i < arr_Value.length; ++i ){
-       var count = 0;
-        for(var j = 0; j < arr_Value[i].length; ++j){
+    for (var i = 0; i < arr_Value.length; ++i) {
+        var count = 0;
+        for (var j = 0; j < arr_Value[i].length; ++j) {
             //console.log(arr_Value[i]);
             ++count;
-            if(j == arr_Value[i].length-1){
+            if (j == arr_Value[i].length - 1) {
                 y_Axis.push(count);
             }
-           
+
 
         }
     }
@@ -481,20 +487,20 @@ function Assigning_Display(arr_Value){
     createChart(x_Axis, y_Axis);
 }
 
-function getUniqueValues(){
+function getUniqueValues() {
     bigArray = [];
-    for(var x = 1; x < 6; x++){
+    for (var x = 1; x < 6; x++) {
         var arr = [];
-        $("table td:nth-child("+x+")").each(function() {
+        $("table td:nth-child(" + x + ")").each(function () {
             if ($.inArray($(this).text().toLowerCase(), arr) == -1)
-            arr.push($(this).text());
+                arr.push($(this).text());
         });
         bigArray.push(arr);
     }
     console.log(bigArray);
-    const x_Axis = ['Date','Time','State','City','Address'];
+    const x_Axis = ['Date', 'Time', 'State', 'City', 'Address'];
     const y_Axis = [];
-    for(var j = 0; j < bigArray.length; j++){
+    for (var j = 0; j < bigArray.length; j++) {
         y_Axis[j] = bigArray[j].length;
     }
     createChart(x_Axis, y_Axis);
@@ -502,148 +508,147 @@ function getUniqueValues(){
 
 
 
-function createChart(x_Axis, y_Axis){
+function createChart(x_Axis, y_Axis) {
     console.log(x_Axis);
     console.log(y_Axis);
-    
-    
-   
-   
-   var bgColor = [
-    'rgba(255, 99, 132, 0.2)',
-    'rgba(54, 162, 235, 0.2)',
-    'rgba(255, 206, 86, 0.2)',
-    'rgba(75, 192, 192, 0.2)',
-    'rgba(153, 102, 255, 0.2)',
-    'rgba(255, 159, 64, 0.2)'
-];
-   var bdColor = [
-    'rgba(255, 99, 132, 1)',
-    'rgba(54, 162, 235, 1)',
-    'rgba(255, 206, 86, 1)',
-    'rgba(75, 192, 192, 1)',
-    'rgba(153, 102, 255, 1)',
-    'rgba(255, 159, 64, 1)'
-];
+
+
+
+
+    var bgColor = [
+        'rgba(255, 99, 132, 0.2)',
+        'rgba(54, 162, 235, 0.2)',
+        'rgba(255, 206, 86, 0.2)',
+        'rgba(75, 192, 192, 0.2)',
+        'rgba(153, 102, 255, 0.2)',
+        'rgba(255, 159, 64, 0.2)'
+    ];
+    var bdColor = [
+        'rgba(255, 99, 132, 1)',
+        'rgba(54, 162, 235, 1)',
+        'rgba(255, 206, 86, 1)',
+        'rgba(75, 192, 192, 1)',
+        'rgba(153, 102, 255, 1)',
+        'rgba(255, 159, 64, 1)'
+    ];
     $('#myChart').remove();
     $('.graphHolder').html('<canvas id="myChart"></canvas>')
     var ctx = document.getElementById('myChart').getContext('2d');
-   var myChart = new Chart(ctx, {
-       type: 'bar',
-       data: {
-           labels : ['Number of unique values for:'],
-           datasets: [
-               {
-                label:x_Axis[0],
-                data: [y_Axis[0]],
-                backgroundColor: bgColor[0],
-                borderColor: bdColor[0],
-                borderWidth: 1
-               },
-               {
-                label:x_Axis[1],
-                data: [y_Axis[1]],
-                backgroundColor: bgColor[1],
-                borderColor: bdColor[1],
-                borderWidth: 1
-               },
-               {
-                label:x_Axis[2],
-                data: [y_Axis[2]],
-                backgroundColor: bgColor[2],
-                borderColor: bdColor[2],
-                borderWidth: 1
-               },
-               {
-                label:x_Axis[3],
-                data: [y_Axis[3]],
-                backgroundColor: bgColor[3],
-                borderColor: bdColor[3],
-                borderWidth: 1
-               },
-               {
-                label:x_Axis[4],
-                data: [y_Axis[4]],
-                backgroundColor: bgColor[4],
-                borderColor: bdColor[4],
-                borderWidth: 1
-               }],
-       },
-       options: {
-        legend: {
-          display: true,
-          position: 'bottom',
-          labels: {
-            fontColor: "#ffffff",
-          }
+    var myChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['Number of unique values for:'],
+            datasets: [{
+                    label: x_Axis[0],
+                    data: [y_Axis[0]],
+                    backgroundColor: bgColor[0],
+                    borderColor: bdColor[0],
+                    borderWidth: 1
+                },
+                {
+                    label: x_Axis[1],
+                    data: [y_Axis[1]],
+                    backgroundColor: bgColor[1],
+                    borderColor: bdColor[1],
+                    borderWidth: 1
+                },
+                {
+                    label: x_Axis[2],
+                    data: [y_Axis[2]],
+                    backgroundColor: bgColor[2],
+                    borderColor: bdColor[2],
+                    borderWidth: 1
+                },
+                {
+                    label: x_Axis[3],
+                    data: [y_Axis[3]],
+                    backgroundColor: bgColor[3],
+                    borderColor: bdColor[3],
+                    borderWidth: 1
+                },
+                {
+                    label: x_Axis[4],
+                    data: [y_Axis[4]],
+                    backgroundColor: bgColor[4],
+                    borderColor: bdColor[4],
+                    borderWidth: 1
+                }
+            ],
+        },
+        options: {
+            legend: {
+                display: true,
+                position: 'bottom',
+                labels: {
+                    fontColor: "#ffffff",
+                }
+            }
         }
-        }   
-       
-   });
- 
+
+    });
+
 }
 //NEED TO FIX ISSUE WITH SINGLE ENTERY 
-function delete_Elemet(deleted_Arr){
-    for(var i = 0; i < unique_Arr.length; ++i){
-        for(var j = 0; j < unique_Arr[i].length;++j){
-           //console.log("CHECK THIS HERE",unique_Arr[i][j]);
-           if(unique_Arr[i][j] == deleted_Arr[i]){
+function delete_Elemet(deleted_Arr) {
+    for (var i = 0; i < unique_Arr.length; ++i) {
+        for (var j = 0; j < unique_Arr[i].length; ++j) {
+            //console.log("CHECK THIS HERE",unique_Arr[i][j]);
+            if (unique_Arr[i][j] == deleted_Arr[i]) {
                 //console.log("IT IS A MATCH");
-                if(unique_Arr[i].length == 1){
+                if (unique_Arr[i].length == 1) {
                     //console.log("DID IT WORK");
                     break;
+                } else {
+                    unique_Arr[i].splice(j, 1);
                 }
-                else{
-                    unique_Arr[i].splice(j,1);
-                }                
-           }
+            }
         }
     }
-  //console.log("cleaned array:", unique_Arr);
+    //console.log("cleaned array:", unique_Arr);
     Assigning_Display(unique_Arr);
 }
-function edit_Element(old_Arr,   new_Arr){
+
+function edit_Element(old_Arr, new_Arr) {
     var tmp_Val = 0;
     var lookup_Val = 0
-    for(var i = 0; i < old_Arr.length; ++i){
-        if(old_Arr[i] != new_Arr[i]){
-            if(new_Arr[i] == " "){
+    for (var i = 0; i < old_Arr.length; ++i) {
+        if (old_Arr[i] != new_Arr[i]) {
+            if (new_Arr[i] == " ") {
                 tmp_Val = 0;
-            }
-            else{
-            lookup_Val = old_Arr[i];
-            tmp_Val = new_Arr[i];
+            } else {
+                lookup_Val = old_Arr[i];
+                tmp_Val = new_Arr[i];
             }
         }
-        
+
     }
     console.log(tmp_Val);
-    console.log('LOOK UP VAL',lookup_Val);
+    console.log('LOOK UP VAL', lookup_Val);
     console.log("unquie arr:", unique_Arr);
-    for(var j = 0; j < unique_Arr.length; ++j){
-        for(var k = 0; k < unique_Arr[j].length; ++k){
-            console.log("old values",old_Arr[k]);
-            if( unique_Arr[j][k] == lookup_Val && unique_Arr[j].length != 1  && tmp_Val  != 0){
+    for (var j = 0; j < unique_Arr.length; ++j) {
+        for (var k = 0; k < unique_Arr[j].length; ++k) {
+            console.log("old values", old_Arr[k]);
+            if (unique_Arr[j][k] == lookup_Val && unique_Arr[j].length != 1 && tmp_Val != 0) {
                 unique_Arr[j][k] = tmp_Val;
                 console.log('assigned');
 
             }
-            if(unique_Arr[j].length == 1 && unique_Arr[j][k] == lookup_Val){
+            if (unique_Arr[j].length == 1 && unique_Arr[j][k] == lookup_Val) {
                 console.log("HERE");
                 unique_Arr[j].push(tmp_Val);
 
             }
-            if(unique_Arr[j][k] == lookup_Val && unique_Arr[j].length != 1 && tmp_Val == 0 ) {
+            if (unique_Arr[j][k] == lookup_Val && unique_Arr[j].length != 1 && tmp_Val == 0) {
 
                 // unique_Arr[j][k] = tmp_Val;
                 console.log('SUDO DELETE');
-                unique_Arr[j].splice(k,1);
+                unique_Arr[j].splice(k, 1);
 
             }
-            
+
         }
     }
-     console.log(tmp_Val);
+    console.log(tmp_Val);
     Assigning_Display(unique_Arr);
 
 }
@@ -652,10 +657,9 @@ function saveBackup() {
     console.log("SAVING");
     var url = "http://localhost:3000/exportData";
     $.get(url, function (data) {
-        if(data == true){
+        if (data == true) {
             showPopUp("Backup Completed!");
-        }
-        else{
+        } else {
             showPopUp("There was an error processing your backup. Please try again.");
         }
     });
@@ -665,10 +669,9 @@ function deleteBackup() {
     console.log("Deleting");
     var url = "http://localhost:3000/deleteBackup";
     $.get(url, function (data) {
-        if(data){
+        if (data) {
             showPopUp("Backup Data file deleted.");
-        }
-        else{
+        } else {
             showPopUp("No Backup to delete.");
         }
     });
@@ -684,21 +687,22 @@ function showPopUp(text) {
 
 function populationSearch() {
     var searchTarget = $("#searchbar").val()
-        var url = "http://localhost:3000/population?search=" + searchTarget;
-        $.get(url, function (data) {
-		var separatorIndex = data.indexOf("SEPARATOR");
-		var citiesInState = data.slice(0, separatorIndex);
-                var citiesCount = data.slice(separatorIndex + 1);
-                console.log("Unique City Array: ", citiesInState);
-		console.log("Number of Calls from City Array: ", citiesCount);
-                if (citiesInState != 0 && citiesCount != 0) {
-			//do graph here
-			showPopUp("Success!");
-                }
-                else {
-			showPopUp("Error: Your Entry Was Not Found In Our Database!");
-                }
-        });
+    var url = "http://localhost:3000/population?search=" + searchTarget;
+    $.get(url, function (data) {
+        var separatorIndex = data.indexOf("SEPARATOR");
+        var citiesInState = data.slice(0, separatorIndex);
+        var citiesCount = data.slice(separatorIndex + 1);
+        console.log("Unique City Array: ", citiesInState);
+        console.log("Number of Calls from City Array: ", citiesCount);
+        if (citiesInState != 0 && citiesCount != 0) {
+            citiesInState = citiesInState.slice(0, 50);
+            citiesCount = citiesCount.slice(0, 50);
+            //do graph here
+            showPopUp("Success!");
+        } else {
+            showPopUp("Error: Your Entry Was Not Found In Our Database!");
+        }
+    });
 }
 
 function daysArtifact() {
@@ -706,172 +710,267 @@ function daysArtifact() {
     var busyCity = $("#city_search").val()
     var busyAddress = $("#address_search").val()
     var busyStreet = $("#street_search").val()
-    	var url = "http://localhost:3000/busiest?state=" + busyState + "&city=" + busyCity + "&address=" + busyAddress + "&street=" + busyStreet;
-    	$.get(url, function (data) {
-		if (data == "ErrorCode1") {
-			showPopUp("Error: Your Entry Was Not Found In Our Database!");
-		}
-		else {
-			console.log(data);
+    var url = "http://localhost:3000/busiest?state=" + busyState + "&city=" + busyCity + "&address=" + busyAddress + "&street=" + busyStreet;
+    $.get(url, function (data) {
+        if (data == "ErrorCode1") {
+            showPopUp("Error: Your Entry Was Not Found In Our Database!");
+        } else {
+            console.log(data);
             //do graph here
             daysChart(data);
-			showPopUp("Success");
-		}
-	});
+            showPopUp("Success");
+        }
+    });
 }
 
 function compareArtifact() {
     var startDate = $("#month1_selection").val()
-	var endDate = $("#month2_selection").val()
-	var url = "http://localhost:3000/compare?startDate=" + startDate + "&endDate=" + endDate;
-	$.get(url, function (data) {
-		console.log("data length: ", data.length);
-		if (data == "ErrorCode1") {
-			showPopUp("Error: Incorrect month format! The ending month must be after the starting month!");
-		}
-		else if (data) {
-			if (data.length == 0) { //theres nothing inside except separator
-				showPopUp("Failed to Compare! Those Months Aren't In Our Data Set"); // cant happen with current setup
-			}
-			else {
-				var separatorIndex = data.indexOf("SEPARATOR");
+    var endDate = $("#month2_selection").val()
+    var url = "http://localhost:3000/compare?startDate=" + startDate + "&endDate=" + endDate;
+    $('#switchGraph').hide()
+    $('#switchGraph').val('Month')
+    $.get(url, function (data) {
+        console.log("data length: ", data.length);
+        if (data == "ErrorCode1") {
+            showPopUp("Error: Incorrect month format! The ending month must be after the starting month!");
+        } else if (data) {
+            if (data.length == 0) { //theres nothing inside except separator
+                showPopUp("Failed to Compare! Those Months Aren't In Our Data Set"); // cant happen with current setup
+            } else {
+                /*var separatorIndex = data.indexOf("SEPARATOR");
 				var uberArray = data.slice(0, separatorIndex);
-				var lyftArray = data.slice(separatorIndex + 1)
-				console.log("uberArray: ", uberArray);
+                var lyftArray = data.slice(separatorIndex + 1)*/
+                console.log($('#switchGraph').val())
+                var uberArray = data[0];
+                var lyftArray = data[1];
+                var dateUber = data[2];
+                var dateLyft = data[3];
+                console.log("uberArray: ", uberArray);
                 console.log("lyftArray: ", lyftArray);
-                separatorObject(uberArray,lyftArray);
-                
-				showPopUp("Success!")
-			}
-		}
-		else {
-			showPopUp("Fatal Error: Comparing Went Wrong!") //testing purposes: will never reach here
-		}
+
+                var labelArr = Object.keys(dateUber);
+                console.log(labelArr)
+                var uberDateArr = []
+                var lyftDateArr = []
+                for (var key in dateUber) {
+                    uberDateArr.push(dateUber[key]);
+                    lyftDateArr.push(dateLyft[key]);
+                }
+                console.log("dateUber:", uberDateArr)
+                console.log("dateLyft:", lyftDateArr)
+                console.log($( "#switchGraph" ).value)
+                if($('#switchGraph').val()== 'Date'){
+                    compareChart('line',labelArr, uberDateArr, lyftDateArr)
+                    $('#switchGraph').val('Month')
+                }
+                else if($('#switchGraph').val()== 'Month'){
+                    separatorObject(uberArray, lyftArray);
+                    $('#switchGraph').val('Date')
+                }
+
+                $( "#switchGraph" ).click(function() {
+                    if($('#switchGraph').val()== 'Date'){
+                        compareChart('line',labelArr, uberDateArr, lyftDateArr)
+                        $('#switchGraph').val('Month')
+                    }
+                    else if($('#switchGraph').val()== 'Month'){
+                        separatorObject(uberArray, lyftArray);
+                        $('#switchGraph').val('Date')
+                    }
+                });
+            
+                showPopUp("Success!")
+            }
+        } else {
+            showPopUp("Fatal Error: Comparing Went Wrong!") //testing purposes: will never reach here
+        }
     });
-   
+
 }
-function separatorObject(sArr, sArr2){
-  const monthVal = [];
-  for (var i = 0; i < sArr.length; ++i){
-      var tmp = sArr[i].split(':');
-      var sp = tmp.splice(0,1);
-      monthVal.push(sp[0]);
-  }
-  console.log(monthVal);
 
-  const uber_Arr = [];
-  for (var i = 0; i < sArr.length; ++i){
-    var tmp = sArr[i].split(':');
-    var sp = tmp.splice(1,1);
-    uber_Arr.push(sp[0]);
-  }
-  console.log(uber_Arr);
+function separatorObject(sArr, sArr2) {
+    const monthVal = [];
+    for (var i = 0; i < sArr.length; ++i) {
+        var tmp = sArr[i].split(':');
+        var sp = tmp.splice(0, 1);
+        monthVal.push(sp[0]);
+    }
+    console.log(monthVal);
 
-  const lyft_Arr = [];
-  for (var i = 0; i < sArr2.length; ++i){
-    var tmp = sArr2[i].split(':');
-    var sp = tmp.splice(1,1);
-    lyft_Arr.push(sp[0]);
-  }
-  console.log(lyft_Arr);
+    const uber_Arr = [];
+    for (var i = 0; i < sArr.length; ++i) {
+        var tmp = sArr[i].split(':');
+        var sp = tmp.splice(1, 1);
+        uber_Arr.push(sp[0]);
+    }
+    console.log(uber_Arr);
 
- compareChart(monthVal, uber_Arr,lyft_Arr);
+    const lyft_Arr = [];
+    for (var i = 0; i < sArr2.length; ++i) {
+        var tmp = sArr2[i].split(':');
+        var sp = tmp.splice(1, 1);
+        lyft_Arr.push(sp[0]);
+    }
+    console.log(lyft_Arr);
+
+    compareChart('horizontalBar',monthVal, uber_Arr, lyft_Arr);
 }
-function compareChart(y_Ax,uber_Arr,lyft_Arr ){
 
+function compareChart(charType, y_Ax, uber_Arr, lyft_Arr) {
+    $( "#switchGraph" ).show();
     var bgColor = [
         'rgba(255, 99, 132, 0.2)',
         'rgba(54, 162, 235, 0.2)'
-        ];
-    
-        var bdColor = [
+    ];
+
+    var bdColor = [
         'rgba(255, 99, 132, 1)',
         'rgba(54, 162, 235, 1)'
-        ];
+    ];
 
- $('#comparisonChart').remove();
- $('.comparisonHolder').html('<canvas id="comparisonChart"></canvas>');
- var ctx = document.getElementById('comparisonChart').getContext('2d');
+    $('#comparisonChart').remove();
+    $('.comparisonHolder').html('<canvas id="comparisonChart"></canvas>');
+    var ctx = document.getElementById('comparisonChart').getContext('2d');
 
- var comparisonChart = new Chart(ctx,{
-     type: 'horizontalBar',
-     data: {
-         labels: y_Ax,
-         
-         datasets:[
+    var comparisonChart = new Chart(ctx, {
+        type: charType,
+        data: {
+            labels: y_Ax,
+
+            datasets: [{
+                    // label: 'Number of between Uber vs Lyft',
+
+                    label: 'Uber',
+                    data: uber_Arr,
+                    backgroundColor: bgColor[0],
+                    borderColor: bdColor[0],
+                    borderWidth: 1
+                },
+
                 {
-                // label: 'Number of between Uber vs Lyft',
-
-                label: 'Uber',
-                data: uber_Arr,
-                backgroundColor: bgColor[0],
-                borderColor: bdColor[0],
-                borderWidth: 1
-                 },
-
-                {
-                label: 'Lyft',
-                data: lyft_Arr,
-                backgroundColor: bgColor[1],
-                borderColor: bdColor[1],
-                borderWidth: 1
+                    label: 'Lyft',
+                    data: lyft_Arr,
+                    backgroundColor: bgColor[1],
+                    borderColor: bdColor[1],
+                    borderWidth: 1
                 },
             ]
 
-         
-     },
-     options: {
-         legend: {
-             display: true,
-             position: 'bottom',
-             yAxis: [{
+
+        },
+        options: {
+            legend: {
                 display: true,
-                scaleLabel:{
+                position: 'bottom',
+                yAxis: [{
                     display: true,
-                    labelString: 'Number of Call'
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'Number of Call'
                     }
                 }]
 
             }
-         
-         }
+
+        }
 
 
- });
+    });
 }
-//Line chart for busy days 
-function daysChart(y_Axis){
-    console.log("ITS WORKING");
-    const  x_Axis = ["Sunday","Monday","Tuesday","Wednesday",
-            "Thursday", "Friday", "Saturday"];
-    //figure it out once data is in 
+
+function compareDay(y_Ax, uber_Arr, lyft_Arr) {
 
     var bgColor = [
-    'rgba(255, 99, 132, 0.2)',
-    'rgba(54, 162, 235, 0.2)'
+        'rgba(255, 99, 132, 0.2)',
+        'rgba(54, 162, 235, 0.2)'
     ];
 
     var bdColor = [
-    'rgba(255, 99, 132, 1)',
-    'rgba(54, 162, 235, 1)'
+        'rgba(255, 99, 132, 1)',
+        'rgba(54, 162, 235, 1)'
+    ];
+
+    $('#comparisonChart').remove();
+    $('.comparisonHolder').html('<canvas id="comparisonDateChart"></canvas>');
+    var ctx = document.getElementById('comparisonDateChart').getContext('2d');
+
+    var comparisonDateChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: y_Ax,
+
+            datasets: [{
+                    // label: 'Number of between Uber vs Lyft',
+
+                    label: 'Uber',
+                    data: uber_Arr,
+                    backgroundColor: bgColor[0],
+                    borderColor: bdColor[0],
+                    borderWidth: 1
+                },
+
+                {
+                    label: 'Lyft',
+                    data: lyft_Arr,
+                    backgroundColor: bgColor[1],
+                    borderColor: bdColor[1],
+                    borderWidth: 1
+                },
+            ]
+
+
+        },
+        options: {
+            legend: {
+                display: true,
+                position: 'bottom',
+                yAxis: [{
+                    display: true,
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'Number of Call'
+                    }
+                }]
+
+            }
+
+        }
+
+
+    });
+}
+//Line chart for busy days 
+function daysChart(y_Axis) {
+    console.log("ITS WORKING");
+    const x_Axis = ["Sunday", "Monday", "Tuesday", "Wednesday",
+        "Thursday", "Friday", "Saturday"
+    ];
+    //figure it out once data is in 
+
+    var bgColor = [
+        'rgba(255, 99, 132, 0.2)',
+        'rgba(54, 162, 235, 0.2)'
+    ];
+
+    var bdColor = [
+        'rgba(255, 99, 132, 1)',
+        'rgba(54, 162, 235, 1)'
     ];
 
 
     var ctx = document.getElementById('busyChart').getContext('2d');
-    var busyChart = new Chart(ctx,{
+    var busyChart = new Chart(ctx, {
         type: 'line',
         data: {
             labels: x_Axis,
-            datasets:[
-                {
-                    label: "Days of Week",
-                    data: y_Axis,
-                    backgroundColor: bgColor[0],
-                    borderColor: bdColor[0],
-                    fill: false,
-                    lineTension: 0,  
-                }
-            ]
+            datasets: [{
+                label: "Days of Week",
+                data: y_Axis,
+                backgroundColor: bgColor[0],
+                borderColor: bdColor[0],
+                fill: false,
+                lineTension: 0,
+            }]
         },
         options: {
             scales: {
@@ -889,13 +988,13 @@ function daysChart(y_Axis){
                 }]
             },
             legend: {
-              display: true,
-              text: 'Busiest Days of Week Based on Calls',
-              position: 'bottom',
-              labels: {
-                fontColor: "#000000",
-                fontSize: 20,
-              },
+                display: true,
+                text: 'Busiest Days of Week Based on Calls',
+                position: 'bottom',
+                labels: {
+                    fontColor: "#000000",
+                    fontSize: 20,
+                },
             }
         }
 

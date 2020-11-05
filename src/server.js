@@ -16,7 +16,7 @@ var dataFrame = []
 var key;
 var field;
 
-function getBackUp(){
+function getBackUp() {
   uberFrame = []
   lyftFrame = []
   dataFrame = []
@@ -31,7 +31,7 @@ function getBackUp(){
   });
 }
 
-function getRawData(){
+function getRawData() {
   uberFrame = []
   lyftFrame = []
   dataFrame = []
@@ -81,7 +81,7 @@ function getRawData(){
         });
     });
   });
-  
+
 }
 
 
@@ -91,26 +91,26 @@ function processUberData(allText) {
   allText = allText.replace(/['"]+/g, '') //remove all " from input
   allText = allText.toLowerCase();
   var allTextLines = allText.split(/\r\n|\n/); //Split the input based on new lines
-  var headers = allTextLines[0].split(',');   //Split the first line and get the headers based on comma
-  for (var i = 1; i < allTextLines.length; i++) {   //travarse all lines
-    var data = allTextLines[i].split(',');          //split each line based on comma
-    if (data.length == headers.length) {          //make sure to check if data exists
-      var e = new callInfo();                     //create a new callInfo object
-      var res = data[0].split(" ");                //split the date and timew
-      
-	var tempHolder = res[0].split('/'); //currently at day/month/year (STILL NEED TO CHANGE TO year/month/day)
-        var tempRes = tempHolder[1];
-        tempHolder[1] = tempHolder[0];
-        tempHolder[0] = tempRes;
-        res[0] = tempHolder.join();
-	res[0] = res[0].replace(/,/g, '.');
-      
-      Object.assign(e.Date = res[0]);             //assign the date
-      Object.assign(e.Time = res[1].slice(0, -3));              //assign time
-      Object.assign(e.Lat = data[1]);              //assign Latitude
-      Object.assign(e.Lon = data[2]);               //assign Longitude
-      Object.assign(e.Base = data[3]);              //assign Base ID
-      uberFrame.push(e);                            //Push the object callInfo into the data frame
+  var headers = allTextLines[0].split(','); //Split the first line and get the headers based on comma
+  for (var i = 1; i < allTextLines.length; i++) { //travarse all lines
+    var data = allTextLines[i].split(','); //split each line based on comma
+    if (data.length == headers.length) { //make sure to check if data exists
+      var e = new callInfo(); //create a new callInfo object
+      var res = data[0].split(" "); //split the date and timew
+
+      var tempHolder = res[0].split('/'); //currently at day/month/year (STILL NEED TO CHANGE TO year/month/day)
+      var tempRes = tempHolder[0];
+      tempHolder[1] = tempHolder[1];
+      tempHolder[0] = tempRes;
+      res[0] = tempHolder.join();
+      res[0] = res[0].replace(/,/g, '.');
+
+      Object.assign(e.Date = res[0]); //assign the date
+      Object.assign(e.Time = res[1].slice(0, -3)); //assign time
+      Object.assign(e.Lat = data[1]); //assign Latitude
+      Object.assign(e.Lon = data[2]); //assign Longitude
+      Object.assign(e.Base = data[3]); //assign Base ID
+      uberFrame.push(e); //Push the object callInfo into the data frame
     }
   }
   console.log("Finished Uber Data");
@@ -122,26 +122,25 @@ function processLyftData(allText) {
   allText = allText.replace(/['"]+/g, '') //remove all " from input
   allText = allText.toLowerCase();
   var allTextLines = allText.split(/\r\n|\n/); //Split the input based on new lines
-  var headers = allTextLines[0].split(',');   //Split the first line and get the headers based on comma
-  for (var i = 1; i < allTextLines.length; i++) {   //travarse all lines
-    var data = allTextLines[i].split(',');          //split each line based on comma
-    if (data.length == headers.length) {          //make sure to check if data exists
-      var e = new callInfo();                     //create a new callInfo object
-      var res = data[0].split(" ");                //split the date and timew
+  var headers = allTextLines[0].split(','); //Split the first line and get the headers based on comma
+  for (var i = 1; i < allTextLines.length; i++) { //travarse all lines
+    var data = allTextLines[i].split(','); //split each line based on comma
+    if (data.length == headers.length) { //make sure to check if data exists
+      var e = new callInfo(); //create a new callInfo object
+      var res = data[0].split(" "); //split the date and timew
 
-	var tempHolder = res[0].split('/'); //same changes with uber date
-	var tempRes = tempHolder[1];
-	tempHolder[1] = tempHolder[0];
-	tempHolder[0] = tempRes;
-	res[0] = tempHolder.join();
-	res[0] = res[0].replace(/,/g, '.');
-
-      Object.assign(e.Date = res[0]);             //assign the date
-      Object.assign(e.Time = res[1]);              //assign time
-      Object.assign(e.Lat = data[1]);              //assign Latitude
-      Object.assign(e.Lon = data[2]);               //assign Longitude
+      var tempHolder = res[0].split('/'); //same changes with uber date
+      var tempRes = tempHolder[0];
+      tempHolder[1] = tempHolder[1];
+      tempHolder[0] = tempRes;
+      res[0] = tempHolder.join();
+      res[0] = res[0].replace(/,/g, '.');
+      Object.assign(e.Date = res[0]); //assign the date
+      Object.assign(e.Time = res[1]); //assign time
+      Object.assign(e.Lat = data[1]); //assign Latitude
+      Object.assign(e.Lon = data[2]); //assign Longitude
       //Object.assign(e.Date = data[0]);
-      lyftFrame.push(e);                            //Push the object callInfo into the data frame
+      lyftFrame.push(e); //Push the object callInfo into the data frame
     }
   }
   console.log("Finished Lyft Data");
@@ -189,7 +188,7 @@ function processData(allText) {
 function searchDataFrame(dataFrame, key, field) { //returns an array of callInfo that matches key
   var tempDF = [];
   let keycls = new keyClass(field, key.toLowerCase());
-  
+
   //tempDF = searchPopulatedCities(dataFrame, key, field);
   //tempDF = searchDaysOfWeek(dataFrame, key, "Manhattan", "110 Bleecker St", "Bleecker St");
 
@@ -204,7 +203,7 @@ function searchPopulatedCities(dataFrame, key, field) {
 
   let analyticscls = new analyticsClass(field, key.toLowerCase());
   tempDF = analyticscls.popCitiesSearch(dataFrame);
-  count = analyticscls.count; 
+  count = analyticscls.count;
   tempDF.push("SEPARATOR");
   tempDF = tempDF.concat(count);
   //console.dir(count);
@@ -216,103 +215,103 @@ function searchDaysOfWeek(dataFrame, state, city, address, street) {
   var days = [];
   var searchDF = [];
   searchDF = dataFrame;
-	var tempCheck = 1;
-	
+  var tempCheck = 1;
+
   if (state != "") {
-      let keycls = new keyClass("State", state.toLowerCase());
-      // console.log("State: " + keycls.state)
-	  console.log("Searching state");
-      searchDF = keycls.keySearch(searchDF);
-	  tempCheck = 0;
+    let keycls = new keyClass("State", state.toLowerCase());
+    // console.log("State: " + keycls.state)
+    console.log("Searching state");
+    searchDF = keycls.keySearch(searchDF);
+    tempCheck = 0;
   }
   if (city != "") {
-      let keycls = new keyClass("City", city.toLowerCase());
-	  console.log("Searching city");
-      searchDF = keycls.keySearch(searchDF);
-	  tempCheck = 0;
+    let keycls = new keyClass("City", city.toLowerCase());
+    console.log("Searching city");
+    searchDF = keycls.keySearch(searchDF);
+    tempCheck = 0;
   }
   if (address != "") {
     let keycls = new keyClass("Address", address.toLowerCase());
-	  console.log("Searching address");
+    console.log("Searching address");
     searchDF = keycls.keySearch(searchDF);
-	  tempCheck = 0;
+    tempCheck = 0;
   }
   if (street != "") {
     let keycls = new keyClass("Street", street.toLowerCase());
-	  console.log("Searching Street");
+    console.log("Searching Street");
     searchDF = keycls.keySearch(searchDF);
-	  tempCheck = 0;
-  }  
+    tempCheck = 0;
+  }
 
   let analyticscls = new analyticsClass("", "");
-	if (tempCheck) { //none was picked
-		searchDF = "";
-	}
-  	days = analyticscls.weekDaysSearch(searchDF);
+  if (tempCheck) { //none was picked
+    searchDF = "";
+  }
+  days = analyticscls.weekDaysSearch(searchDF);
   //console.dir(days);
   return days;
 }
 
 function addData(dataFrame, date, time, state, city, address) {
-	var e = new callInfo();
-	if (date == "" || time == "" || state == "" || city == "" || address == "") {
-		console.log("Error not adding anymore");
-		return false;
-	}
-	date = date.toLowerCase();
-	time = time.toLowerCase();
-	state = state.toLowerCase();
-	city = city.toLowerCase();
-	address = address.toLowerCase();
+  var e = new callInfo();
+  if (date == "" || time == "" || state == "" || city == "" || address == "") {
+    console.log("Error not adding anymore");
+    return false;
+  }
+  date = date.toLowerCase();
+  time = time.toLowerCase();
+  state = state.toLowerCase();
+  city = city.toLowerCase();
+  address = address.toLowerCase();
 
-	date = date.split('.');
-	date = date[1] + '.' + date[2] + '.' + date[0];
+  date = date.split('.');
+  date = date[1] + '.' + date[2] + '.' + date[0];
 
-	Object.assign(e.Date = date);
-	Object.assign(e.Time = time);
-	Object.assign(e.State = state);
-	Object.assign(e.City = city);
-	Object.assign(e.Address = address);
-	var index = address.indexOf(" ");
-	Object.assign(e.House = address.substr(0, index));
-	Object.assign(e.Street = address.substr(index + 1));
-	Object.defineProperty(e, "houseNum", {
-		enumerable: false
-	});
-	Object.defineProperty(e, "street", {
-		enumerable: false
-	});
-	dataFrame.push(e);
-	return true;
+  Object.assign(e.Date = date);
+  Object.assign(e.Time = time);
+  Object.assign(e.State = state);
+  Object.assign(e.City = city);
+  Object.assign(e.Address = address);
+  var index = address.indexOf(" ");
+  Object.assign(e.House = address.substr(0, index));
+  Object.assign(e.Street = address.substr(index + 1));
+  Object.defineProperty(e, "houseNum", {
+    enumerable: false
+  });
+  Object.defineProperty(e, "street", {
+    enumerable: false
+  });
+  dataFrame.push(e);
+  return true;
 }
 
 function deleteData(dataFrame, date, time, state, city, address) {
-	for (var i = 0; i < dataFrame.length; ++i) {
-		if (date == dataFrame[i].Date && time == dataFrame[i].Time && state == dataFrame[i].State && city == dataFrame[i].City && address == dataFrame[i].Address) {
-			dataFrame.splice(i, 1); //.splice(index, how many to delete)
-			return true;
-		}
-	}
-	return false;
+  for (var i = 0; i < dataFrame.length; ++i) {
+    if (date == dataFrame[i].Date && time == dataFrame[i].Time && state == dataFrame[i].State && city == dataFrame[i].City && address == dataFrame[i].Address) {
+      dataFrame.splice(i, 1); //.splice(index, how many to delete)
+      return true;
+    }
+  }
+  return false;
 }
 
 function editData(dataFrame, tempOld, tempNew) {
-	var editOld = tempOld.split(",");
-	var editNew = tempNew.split(",");
-	for (var i = 0; i < dataFrame.length; ++i) {
-		if (editOld[0] == dataFrame[i].Date && editOld[1] == dataFrame[i].Time && editOld[2] == dataFrame[i].State && editOld[3] == dataFrame[i].City && editOld[4] == dataFrame[i].Address) {
-			dataFrame[i].Date = editNew[0].toLowerCase();
-			dataFrame[i].Time = editNew[1].toLowerCase();
-			dataFrame[i].State = editNew[2].toLowerCase();
-			dataFrame[i].City = editNew[3].toLowerCase();
-			dataFrame[i].Address = editNew[4].toLowerCase();
-			var index = editNew[4].indexOf(" ");
-			dataFrame[i].House = editNew[4].substr(0, index).toLowerCase();
-			dataFrame[i].Street = editNew[4].substr(index + 1).toLowerCase();
-			return true;
-		}
-	}
-	return false;
+  var editOld = tempOld.split(",");
+  var editNew = tempNew.split(",");
+  for (var i = 0; i < dataFrame.length; ++i) {
+    if (editOld[0] == dataFrame[i].Date && editOld[1] == dataFrame[i].Time && editOld[2] == dataFrame[i].State && editOld[3] == dataFrame[i].City && editOld[4] == dataFrame[i].Address) {
+      dataFrame[i].Date = editNew[0].toLowerCase();
+      dataFrame[i].Time = editNew[1].toLowerCase();
+      dataFrame[i].State = editNew[2].toLowerCase();
+      dataFrame[i].City = editNew[3].toLowerCase();
+      dataFrame[i].Address = editNew[4].toLowerCase();
+      var index = editNew[4].indexOf(" ");
+      dataFrame[i].House = editNew[4].substr(0, index).toLowerCase();
+      dataFrame[i].Street = editNew[4].substr(index + 1).toLowerCase();
+      return true;
+    }
+  }
+  return false;
 }
 
 // FUNCTION TO FIND UNIQUE CITIES IN DATAFRAME
@@ -339,53 +338,51 @@ function uniqueValues(dataFrame) {
 
 }
 
-function checkBackUp(){
+function checkBackUp() {
   if (fs.existsSync('inputFile/dataFrame.csv')) {
     return true;
-  }
-  else{
+  } else {
     return false;
   }
 }
 
 
-function exportData(arr){
+function exportData(arr) {
   let csvContent = "Date, Time, State, City, Address, Street\n";
 
 
-  for(var x = 0; x < arr.length; x++){
+  for (var x = 0; x < arr.length; x++) {
     var address = arr[x].Address
     var index = address.indexOf(" ");
-    var house = address.substr(0,index);
+    var house = address.substr(0, index);
     var street = address.substr(index + 1);
-    csvContent += arr[x].Date + "," + arr[x].Time + "," + arr[x].State + "," + arr[x].City + "," + house + "," +  street + "\n";
+    csvContent += arr[x].Date + "," + arr[x].Time + "," + arr[x].State + "," + arr[x].City + "," + house + "," + street + "\n";
   }
 
-  
-  try{
-      fs.writeFile('inputFile/dataFrame.csv', csvContent, 'utf8', function (err) {
+
+  try {
+    fs.writeFile('inputFile/dataFrame.csv', csvContent, 'utf8', function (err) {
       if (err) {
         console.log('Some error occured - file either not saved or corrupted file saved.');
-      } else{
+      } else {
         console.log('It\'s saved!');
       }
     });
-  }
-  catch(err){
+  } catch (err) {
     console.log(err);
     return false;
   }
   return true;
 }
 
-function deleteBackup(){
+function deleteBackup() {
   const path = 'inputFile/dataFrame.csv'
 
   try {
     fs.unlinkSync(path)
     //file removed
-  } catch(err) {
-    if(err.code == 'ENOENT'){
+  } catch (err) {
+    if (err.code == 'ENOENT') {
       return false;
     }
   }
@@ -405,70 +402,76 @@ function createJSON(tempDF) {
 }
 
 function monthGenerator(startMonth) {
-	switch (startMonth) {
-		case '1':
-                        return "Janurary";
-                        break;
-                case '2':
-                        return "February";
-                        break;
-                case '3':
-                        return "March";
-                        break;
-		case '4':
-                        return "April";
-                        break;
-                case '5':
-                        return "May";
-                        break;
-                case '6':
-                        return "June";
-                        break;
-		case '7':
-			return "July";
-			break;
-		case '8':
-			return "August";
-			break;
-		case '9':
-                        return "September";
-                        break;
-		case '10':
-                        return "October";
-                        break;
-                case '11':
-                        return "November";
-                        break;
-                case '12':
-                        return "December";
-                        break;
-	}
-	return "Error In Month Calculation" //should never come here
+  switch (startMonth) {
+    case '1':
+      return "Janurary";
+      break;
+    case '2':
+      return "February";
+      break;
+    case '3':
+      return "March";
+      break;
+    case '4':
+      return "April";
+      break;
+    case '5':
+      return "May";
+      break;
+    case '6':
+      return "June";
+      break;
+    case '7':
+      return "July";
+      break;
+    case '8':
+      return "August";
+      break;
+    case '9':
+      return "September";
+      break;
+    case '10':
+      return "October";
+      break;
+    case '11':
+      return "November";
+      break;
+    case '12':
+      return "December";
+      break;
+  }
+  return "Error In Month Calculation" //should never come here
 }
 
 function compareSearch(dataFrame, startDate, endDate) {
   console.log("DF SIZE: ", dataFrame[0].date, uberFrame[0].date, lyftFrame[0].date);
-	var uberCompArr = [];
-	var lyftCompArr = [];
-	var totalArr = [];
-	var tempField = "Month";
-	var startMonth = startDate;
-	var endMonth = endDate;
-	while (Number(startMonth) != Number(endMonth) + 1) {
-		let keycls = new keyClass(tempField, (Number(startMonth)).toString());
-		console.log("Comparing This Month rn: ", (Number(startMonth)).toString());
-		var uberArr = keycls.keySearch(uberFrame);
-		var lyftArr = keycls.keySearch(lyftFrame);
-		console.log("Uber size for this month: ", uberArr.length);
-		console.log("Lyft size for this month: ", lyftArr.length);
-		uberCompArr.push((monthGenerator(Number(startMonth).toString()) + ": " + uberArr.length).toString());
-		lyftCompArr.push((monthGenerator(Number(startMonth).toString()) + ": " + lyftArr.length).toString());
-		startMonth = Number(startMonth) + 1;
-		startMonth = startMonth.toString();
-	}
-	uberCompArr.push("SEPARATOR");
-//-----------------Incase we expand, this block checks to see if one dataset returns null while other does not------------//
-	/*if (uberCompArr.length > 1 && lyftCompArr.length > 0) {
+  var uberCompArr = [];
+  var lyftCompArr = [];
+  var totalArr = [];
+  var tempField = "Month";
+  var startMonth = startDate;
+  var endMonth = endDate;
+  var dateUber = {}
+  var dateLyFt = {}
+  while (Number(startMonth) != Number(endMonth) + 1) {
+    let keycls = new keyClass(tempField, (Number(startMonth)).toString());
+    console.log("Comparing This Month rn: ", (Number(startMonth)).toString());
+    var uberArr = keycls.keySearch(uberFrame);
+    var lyftArr = keycls.keySearch(lyftFrame);
+
+    Object.assign(dateUber, getDateUnique(uberArr));
+    Object.assign(dateLyFt, getDateUnique(lyftArr));
+    
+    console.log("Uber size for this month: ", uberArr.length);
+    console.log("Lyft size for this month: ", lyftArr.length);
+    uberCompArr.push((monthGenerator(Number(startMonth).toString()) + ": " + uberArr.length).toString());
+    lyftCompArr.push((monthGenerator(Number(startMonth).toString()) + ": " + lyftArr.length).toString());
+    startMonth = Number(startMonth) + 1;
+    startMonth = startMonth.toString();
+  }
+  //uberCompArr.push("SEPARATOR");
+  //-----------------Incase we expand, this block checks to see if one dataset returns null while other does not------------//
+  /*if (uberCompArr.length > 1 && lyftCompArr.length > 0) {
 		totalArr = uberCompArr.concat(lyftCompArr);
 	}
 	else if (uberCompArr.length > 1) { //greater than 1 bc uber will always have separator at end
@@ -477,9 +480,23 @@ function compareSearch(dataFrame, startDate, endDate) {
 	else if (lyftCompArr.length > 0) {
 		lyftCompArr = lyftCompArr.unshift("SEPARATOR"); //adds separator to the beginning
 		totalArr = lyftCompArr;
-	}*/
-	totalArr = uberCompArr.concat(lyftCompArr);
-	return totalArr; //will return null if no data in both sets
+  }*/
+  //console.log(dateUber)
+  //totalArr = uberCompArr.concat(lyftCompArr);
+  totalArr.push(uberCompArr)
+  totalArr.push(lyftCompArr)
+  totalArr.push(dateUber);
+  totalArr.push(dateLyFt);
+  return totalArr; //will return null if no data in both sets
+}
+
+function getDateUnique(arr) {
+
+  var counts = {};
+  for (var i = 0; i < arr.length; i++) {
+    counts[arr[i].date] = 1 + (counts[arr[i].date] || 0);
+  }
+  return counts;
 }
 
 
@@ -502,7 +519,7 @@ app.get('/search', (req, res) => {
   var key_name = id;
   console.log("key name = " + key_name);
   console.log("field name = " + field);
-  
+
   var data = searchDataFrame(dataFrame, key_name, field);
   res.header("Content-Type", 'application/json');
   res.json(data);
@@ -515,12 +532,12 @@ app.get('/checkBackup', (req, res) => {
 
 app.get('/getBackup', (req, res) => {
   console.log("Getting Backup");
-    getBackUp();
-    res.send(true);
+  getBackUp();
+  res.send(true);
 });
 
 app.get('/noBackup', (req, res) => {
-  if(whichData != "real"){
+  if (whichData != "real") {
     console.log("Getting Real");
     getRawData();
   }
@@ -540,86 +557,84 @@ app.get('/deleteBackup', (req, res) => {
 });
 
 app.get('/add', (req, res) => {
-	var tempDate = req.query.date;
-	var tempTime = req.query.time;
-	var tempState = req.query.state;
-	var tempCity = req.query.city;
-	var tempAddress = req.query.address;
-	console.log("Adding this: ", tempDate, tempTime, tempState, tempCity, tempAddress);
-	var data = addData(dataFrame, tempDate, tempTime, tempState, tempCity, tempAddress);
-	res.header("Content-Type", 'application/json');
-	res.json(data);
+  var tempDate = req.query.date;
+  var tempTime = req.query.time;
+  var tempState = req.query.state;
+  var tempCity = req.query.city;
+  var tempAddress = req.query.address;
+  console.log("Adding this: ", tempDate, tempTime, tempState, tempCity, tempAddress);
+  var data = addData(dataFrame, tempDate, tempTime, tempState, tempCity, tempAddress);
+  res.header("Content-Type", 'application/json');
+  res.json(data);
 });
 
 app.get('/delete', (req, res) => {
-	var tempDate = req.query.date;
-	var tempTime = req.query.time;
-	var tempState = req.query.state;
-	var tempCity = req.query.city;
-	var tempAddress = req.query.address;
-	console.log("Deleting this: ", tempDate, tempTime, tempState, tempCity, tempAddress);
-	var data = deleteData(dataFrame, tempDate, tempTime, tempState, tempCity, tempAddress);
-	res.header("Content-Type", 'application/json');
-	res.json(data);
+  var tempDate = req.query.date;
+  var tempTime = req.query.time;
+  var tempState = req.query.state;
+  var tempCity = req.query.city;
+  var tempAddress = req.query.address;
+  console.log("Deleting this: ", tempDate, tempTime, tempState, tempCity, tempAddress);
+  var data = deleteData(dataFrame, tempDate, tempTime, tempState, tempCity, tempAddress);
+  res.header("Content-Type", 'application/json');
+  res.json(data);
 });
 
 app.get('/edit', (req, res) => {
-        if (req.query.new == null) { var data = false; //more than one edit check
-		                res.header("Content-Type", 'application/json');
-		                res.json(data);
-	}
-	else {	//single edits
-		var tempOld = req.query.old;
-		var tempNew = req.query.new;
-		if (tempOld.toLowerCase() == tempNew.toLowerCase()) {
-			var data = false;
-			res.header("Content-Type", 'application/json');
-			res.json(data);
-		}
-		else {
-			console.log("Editing this: ", tempOld);
-			console.log("To look like this: ", tempNew);
-        		var data = editData(dataFrame, tempOld, tempNew);
-        		res.header("Content-Type", 'application/json');
-        		res.json(data);
-		}
-	}
+  if (req.query.new == null) {
+    var data = false; //more than one edit check
+    res.header("Content-Type", 'application/json');
+    res.json(data);
+  } else { //single edits
+    var tempOld = req.query.old;
+    var tempNew = req.query.new;
+    if (tempOld.toLowerCase() == tempNew.toLowerCase()) {
+      var data = false;
+      res.header("Content-Type", 'application/json');
+      res.json(data);
+    } else {
+      console.log("Editing this: ", tempOld);
+      console.log("To look like this: ", tempNew);
+      var data = editData(dataFrame, tempOld, tempNew);
+      res.header("Content-Type", 'application/json');
+      res.json(data);
+    }
+  }
 });
 
 app.get('/compare', (req, res) => {
-	var startDate = req.query.startDate;
-	var endDate = req.query.endDate;
-	console.log("Start month: ", startDate);
-	console.log("End month: ", endDate);
-	if (Number(startDate) > Number(endDate)) {
-		var data = "ErrorCode1";
-	}
-	else {
-		var data = compareSearch(dataFrame, startDate, endDate);
-	}
-	res.header("Content-Type", 'application/json');
-	res.json(data);
+  var startDate = req.query.startDate;
+  var endDate = req.query.endDate;
+  console.log("Start month: ", startDate);
+  console.log("End month: ", endDate);
+  if (Number(startDate) > Number(endDate)) {
+    var data = "ErrorCode1";
+  } else {
+    var data = compareSearch(dataFrame, startDate, endDate);
+  }
+  res.header("Content-Type", 'application/json');
+  res.json(data);
 });
 
 app.get('/busiest', (req, res) => {
-        var busyState = req.query.state;
-        var busyCity = req.query.city;
-	var busyAddress = req.query.address;
-        var busyStreet = req.query.street;
-	var data = searchDaysOfWeek(dataFrame, busyState, busyCity, busyAddress, busyStreet)
-	if (data.join() == "0,0,0,0,0,0,0") {
-		data = "ErrorCode1";
-	}
-	res.header("Content-Type", 'application/json');
-        res.json(data);
+  var busyState = req.query.state;
+  var busyCity = req.query.city;
+  var busyAddress = req.query.address;
+  var busyStreet = req.query.street;
+  var data = searchDaysOfWeek(dataFrame, busyState, busyCity, busyAddress, busyStreet)
+  if (data.join() == "0,0,0,0,0,0,0") {
+    data = "ErrorCode1";
+  }
+  res.header("Content-Type", 'application/json');
+  res.json(data);
 });
 
 app.get('/population', (req, res) => {
-        var searchTarget = req.query.search;
-	var searchField = "State"; //this is never used in analytics class btw
-        var data = searchPopulatedCities(dataFrame, searchTarget.toLowerCase(), searchField);
-        res.header("Content-Type", 'application/json');
-        res.json(data);
+  var searchTarget = req.query.search;
+  var searchField = "State"; //this is never used in analytics class btw
+  var data = searchPopulatedCities(dataFrame, searchTarget.toLowerCase(), searchField);
+  res.header("Content-Type", 'application/json');
+  res.json(data);
 });
 
 app.listen(PORT, () => console.log('Listening on port', PORT));

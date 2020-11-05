@@ -4,12 +4,12 @@ class keyClass {
     constructor(field, key) {
         this.field = field;
         this.key = key;
-    }    
-    
+    }
+
     keySearch(dataFrame) {
         var tempDF = [];
         for (var i = 0; i < dataFrame.length; ++i) {
-            switch(this.field) {
+            switch (this.field) {
                 case "State":
                     if (this.key == dataFrame[i].State) {
                         tempDF.push(dataFrame[i]);
@@ -51,7 +51,7 @@ class keyClass {
                         tempDF.push(dataFrame[i]);
                     }
                     break;
-                case "Street": 
+                case "Street":
                     if (this.key == dataFrame[i].street) {
                         tempDF.push(dataFrame[i]);
                     }
