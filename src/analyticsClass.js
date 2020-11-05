@@ -22,7 +22,6 @@ class analyticsClass {
             }
         }
         //console.log(this.tempDF.length)
-
         return this.tempDF;
     }
 

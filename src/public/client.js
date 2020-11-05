@@ -687,22 +687,48 @@ function showPopUp(text) {
 
 function populationSearch() {
     var searchTarget = $("#searchbar").val()
-    var url = "http://localhost:3000/population?search=" + searchTarget;
-    $.get(url, function (data) {
-        var separatorIndex = data.indexOf("SEPARATOR");
-        var citiesInState = data.slice(0, separatorIndex);
-        var citiesCount = data.slice(separatorIndex + 1);
-        console.log("Unique City Array: ", citiesInState);
-        console.log("Number of Calls from City Array: ", citiesCount);
-        if (citiesInState != 0 && citiesCount != 0) {
-            citiesInState = citiesInState.slice(0, 50);
-            citiesCount = citiesCount.slice(0, 50);
-            //do graph here
-            showPopUp("Success!");
-        } else {
-            showPopUp("Error: Your Entry Was Not Found In Our Database!");
-        }
+        var url = "http://localhost:3000/population?search=" + searchTarget;
+        $.get(url, function (data) {
+		var separatorIndex = data.indexOf("SEPARATOR");
+		var citiesInState = data.slice(0, separatorIndex);
+                var citiesCount = data.slice(separatorIndex + 1);
+                data = sortAArray(citiesInState, citiesCount);
+                console.log("Unique City Array: ", citiesInState);
+		        console.log("Number of Calls from City Array: ", citiesCount);
+                if (citiesInState != 0 && citiesCount != 0) {
+                
+
+                citiesInState = citiesInState.slice(0, 15);
+                citiesCount = citiesCount.slice(0, 15);
+                
+                citiesChart(citiesInState,citiesCount);
+			showPopUp("Success!");
+                }
+                else {
+			showPopUp("Error: Your Entry Was Not Found In Our Database!");
+                }
+        });
+        
+}
+
+function sortAArray(names, count){
+    var list = [];
+    for (var j = 0; j < names.length; j++) 
+        list.push({'name': names[j], 'count': count[j]});
+
+    //2) sort:
+    list.sort(function(a, b) {
+        return ((a.count > b.count) ? -1 : ((a.count == b.count) ? 0 : 1));
+        //Sort could be modified to, for example, sort on the age 
+        // if the name is the same.
     });
+
+    //3) separate them back out:
+    for (var k = 0; k < list.length; k++) {
+        names[k] = list[k].name;
+        count[k] = list[k].count;
+    }
+    return [names,count];
 }
 
 function daysArtifact() {
@@ -719,17 +745,21 @@ function daysArtifact() {
             //do graph here
             daysChart(data);
             showPopUp("Success");
-        }
-    });
+            
+		}
+	});
 }
 
 function compareArtifact() {
+    $('#comparisonChart').remove();
+    $('.comparisonHolder').html('<canvas id="comparisonChart"></canvas>');
     var startDate = $("#month1_selection").val()
     var endDate = $("#month2_selection").val()
     var url = "http://localhost:3000/compare?startDate=" + startDate + "&endDate=" + endDate;
-    $('#switchGraph').hide()
-    $('#switchGraph').val('Month')
+    $("#switchGraph").hide();
+    $(".loader").show();
     $.get(url, function (data) {
+        $(".loader").hide()
         console.log("data length: ", data.length);
         if (data == "ErrorCode1") {
             showPopUp("Error: Incorrect month format! The ending month must be after the starting month!");
@@ -740,7 +770,7 @@ function compareArtifact() {
                 /*var separatorIndex = data.indexOf("SEPARATOR");
 				var uberArray = data.slice(0, separatorIndex);
                 var lyftArray = data.slice(separatorIndex + 1)*/
-                console.log($('#switchGraph').val())
+                
                 var uberArray = data[0];
                 var lyftArray = data[1];
                 var dateUber = data[2];
@@ -758,17 +788,11 @@ function compareArtifact() {
                 }
                 console.log("dateUber:", uberDateArr)
                 console.log("dateLyft:", lyftDateArr)
-                console.log($( "#switchGraph" ).value)
-                if($('#switchGraph').val()== 'Date'){
-                    compareChart('line',labelArr, uberDateArr, lyftDateArr)
-                    $('#switchGraph').val('Month')
-                }
-                else if($('#switchGraph').val()== 'Month'){
-                    separatorObject(uberArray, lyftArray);
-                    $('#switchGraph').val('Date')
-                }
 
+                separatorObject(uberArray, lyftArray);
+                $('#switchGraph').val("Date");
                 $( "#switchGraph" ).click(function() {
+                    console.log($('#switchGraph').val())
                     if($('#switchGraph').val()== 'Date'){
                         compareChart('line',labelArr, uberDateArr, lyftDateArr)
                         $('#switchGraph').val('Month')
@@ -787,33 +811,35 @@ function compareArtifact() {
     });
 
 }
+function separatorObject(sArr, sArr2){
+  const monthVal = [];
 
-function separatorObject(sArr, sArr2) {
-    const monthVal = [];
-    for (var i = 0; i < sArr.length; ++i) {
-        var tmp = sArr[i].split(':');
-        var sp = tmp.splice(0, 1);
-        monthVal.push(sp[0]);
-    }
-    console.log(monthVal);
+  for (var i = 0; i < sArr.length; ++i){
+      var tmp = sArr[i].split(':');
+      var sp = tmp.splice(0,1);
+     
+      monthVal.push(sp[0]);
+      
+  }
+  console.log(monthVal);
 
-    const uber_Arr = [];
-    for (var i = 0; i < sArr.length; ++i) {
-        var tmp = sArr[i].split(':');
-        var sp = tmp.splice(1, 1);
-        uber_Arr.push(sp[0]);
-    }
-    console.log(uber_Arr);
+  const uber_Arr = [];
+  for (var i = 0; i < sArr.length; ++i){
+    var tmp = sArr[i].split(':');
+    var sp = tmp.splice(1,1);
+    uber_Arr.push(sp[0]);
+  }
+  console.log(uber_Arr);
 
-    const lyft_Arr = [];
-    for (var i = 0; i < sArr2.length; ++i) {
-        var tmp = sArr2[i].split(':');
-        var sp = tmp.splice(1, 1);
-        lyft_Arr.push(sp[0]);
-    }
-    console.log(lyft_Arr);
+  const lyft_Arr = [];
+  for (var i = 0; i < sArr2.length; ++i){
+    var tmp = sArr2[i].split(':');
+    var sp = tmp.splice(1,1);
+    lyft_Arr.push(sp[0]);
+  }
+  console.log(lyft_Arr);
 
-    compareChart('horizontalBar',monthVal, uber_Arr, lyft_Arr);
+ compareChart("horizontalBar",monthVal, uber_Arr,lyft_Arr);
 }
 
 function compareChart(charType, y_Ax, uber_Arr, lyft_Arr) {
@@ -876,76 +902,15 @@ function compareChart(charType, y_Ax, uber_Arr, lyft_Arr) {
 
 
     });
+    return comparisonChart;
 }
 
-function compareDay(y_Ax, uber_Arr, lyft_Arr) {
-
-    var bgColor = [
-        'rgba(255, 99, 132, 0.2)',
-        'rgba(54, 162, 235, 0.2)'
-    ];
-
-    var bdColor = [
-        'rgba(255, 99, 132, 1)',
-        'rgba(54, 162, 235, 1)'
-    ];
-
-    $('#comparisonChart').remove();
-    $('.comparisonHolder').html('<canvas id="comparisonDateChart"></canvas>');
-    var ctx = document.getElementById('comparisonDateChart').getContext('2d');
-
-    var comparisonDateChart = new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: y_Ax,
-
-            datasets: [{
-                    // label: 'Number of between Uber vs Lyft',
-
-                    label: 'Uber',
-                    data: uber_Arr,
-                    backgroundColor: bgColor[0],
-                    borderColor: bdColor[0],
-                    borderWidth: 1
-                },
-
-                {
-                    label: 'Lyft',
-                    data: lyft_Arr,
-                    backgroundColor: bgColor[1],
-                    borderColor: bdColor[1],
-                    borderWidth: 1
-                },
-            ]
-
-
-        },
-        options: {
-            legend: {
-                display: true,
-                position: 'bottom',
-                yAxis: [{
-                    display: true,
-                    scaleLabel: {
-                        display: true,
-                        labelString: 'Number of Call'
-                    }
-                }]
-
-            }
-
-        }
-
-
-    });
-}
 //Line chart for busy days 
-function daysChart(y_Axis) {
-    console.log("ITS WORKING");
-    const x_Axis = ["Sunday", "Monday", "Tuesday", "Wednesday",
-        "Thursday", "Friday", "Saturday"
-    ];
-    //figure it out once data is in 
+function daysChart(y_Axis){
+    
+    const  x_Axis = ["Sunday","Monday","Tuesday","Wednesday",
+            "Thursday", "Friday", "Saturday"];
+    
 
     var bgColor = [
         'rgba(255, 99, 132, 0.2)',
@@ -957,7 +922,7 @@ function daysChart(y_Axis) {
         'rgba(54, 162, 235, 1)'
     ];
 
-
+    
     var ctx = document.getElementById('busyChart').getContext('2d');
     var busyChart = new Chart(ctx, {
         type: 'line',
@@ -1002,4 +967,52 @@ function daysChart(y_Axis) {
 
 }
 
-// Popultion chart will go here 
+function citiesChart(x_Axis,y_Axis){
+    
+    var bgColor = [
+        'rgba(255, 99, 235, 0.2)'
+        ];
+    var bdColor = [
+        'rgba(255, 99, 132, 1)'
+           
+        ];
+    $('#populationChart').remove();
+    $('.populationHolder').html('<canvas id="populationChart"></canvas>');
+    var ctx = document.getElementById('populationChart').getContext('2d');
+    var populationChart = new Chart(ctx,{
+        type: 'line',
+        data: {
+            labels: x_Axis,
+            datasets:[
+                {
+                    
+                    data: y_Axis,
+                    backgroundColor: bgColor[0],
+                    borderColor: bdColor[0],
+                    //borderWidth: 1,
+                    //barPercentage: 50,
+                    fill: false,
+                    pointRadius:10,
+                    showLine: false  
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            title:{
+                display: true,
+                text: 'Number of calls per city'
+            },
+            // legend: {
+            //     display: true,
+            //     position: 'bottom',
+            //     labels: {
+            //       fontColor: "#ffffff",
+            //     },
+            
+            // }
+        }
+
+    });
+
+}

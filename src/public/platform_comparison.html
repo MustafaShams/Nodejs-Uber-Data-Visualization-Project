@@ -82,14 +82,14 @@
             <li><button id="submit_month" onclick=compareArtifact()>Go</button></li>
 
         </div>
+        <div class="loader"></div>
 
 
     </header>
     <div id="containerComparison">
-        <input type="button" id="switchGraph" value="Date">
+        <input type="button" id="switchGraph" onclick="changeGraph()">
         <div class="comparisonHolder">
             <canvas id="comparisonChart"></canvas>
-            <canvas id="comparisonDateChart"></canvas>
             
         </div>
     </div>
