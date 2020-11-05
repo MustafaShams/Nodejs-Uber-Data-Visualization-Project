@@ -682,3 +682,14 @@ function showPopUp(text) {
     $('.popup').fadeIn(800).delay(4000).fadeOut(800);
 }
 
+function populationSearch() {
+    // implement population artifact search
+}
+
+function daysArtifact() {
+    // implement days popularity artifact
+}
+
+function compareArtifact() {
+    // implement platform compparison artifact
+}

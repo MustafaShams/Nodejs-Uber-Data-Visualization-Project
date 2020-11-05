@@ -1,0 +1,27 @@
+html, body {
+    margin: 0;
+    padding: 0;
+}
+
+.search_terms {
+    float: left;
+    
+}
+
+.search_terms li {
+    display: inline-block;
+    color: black;
+}
+
+.search_terms label {
+    color: black;
+}
+
+.boxes label{
+    color: black;
+}
+
+.search_terms button:hover{
+    background: rgb(94, 91, 91);
+}
+

@@ -5,6 +5,7 @@
         <meta charset="UTF-8">
         <title>Uber Team Dataset</title>
         <link rel="stylesheet" href="styles.css">
+        <link rel="stylesheet" href="artifact_styles.css">
         </link>
         <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"> </script>
         <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.1.6/Chart.bundle.min.js"></script>
@@ -46,6 +47,41 @@
             <div class="popup">
                 <a class="popuptext" id="myPopup">Notification Popup</a>
             </div>
-    
+        </header>
+
+        <header>
+            <div class="search_terms">
+                <li>
+                    <form action="">
+                        <label for="month_selection">Start Month</label>
+                        <select name="month1_selection" id="month1_selection">
+                            <!--From what I see, uber data ranges from April to September-->
+                            <option value="April">April</option>
+                            <option value="May">May</option>
+                            <option value="June">June</option>
+                            <option value="July">July</option>
+                            <option value="August">August</option>
+                            <option value="September">September</option>
+                        </select>
+                    </form>
+                </li>
+                <li>
+                    <form action="">
+                        <label for="month_selection2">End Month</label>
+                        <select name="month2_selection" id="month2_selection">
+                            <option value="April">April</option>
+                            <option value="May">May</option>
+                            <option value="June">June</option>
+                            <option value="July">July</option>
+                            <option value="August">August</option>
+                            <option value="September">September</option>
+                        </select>
+                    </form>
+                </li>
+                <li><button id="submit_month" onclick=compareArtifact()>Go</button></li>
+            </div>
+
+        </header>
+    </body>
 
 </html>
