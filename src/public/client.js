@@ -714,12 +714,184 @@ function compareArtifact() {
 				var uberArray = data.slice(0, separatorIndex);
 				var lyftArray = data.slice(separatorIndex + 1)
 				console.log("uberArray: ", uberArray);
-				console.log("lyftArray: ", lyftArray);
+                console.log("lyftArray: ", lyftArray);
+                separatorObject(uberArray,lyftArray);
+                
 				showPopUp("Successful Compare")
 			}
 		}
 		else {
 			showPopUp("Fatal Error: Comparing Went Wrong!") //testing purposes: will never reach here
 		}
-	});
+    });
+   
 }
+function separatorObject(sArr, sArr2){
+  const monthVal = [];
+  for (var i = 0; i < sArr.length; ++i){
+      var tmp = sArr[i].split(':');
+      var sp = tmp.splice(0,1);
+      monthVal.push(sp[0]);
+  }
+  console.log(monthVal);
+
+  const uber_Arr = [];
+  for (var i = 0; i < sArr.length; ++i){
+    var tmp = sArr[i].split(':');
+    var sp = tmp.splice(1,1);
+    uber_Arr.push(sp[0]);
+  }
+  console.log(uber_Arr);
+
+  const lyft_Arr = [];
+  for (var i = 0; i < sArr2.length; ++i){
+    var tmp = sArr2[i].split(':');
+    var sp = tmp.splice(1,1);
+    lyft_Arr.push(sp[0]);
+  }
+  console.log(lyft_Arr);
+
+ compareChart(monthVal, uber_Arr,lyft_Arr);
+}
+function compareChart(y_Ax,uber_Arr,lyft_Arr ){
+
+    var bgColor = [
+        'rgba(255, 99, 132, 0.2)',
+        'rgba(54, 162, 235, 0.2)'
+        ];
+    
+        var bdColor = [
+        'rgba(255, 99, 132, 1)',
+        'rgba(54, 162, 235, 1)'
+        ];
+
+ $('#comparisonChart').remove();
+ $('.comparisonHolder').html('<canvas id="comparisonChart"></canvas>');
+ var ctx = document.getElementById('comparisonChart').getContext('2d');
+
+ var comparisonChart = new Chart(ctx,{
+     type: 'horizontalBar',
+     data: {
+         labels: y_Ax,
+         
+         datasets:[
+                {
+                // label: 'Number of between Uber vs Lyft',
+
+                label: 'Uber',
+                data: uber_Arr,
+                backgroundColor: bgColor[0],
+                borderColor: bdColor[0],
+                borderWidth: 1
+                 },
+
+                {
+                label: 'Lyft',
+                data: lyft_Arr,
+                backgroundColor: bgColor[1],
+                borderColor: bdColor[1],
+                borderWidth: 1
+                },
+            ]
+
+         
+     },
+     options: {
+         legend: {
+             display: true,
+             position: 'bottom',
+             yAxis: [{
+                display: true,
+                scaleLabel:{
+                    display: true,
+                    labelString: 'Number of Call'
+                    }
+                }]
+
+            }
+         
+         }
+
+
+ });
+}
+//Line chart for busy days 
+function daysChart(){
+    console.log("ITS WORKING");
+    const  x_Axis = ["Sunday","Monday","Tuesday","Wednesday",
+            "Thursday", "Friday", "Saturday"];
+    //figure it out once data is in 
+    const  uber_Data = [796120,829275,1028136];
+    const  lyft_Data = [4254,147448,115998];
+
+    var bgColor = [
+    'rgba(255, 99, 132, 0.2)',
+    'rgba(54, 162, 235, 0.2)'
+    ];
+
+    var bdColor = [
+    'rgba(255, 99, 132, 1)',
+    'rgba(54, 162, 235, 1)'
+    ];
+
+    $('#busyChart').remove();
+    $('.busyHolder').html('<canvas id="busyChart"></canvas>');
+    var ctx = document.getElementById('busyChart').getContext('2d');
+    var busyChart = new Chart(ctx,{
+        type: 'line',
+        data: {
+            labels: x_Axis,
+            datasets:[
+                {
+                data: uber_Data,
+                backgroundColor: bgColor[0],
+                borderColor: bdColor[0],
+                fill: false,
+
+                },
+                {
+                    data: lyft_Data,
+                    backgroundColor: bgColor[1],
+                    borderColor: bdColor[1],
+                    fill: false,
+
+                },
+                
+
+               
+            ]
+
+        },
+        options: {
+            legend: {
+              display: true,
+              text: 'Uber VS Lyft Calls',
+              position: 'bottom',
+              
+              labels: {
+                fontColor: "#ffffff",
+              },
+              scale:{
+                  xAxis:[{
+                      display:true,
+                      scaleLabel:{
+                          display: true,
+                          labelString: 'Month'
+                      }
+                  }],
+
+                yAxis: [{
+                    display: true,
+                    scaleLabel:{
+                        display: true,
+                        labelString: 'Value'
+                    }
+                }]
+              }
+            }
+        }
+
+    });
+
+}
+// Popultion chart will go here 
