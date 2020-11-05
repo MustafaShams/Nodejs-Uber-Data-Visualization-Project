@@ -7,7 +7,6 @@ $(document).ready(function () {
     searchTableCreate();
     addEntry();
 
-
     var timepicker = new TimePicker('time', {
         lang: 'en',
         theme: 'dark'
@@ -692,5 +691,35 @@ function daysArtifact() {
 }
 
 function compareArtifact() {
-    // implement platform compparison artifact
+    var startDate = $("#month1_selection").val()
+	var endDate = $("#month2_selection").val()
+	var url = "http://localhost:3000/compare?startDate=" + startDate + "&endDate=" + endDate;
+	$.get(url, function (data) {
+		console.log("data length: ", data.length);
+		if (data == "ErrorCode1") {
+			showPopUp("Error: Incorrect month format! The ending month must be after the starting month!");
+		}
+		else if (data) {
+			if (data.length == 0) { //theres nothing inside except separator
+				showPopUp("Failed to Compare! Those Months Aren't In Our Data Set"); // cant happen with current setup
+			}
+			/*else if (data.length == lyftIndex + 1) {
+				showPopUp("Theres no matching Lyft Data!");
+			}
+			else if (lyftIndex == 0) {
+				showPopUp("Theres no matching Uber Data!");
+			}*/
+			else {
+				var separatorIndex = data.indexOf("SEPARATOR");
+				var uberArray = data.slice(0, separatorIndex);
+				var lyftArray = data.slice(separatorIndex + 1)
+				console.log("uberArray: ", uberArray);
+				console.log("lyftArray: ", lyftArray);
+				showPopUp("Successful Compare")
+			}
+		}
+		else {
+			showPopUp("Fatal Error: Comparing Went Wrong!") //testing purposes: will never reach here
+		}
+	});
 }

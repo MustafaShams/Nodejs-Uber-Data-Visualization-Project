@@ -4,13 +4,13 @@ html, body {
 }
 
 .search_terms {
-    float: left;
-    
+    text-align: center;
 }
 
 .search_terms li {
     display: inline-block;
     color: black;
+    left: 50%;
 }
 
 .search_terms label {
@@ -24,4 +24,25 @@ html, body {
 .search_terms button:hover{
     background: rgb(94, 91, 91);
 }
+.comparisonHolder, .populationHolder, .busyHolder{
+    border: 1px solid black;
+    height: 750px;
+    margin: 50px;
+    /*
+    background-color: green;*/
+    text-align: center;
+}
 
+.population_search, .boxes{
+    text-align: center;
+}
+
+#searchbar, input[type=search]{
+    padding: 6px;
+    margin-top: 8px;
+    margin-right: 2px;
+    font-size: 17px;
+    width: 300px;
+    color: black;
+    border: 1px solid black
+}

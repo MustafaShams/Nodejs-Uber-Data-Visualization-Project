@@ -402,6 +402,7 @@ td[contenteditable="true"]:focus {
 
 
 .popup {
+    background: black;
     margin-top: 10px;
     position: absolute;
     overflow:hidden;

@@ -97,6 +97,14 @@ function processUberData(allText) {
     if (data.length == headers.length) {          //make sure to check if data exists
       var e = new callInfo();                     //create a new callInfo object
       var res = data[0].split(" ");                //split the date and timew
+      
+	var tempHolder = res[0].split('/'); //currently at day/month/year (STILL NEED TO CHANGE TO year/month/day)
+        var tempRes = tempHolder[1];
+        tempHolder[1] = tempHolder[0];
+        tempHolder[0] = tempRes;
+        res[0] = tempHolder.join();
+	res[0] = res[0].replace(/,/g, '.');
+      
       Object.assign(e.Date = res[0]);             //assign the date
       Object.assign(e.Time = res[1].slice(0, -3));              //assign time
       Object.assign(e.Lat = data[1]);              //assign Latitude
@@ -120,6 +128,14 @@ function processLyftData(allText) {
     if (data.length == headers.length) {          //make sure to check if data exists
       var e = new callInfo();                     //create a new callInfo object
       var res = data[0].split(" ");                //split the date and timew
+
+	var tempHolder = res[0].split('/'); //same changes with uber date
+	var tempRes = tempHolder[1];
+	tempHolder[1] = tempHolder[0];
+	tempHolder[0] = tempRes;
+	res[0] = tempHolder.join();
+	res[0] = res[0].replace(/,/g, '.');
+
       Object.assign(e.Date = res[0]);             //assign the date
       Object.assign(e.Time = res[1]);              //assign time
       Object.assign(e.Lat = data[1]);              //assign Latitude
@@ -144,6 +160,8 @@ function processData(allText) {
     if (data[3].trim() != "" && data[4].trim() != "" && data[5].trim() != "") {
       try {
         var e = new callInfo(); //create a new callInfo object
+        var newDate = data[0].trim().replace(/\b0/g, '').split('.');
+        data[0] = newDate[2] + "." + newDate[1] + "." + newDate[0];
         Object.assign(e.Date = data[0].trim()); //assign the date
         Object.assign(e.Time = data[1].trim()); //assign time
         Object.assign(e.State = data[2].trim());
@@ -334,7 +352,83 @@ function createJSON(tempDF) {
   return stringToJsonObject;
 }
 
+function monthGenerator(startMonth) {
+	switch (startMonth) {
+		case '1':
+                        return "Janurary";
+                        break;
+                case '2':
+                        return "February";
+                        break;
+                case '3':
+                        return "March";
+                        break;
+		case '4':
+                        return "April";
+                        break;
+                case '5':
+                        return "May";
+                        break;
+                case '6':
+                        return "June";
+                        break;
+		case '7':
+			return "July";
+			break;
+		case '8':
+			return "August";
+			break;
+		case '9':
+                        return "September";
+                        break;
+		case '10':
+                        return "October";
+                        break;
+                case '11':
+                        return "November";
+                        break;
+                case '12':
+                        return "December";
+                        break;
+	}
+	return "Error In Month Calculation" //should never come here
+}
 
+function compareSearch(dataFrame, startDate, endDate) {
+  console.log("DF SIZE: ", dataFrame[0].date, uberFrame[0].date, lyftFrame[0].date);
+	var uberCompArr = [];
+	var lyftCompArr = [];
+	var totalArr = [];
+	var tempField = "Month";
+	var startMonth = startDate;
+	var endMonth = endDate;
+	while (Number(startMonth) != Number(endMonth) + 1) {
+		let keycls = new keyClass(tempField, (Number(startMonth)).toString());
+		console.log("Comparing This Month rn: ", (Number(startMonth)).toString());
+		var uberArr = keycls.keySearch(uberFrame);
+		var lyftArr = keycls.keySearch(lyftFrame);
+		console.log("Uber size for this month: ", uberArr.length);
+		console.log("Lyft size for this month: ", lyftArr.length);
+		uberCompArr.push((monthGenerator(Number(startMonth).toString()) + ": " + uberArr.length).toString());
+		lyftCompArr.push((monthGenerator(Number(startMonth).toString()) + ": " + lyftArr.length).toString());
+		startMonth = Number(startMonth) + 1;
+		startMonth = startMonth.toString();
+	}
+	uberCompArr.push("SEPARATOR");
+//-----------------Incase we expand, this block checks to see if one dataset returns null while other does not------------//
+	/*if (uberCompArr.length > 1 && lyftCompArr.length > 0) {
+		totalArr = uberCompArr.concat(lyftCompArr);
+	}
+	else if (uberCompArr.length > 1) { //greater than 1 bc uber will always have separator at end
+		totalArr = uberCompArr;
+	}
+	else if (lyftCompArr.length > 0) {
+		lyftCompArr = lyftCompArr.unshift("SEPARATOR"); //adds separator to the beginning
+		totalArr = lyftCompArr;
+	}*/
+	totalArr = uberCompArr.concat(lyftCompArr);
+	return totalArr; //will return null if no data in both sets
+}
 
 
 const express = require('express');
@@ -438,6 +532,21 @@ app.get('/edit', (req, res) => {
         		res.json(data);
 		}
 	}
+});
+
+app.get('/compare', (req, res) => {
+	var startDate = req.query.startDate;
+	var endDate = req.query.endDate;
+	console.log("Start month: ", startDate);
+	console.log("End month: ", endDate);
+	if (Number(startDate) > Number(endDate)) {
+		var data = "ErrorCode1";
+	}
+	else {
+		var data = compareSearch(dataFrame, startDate, endDate);
+	}
+	res.header("Content-Type", 'application/json');
+	res.json(data);
 });
 
 app.listen(PORT, () => console.log('Listening on port', PORT));
