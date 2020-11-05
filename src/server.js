@@ -161,7 +161,7 @@ function processData(allText) {
       try {
         var e = new callInfo(); //create a new callInfo object
         var newDate = data[0].trim().replace(/\b0/g, '').split('.');
-        data[0] = newDate[2] + "." + newDate[1] + "." + newDate[0];
+        data[0] = newDate[1] + "." + newDate[2] + "." + newDate[0]; //data[0] = newDate[2] + "." + newDate[1] + "." + newDate[0];
         Object.assign(e.Date = data[0].trim()); //assign the date
         Object.assign(e.Time = data[1].trim()); //assign time
         Object.assign(e.State = data[2].trim());
@@ -205,7 +205,8 @@ function searchPopulatedCities(dataFrame, key, field) {
   let analyticscls = new analyticsClass(field, key.toLowerCase());
   tempDF = analyticscls.popCitiesSearch(dataFrame);
   count = analyticscls.count; 
-
+  tempDF.push("SEPARATOR");
+  tempDF = tempDF.concat(count);
   //console.dir(count);
   //console.dir(tempDF);
   return tempDF;
@@ -215,28 +216,39 @@ function searchDaysOfWeek(dataFrame, state, city, address, street) {
   var days = [];
   var searchDF = [];
   searchDF = dataFrame;
-
-  if (state != null) {
+	var tempCheck = 1;
+	
+  if (state != "") {
       let keycls = new keyClass("State", state.toLowerCase());
       // console.log("State: " + keycls.state)
+	  console.log("Searching state");
       searchDF = keycls.keySearch(searchDF);
+	  tempCheck = 0;
   }
-  if (city != null) {
+  if (city != "") {
       let keycls = new keyClass("City", city.toLowerCase());
+	  console.log("Searching city");
       searchDF = keycls.keySearch(searchDF);
+	  tempCheck = 0;
   }
   if (address != "") {
     let keycls = new keyClass("Address", address.toLowerCase());
+	  console.log("Searching address");
     searchDF = keycls.keySearch(searchDF);
+	  tempCheck = 0;
   }
   if (street != "") {
     let keycls = new keyClass("Street", street.toLowerCase());
+	  console.log("Searching Street");
     searchDF = keycls.keySearch(searchDF);
+	  tempCheck = 0;
   }  
 
   let analyticscls = new analyticsClass("", "");
-  days = analyticscls.weekDaysSearch(searchDF);
-  
+	if (tempCheck) { //none was picked
+		searchDF = "";
+	}
+  	days = analyticscls.weekDaysSearch(searchDF);
   //console.dir(days);
   return days;
 }
@@ -252,6 +264,10 @@ function addData(dataFrame, date, time, state, city, address) {
 	state = state.toLowerCase();
 	city = city.toLowerCase();
 	address = address.toLowerCase();
+
+	date = date.split('.');
+	date = date[1] + '.' + date[2] + '.' + date[0];
+
 	Object.assign(e.Date = date);
 	Object.assign(e.Time = time);
 	Object.assign(e.State = state);
@@ -434,20 +450,15 @@ function compareSearch(dataFrame, startDate, endDate) {
   console.log("DF SIZE: ", dataFrame[0].date, uberFrame[0].date, lyftFrame[0].date);
 	var uberCompArr = [];
 	var lyftCompArr = [];
-  //var totalArr = [];
-  var finalArr = [];
+	var totalArr = [];
 	var tempField = "Month";
 	var startMonth = startDate;
-  var endMonth = endDate;
-  //var uberDayCount = [];
-  //var lyftDayCount = [];
+	var endMonth = endDate;
 	while (Number(startMonth) != Number(endMonth) + 1) {
 		let keycls = new keyClass(tempField, (Number(startMonth)).toString());
 		console.log("Comparing This Month rn: ", (Number(startMonth)).toString());
 		var uberArr = keycls.keySearch(uberFrame);
-    var lyftArr = keycls.keySearch(lyftFrame);
-    //uberDayCount = uberDayCount.concat(findUnqiueDates(uberArr));
-    //lyftDayCount = lyftDayCount.concat(findUnqiueDates(lyftArr));
+		var lyftArr = keycls.keySearch(lyftFrame);
 		console.log("Uber size for this month: ", uberArr.length);
 		console.log("Lyft size for this month: ", lyftArr.length);
 		uberCompArr.push((monthGenerator(Number(startMonth).toString()) + ": " + uberArr.length).toString());
@@ -455,8 +466,7 @@ function compareSearch(dataFrame, startDate, endDate) {
 		startMonth = Number(startMonth) + 1;
 		startMonth = startMonth.toString();
 	}
-  uberCompArr.push("SEPARATOR");
-  //uberDayCount.push("SEPARATOR");
+	uberCompArr.push("SEPARATOR");
 //-----------------Incase we expand, this block checks to see if one dataset returns null while other does not------------//
 	/*if (uberCompArr.length > 1 && lyftCompArr.length > 0) {
 		totalArr = uberCompArr.concat(lyftCompArr);
@@ -468,19 +478,8 @@ function compareSearch(dataFrame, startDate, endDate) {
 		lyftCompArr = lyftCompArr.unshift("SEPARATOR"); //adds separator to the beginning
 		totalArr = lyftCompArr;
 	}*/
-  totalArr = uberCompArr.concat(lyftCompArr);
-  //finalArr = uberDayCount.concat(lyftDayCount);
-  //console.log(finalArr)
+	totalArr = uberCompArr.concat(lyftCompArr);
 	return totalArr; //will return null if no data in both sets
-}
-
-function findUnqiueDates(set){
-  var counts = {};
-  for (var i = 0; i < set.length; i++) {
-      counts[set[i].date] = 1 + (counts[set[i].date] || 0);
-  }
-  //console.log(counts);
-  return counts;
 }
 
 
@@ -506,7 +505,6 @@ app.get('/search', (req, res) => {
   
   var data = searchDataFrame(dataFrame, key_name, field);
   res.header("Content-Type", 'application/json');
-  
   res.json(data);
 });
 
@@ -601,6 +599,27 @@ app.get('/compare', (req, res) => {
 	}
 	res.header("Content-Type", 'application/json');
 	res.json(data);
+});
+
+app.get('/busiest', (req, res) => {
+        var busyState = req.query.state;
+        var busyCity = req.query.city;
+	var busyAddress = req.query.address;
+        var busyStreet = req.query.street;
+	var data = searchDaysOfWeek(dataFrame, busyState, busyCity, busyAddress, busyStreet)
+	if (data.join() == "0,0,0,0,0,0,0") {
+		data = "ErrorCode1";
+	}
+	res.header("Content-Type", 'application/json');
+        res.json(data);
+});
+
+app.get('/population', (req, res) => {
+        var searchTarget = req.query.search;
+	var searchField = "State"; //this is never used in analytics class btw
+        var data = searchPopulatedCities(dataFrame, searchTarget.toLowerCase(), searchField);
+        res.header("Content-Type", 'application/json');
+        res.json(data);
 });
 
 app.listen(PORT, () => console.log('Listening on port', PORT));

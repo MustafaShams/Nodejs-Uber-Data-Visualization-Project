@@ -531,7 +531,7 @@ function createChart(x_Axis, y_Axis){
    var myChart = new Chart(ctx, {
        type: 'bar',
        data: {
-           labels : ['Columns'],
+           labels : ['Number of unique values for:'],
            datasets: [
                {
                 label:x_Axis[0],
@@ -683,11 +683,41 @@ function showPopUp(text) {
 }
 
 function populationSearch() {
-    // implement population artifact search
+    var searchTarget = $("#searchbar").val()
+        var url = "http://localhost:3000/population?search=" + searchTarget;
+        $.get(url, function (data) {
+		var separatorIndex = data.indexOf("SEPARATOR");
+		var citiesInState = data.slice(0, separatorIndex);
+                var citiesCount = data.slice(separatorIndex + 1);
+                console.log("Unique City Array: ", citiesInState);
+		console.log("Number of Calls from City Array: ", citiesCount);
+                if (citiesInState != 0 && citiesCount != 0) {
+			//do graph here
+			showPopUp("Success!");
+                }
+                else {
+			showPopUp("Error: Your Entry Was Not Found In Our Database!");
+                }
+        });
 }
 
 function daysArtifact() {
-    // implement days popularity artifact
+    var busyState = $("#state_search").val()
+    var busyCity = $("#city_search").val()
+    var busyAddress = $("#address_search").val()
+    var busyStreet = $("#street_search").val()
+    	var url = "http://localhost:3000/busiest?state=" + busyState + "&city=" + busyCity + "&address=" + busyAddress + "&street=" + busyStreet;
+    	$.get(url, function (data) {
+		if (data == "ErrorCode1") {
+			showPopUp("Error: Your Entry Was Not Found In Our Database!");
+		}
+		else {
+			console.log(data);
+            //do graph here
+            daysChart(data);
+			showPopUp("Success");
+		}
+	});
 }
 
 function compareArtifact() {
@@ -703,12 +733,6 @@ function compareArtifact() {
 			if (data.length == 0) { //theres nothing inside except separator
 				showPopUp("Failed to Compare! Those Months Aren't In Our Data Set"); // cant happen with current setup
 			}
-			/*else if (data.length == lyftIndex + 1) {
-				showPopUp("Theres no matching Lyft Data!");
-			}
-			else if (lyftIndex == 0) {
-				showPopUp("Theres no matching Uber Data!");
-			}*/
 			else {
 				var separatorIndex = data.indexOf("SEPARATOR");
 				var uberArray = data.slice(0, separatorIndex);
@@ -717,7 +741,7 @@ function compareArtifact() {
                 console.log("lyftArray: ", lyftArray);
                 separatorObject(uberArray,lyftArray);
                 
-				showPopUp("Successful Compare")
+				showPopUp("Success!")
 			}
 		}
 		else {
@@ -816,13 +840,11 @@ function compareChart(y_Ax,uber_Arr,lyft_Arr ){
  });
 }
 //Line chart for busy days 
-function daysChart(){
+function daysChart(y_Axis){
     console.log("ITS WORKING");
     const  x_Axis = ["Sunday","Monday","Tuesday","Wednesday",
             "Thursday", "Friday", "Saturday"];
     //figure it out once data is in 
-    const  uber_Data = [796120,829275,1028136];
-    const  lyft_Data = [4254,147448,115998];
 
     var bgColor = [
     'rgba(255, 99, 132, 0.2)',
@@ -834,8 +856,7 @@ function daysChart(){
     'rgba(54, 162, 235, 1)'
     ];
 
-    $('#busyChart').remove();
-    $('.busyHolder').html('<canvas id="busyChart"></canvas>');
+
     var ctx = document.getElementById('busyChart').getContext('2d');
     var busyChart = new Chart(ctx,{
         type: 'line',
@@ -843,55 +864,43 @@ function daysChart(){
             labels: x_Axis,
             datasets:[
                 {
-                data: uber_Data,
-                backgroundColor: bgColor[0],
-                borderColor: bdColor[0],
-                fill: false,
-
-                },
-                {
-                    data: lyft_Data,
-                    backgroundColor: bgColor[1],
-                    borderColor: bdColor[1],
+                    label: "Days of Week",
+                    data: y_Axis,
+                    backgroundColor: bgColor[0],
+                    borderColor: bdColor[0],
                     fill: false,
-
-                },
-                
-
-               
+                    lineTension: 0,  
+                }
             ]
-
         },
         options: {
-            legend: {
-              display: true,
-              text: 'Uber VS Lyft Calls',
-              position: 'bottom',
-              
-              labels: {
-                fontColor: "#ffffff",
-              },
-              scale:{
-                  xAxis:[{
-                      display:true,
-                      scaleLabel:{
-                          display: true,
-                          labelString: 'Month'
-                      }
-                  }],
-
-                yAxis: [{
-                    display: true,
-                    scaleLabel:{
-                        display: true,
-                        labelString: 'Value'
+            scales: {
+                xAxes: [{
+                    ticks: {
+                        fontSize: 20,
+                        fontColor: "black"
+                    }
+                }],
+                yAxes: [{
+                    ticks: {
+                        fontSize: 20,
+                        fontColor: "black"
                     }
                 }]
-              }
+            },
+            legend: {
+              display: true,
+              text: 'Busiest Days of Week Based on Calls',
+              position: 'bottom',
+              labels: {
+                fontColor: "#000000",
+                fontSize: 20,
+              },
             }
         }
 
     });
 
 }
+
 // Popultion chart will go here 

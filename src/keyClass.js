@@ -46,7 +46,7 @@ class keyClass {
                 case "Month":
                     var date = dataFrame[i].Date;
                     date = date.split('.');
-                    var month = date[1];
+                    var month = date[0];
                     if (this.key == month) {
                         tempDF.push(dataFrame[i]);
                     }
