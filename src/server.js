@@ -20,6 +20,8 @@ function getBackUp() {
   uberFrame = []
   lyftFrame = []
   dataFrame = []
+  uberTripFrame = []
+  fhvTripFrame = []
   whichData = "backup";
   console.log(whichData);
   fs.readFile('inputFile/dataFrame.csv', 'utf8', function (err, data) {
@@ -35,13 +37,25 @@ function getRawData() {
   uberFrame = []
   lyftFrame = []
   dataFrame = []
+  uberTripFrame = []
+  fhvTripFrame = []
   whichData = "real";
+  fileNames = ["other-Dial7_B00887",
+                "uber-raw-data-jul14",
+                "uber-raw-data-aug14",
+                "uber-raw-data-sep14",
+                "Uber-Jan-Feb-FOIL",
+                "other-FHV-services_jan-aug-2015", 
+                "other-Lyft_B02510"]
+
+  var total = 0;
   fs.readFile("inputFile/other-Dial7_B00887.zip", function (err, data) {
     if (err) throw err;
     JSZip.loadAsync(data).then(function (zip) {
       zip.files['other-Dial7_B00887.csv'].async("string")
         .then(function (data) {
           processData(data);
+          total++;
         });
     });
   });
@@ -51,6 +65,7 @@ function getRawData() {
       zip.files['uber-raw-data-jul14.csv'].async("string")
         .then(function (data) {
           processUberData(data);
+          total++;
         });
     });
   });
@@ -60,6 +75,7 @@ function getRawData() {
       zip.files['uber-raw-data-aug14.csv'].async("string")
         .then(function (data) {
           processUberData(data);
+          total++;
         });
     });
   });
@@ -69,6 +85,10 @@ function getRawData() {
       zip.files['uber-raw-data-sep14.csv'].async("string")
         .then(function (data) {
           processUberData(data);
+          total++;
+          if(total == 7){
+            console.log("DONE");
+          }
         });
     });
   });
@@ -78,13 +98,73 @@ function getRawData() {
       zip.files['other-Lyft_B02510.csv'].async("string")
         .then(function (data) {
           processLyftData(data);
+          total++;
         });
     });
   });
-
+  fs.readFile("inputFile/other-FHV-services_jan-aug-2015.zip", function (err, data) {
+    if (err) throw err;
+    JSZip.loadAsync(data).then(function (zip) {
+      zip.files['other-FHV-services_jan-aug-2015.csv'].async("string")
+        .then(function (data) {
+          processTripData(data, "FHV");
+          total++;
+        });
+    });
+  });
+  fs.readFile("inputFile/Uber-Jan-Feb-FOIL.zip", function (err, data) {
+    if (err) throw err;
+    JSZip.loadAsync(data).then(function (zip) {
+      zip.files['Uber-Jan-Feb-FOIL.csv'].async("string")
+        .then(function (data) {
+          processTripData(data, "uber");
+          total++;
+        });
+    });
+  });
+  
 }
 
 
+var completedFrame = false;
+function processTripData(allText, type) {
+  completedFrame = false;
+  allText = allText.replace(/['"]+/g, '') //remove all " from input
+  allText = allText.toLowerCase();
+  var allTextLines = allText.split(/\r\n|\n/); //Split the input based on new lines
+  var headers = allTextLines[0].split(','); //Split the first line and get the headers based on comma
+  for (var i = 1; i < allTextLines.length; i++) { //travarse all lines
+    var data = allTextLines[i].split(','); //split each line based on comma
+    if (data.length == headers.length) { //make sure to check if data exists
+      if(data[2] == "03/01/2015"){
+        console.log("Finished fhvTripFrame, Size:",fhvTripFrame.length);
+        return;
+      }
+      var e = new callInfo(); //create a new callInfo object
+      switch(type){
+        case "uber":
+          data[1] = data[1].replace(/\//g, '.');
+          Object.assign(e.Date = data[1]);
+          Object.assign(e.ActiveVehicle = data[2]);
+          Object.assign(e.Trips = data[3]);
+          uberTripFrame.push(e);
+        case "FHV":
+          if(data[2] && data[3] && data[4]){
+            data[2] = data[2].replace(/\//g, '.');
+            data[2] = data[2].replace(/\b0/g, '')
+            Object.assign(e.Date = data[2]);
+            Object.assign(e.ActiveVehicle = data[3]);
+            Object.assign(e.Trips = data[4]);
+            fhvTripFrame.push(e);
+          }
+      }
+       //Push the object callInfo into the data frame
+    }
+  }
+  console.log("Finished uberTripFrame, Size:",uberTripFrame.length);
+  
+  
+}
 
 
 function processUberData(allText) {
@@ -97,24 +177,16 @@ function processUberData(allText) {
     if (data.length == headers.length) { //make sure to check if data exists
       var e = new callInfo(); //create a new callInfo object
       var res = data[0].split(" "); //split the date and timew
-
-      var tempHolder = res[0].split('/'); //currently at day/month/year (STILL NEED TO CHANGE TO year/month/day)
-      var tempRes = tempHolder[0];
-      tempHolder[1] = tempHolder[1];
-      tempHolder[0] = tempRes;
-      res[0] = tempHolder.join();
-      res[0] = res[0].replace(/,/g, '.');
-
+      res[0] = res[0].replace(/\//g, '.');
       Object.assign(e.Date = res[0]); //assign the date
       Object.assign(e.Time = res[1].slice(0, -3)); //assign time
       Object.assign(e.Lat = data[1]); //assign Latitude
       Object.assign(e.Lon = data[2]); //assign Longitude
-      Object.assign(e.Base = data[3]); //assign Base ID
+      //Object.assign(e.Base = data[3]); //assign Base ID
       uberFrame.push(e); //Push the object callInfo into the data frame
     }
   }
-  console.log("Finished Uber Data");
-  console.log(uberFrame.length);
+  console.log("Finished uberFrame, Size:", uberFrame.length);
 }
 
 
@@ -143,7 +215,7 @@ function processLyftData(allText) {
       lyftFrame.push(e); //Push the object callInfo into the data frame
     }
   }
-  console.log("Finished Lyft Data");
+  console.log("Finished lyftFrame, Size:", lyftFrame.length);
 }
 
 
@@ -180,9 +252,7 @@ function processData(allText) {
       }
     }
   }
-  console.log("Finished Dial7 Data");
-  //console.log(dataFrame);
-  //exportData(dataFrame);
+  console.log("Finished dataFrame, Size:", dataFrame.length);
 }
 
 function searchDataFrame(dataFrame, key, field) { //returns an array of callInfo that matches key

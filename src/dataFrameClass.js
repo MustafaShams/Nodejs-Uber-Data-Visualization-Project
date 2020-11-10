@@ -27,11 +27,27 @@ class callInfo {
   set House(House){
     this.houseNum = House;
   }
+  set ActiveVehicle(ActiveVehicle){
+    this.activeVehicle = ActiveVehicle;
+  }
+  get ActiveVehicle(){
+    return this.activeVehicle;
+  }
+  set Trips(Trips){
+    this.trips = Trips;
+  }
+  get Trips(){
+    return this.trips;
+  }
   get House(){
     return this.houseNum;
   }
-  
-
+  set BaseName(BaseName){
+    this.BaseName = BaseName;
+  }
+  get BaseName(){
+    return this.BaseName;
+  }
   set Zip(Zip) {
     this.zip = Zip;
   }
@@ -80,9 +96,6 @@ class callInfo {
   }
   get AMPM(){
     return this.ampm
-  }
-  get Type(){
-    return this.type
   }
 
   constructor() {
