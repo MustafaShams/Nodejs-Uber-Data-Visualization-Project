@@ -138,6 +138,7 @@ function processTripData(allText, type) {
     if (data.length == headers.length) { //make sure to check if data exists
       if(data[2] == "03/01/2015"){
         console.log("Finished fhvTripFrame, Size:",fhvTripFrame.length);
+        console.log("Sample", fhvTripFrame[0]);
         return;
       }
       var e = new callInfo(); //create a new callInfo object
@@ -145,16 +146,16 @@ function processTripData(allText, type) {
         case "uber":
           data[1] = data[1].replace(/\//g, '.');
           Object.assign(e.Date = data[1]);
-          Object.assign(e.ActiveVehicle = data[2]);
-          Object.assign(e.Trips = data[3]);
+          Object.assign(e.ActiveVehicle = data[2].trim());
+          Object.assign(e.Trips = data[3].trim());
           uberTripFrame.push(e);
         case "FHV":
           if(data[2] && data[3] && data[4]){
             data[2] = data[2].replace(/\//g, '.');
             data[2] = data[2].replace(/\b0/g, '')
             Object.assign(e.Date = data[2]);
-            Object.assign(e.ActiveVehicle = data[3]);
-            Object.assign(e.Trips = data[4]);
+            Object.assign(e.ActiveVehicle = data[3].trim());
+            Object.assign(e.Trips = data[4].trim());
             fhvTripFrame.push(e);
           }
       }
@@ -162,7 +163,7 @@ function processTripData(allText, type) {
     }
   }
   console.log("Finished uberTripFrame, Size:",uberTripFrame.length);
-  
+  console.log("Sample", uberTripFrame[0]);
   
 }
 
@@ -186,7 +187,11 @@ function processUberData(allText) {
       uberFrame.push(e); //Push the object callInfo into the data frame
     }
   }
-  console.log("Finished uberFrame, Size:", uberFrame.length);
+  if(uberFrame.length > 2000000){
+    console.log("Finished uberFrame, Size:", uberFrame.length);
+    console.log("Sample", uberFrame[0]);
+  }
+  
 }
 
 
@@ -216,6 +221,7 @@ function processLyftData(allText) {
     }
   }
   console.log("Finished lyftFrame, Size:", lyftFrame.length);
+  console.log("Sample", lyftFrame[0]);
 }
 
 
@@ -253,6 +259,7 @@ function processData(allText) {
     }
   }
   console.log("Finished dataFrame, Size:", dataFrame.length);
+  console.log("Sample", dataFrame[0]);
 }
 
 function searchDataFrame(dataFrame, key, field) { //returns an array of callInfo that matches key
