@@ -53,23 +53,25 @@
         </div>
     </header>
 
-    <header>
-        <div class="boxes">
-            <!--State, City, Address, Street-->
-            <input type="search" placeholder="State" name="state_search" id="state_search">
-            <input type="search" placeholder="City" name="city_search" id="city_search">
-            <input type="search" placeholder="Address" name="address_search" id="address_search">
-            <input type="search" placeholder="Street" name="street_search" id="street_search">
-            <button id="submit_day" onclick=daysArtifact()>Go</div>
-        </div>
-
-    </header>
-    <div id="containerComparison">
-        <div class="busyHolder">
-            <canvas id="busyChart"></canvas>
-        </div>
+    <div class="date_container">
+        <li>
+            <div class="start_date_menu">
+                <label for="start_date">Start Date</label>
+                <input type="date" id="start_date" name="start_date" min="2014-01-01" max="2014-12-31">
+            </div>
+        </li>
+        <li>
+            <div class="end_date_menu">
+                <label for="end_start_date">End Date</label>
+                <input type="date" id="end_date" name="end_date" min="2014-01-01" max="2014-12-31">
+            </div>
+        </li>
+        <li>
+            <button id="date_submit">Go</button>
+        </li>
     </div>
 
+    <div id="containerVehicles">
+        <!---->
+    </div>
 </body>
-
-</html>

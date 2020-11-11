@@ -65,6 +65,10 @@ body {
     display: block;
   }
 
+  .menu_dropdown .menu_content a {
+      display: block;
+  }
+
 .nav li {
     display: inline;
     padding-right: 10px;

@@ -26,11 +26,13 @@ body {
     background: rgb(94, 91, 91);
 }
 
-#containerComparison {
+#containerComparison,
+#containerYear,
+#containerTime,
+#containerVehicles {
     margin-top: 5px;
     width: 100%;
     padding: 50px;
-    /*background-color: red;*/
     height: 800px;
 }
 
@@ -44,7 +46,9 @@ body {
 
 
 .population_search,
-.boxes {
+.boxes,
+.hours_dropdown,
+.date_container {
     text-align: center;
 }
 
@@ -80,3 +84,35 @@ input[type=search] {
     100% { transform: rotate(360deg); }
   }
 
+/*~~~~~Time popularity~~~~~*/
+
+.hours_dropdown label {
+    color: black;
+}
+
+.hours_dropdown li {
+    display: inline-block;
+    color: black;
+    left: 50%;
+}
+
+/*~~~~~Active Vehicles~~~~~*/
+
+.date_container label {
+    color: black;
+}
+
+.date_container [type=date] {
+    width: 67%;
+    padding: 6px 10px;
+    margin: 8px 0;
+    box-sizing: border-box;
+    color: black;
+    font-size: 16px;
+}
+
+.date_container li {
+    display: inline-block;
+    color: black;
+    left: 35%;
+}
