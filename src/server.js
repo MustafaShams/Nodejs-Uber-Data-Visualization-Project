@@ -1,10 +1,9 @@
 const callInfo = require('./dataFrameClass.js') //call the class File and store in callInfo
 const keyClass = require('./keyClass.js')
-const analyticsClass = require('./analyticsClass.js')
-
-const {
-  parse
-} = require('querystring'); //for parsing client-side html body for key
+const analytics = require('./Analytics/analytics.js')
+const operations = require('./Operations/operations.js')
+const search = require('./Operations/search.js')
+const processData = require('./Operations/processData.js')
 
 var JSZip = require("jszip");
 const fs = require('fs');
@@ -13,6 +12,8 @@ var whichData = "none";
 var uberFrame = []
 var lyftFrame = []
 var dataFrame = []
+var fhvTripFrame = []
+var uberTripFrame = []
 var key;
 var field;
 
@@ -29,7 +30,7 @@ function getBackUp() {
       console.error(err)
       return
     }
-    processData(data)
+    processData.processData(data)
   });
 }
 
@@ -54,7 +55,7 @@ function getRawData() {
     JSZip.loadAsync(data).then(function (zip) {
       zip.files['other-Dial7_B00887.csv'].async("string")
         .then(function (data) {
-          processData(data);
+          dataFrame = processData.processData(data, dataFrame);
           total++;
         });
     });
@@ -64,7 +65,7 @@ function getRawData() {
     JSZip.loadAsync(data).then(function (zip) {
       zip.files['uber-raw-data-jul14.csv'].async("string")
         .then(function (data) {
-          processUberData(data);
+          uberFrame = processData.processUberData(data, uberFrame);
           total++;
         });
     });
@@ -74,7 +75,7 @@ function getRawData() {
     JSZip.loadAsync(data).then(function (zip) {
       zip.files['uber-raw-data-aug14.csv'].async("string")
         .then(function (data) {
-          processUberData(data);
+          uberFrame = uberFrame.concat(processData.processUberData(data, uberFrame));
           total++;
         });
     });
@@ -84,7 +85,7 @@ function getRawData() {
     JSZip.loadAsync(data).then(function (zip) {
       zip.files['uber-raw-data-sep14.csv'].async("string")
         .then(function (data) {
-          processUberData(data);
+          uberFrame = uberFrame.concat(processData.processUberData(data, uberFrame));
           total++;
           if(total == 7){
             console.log("DONE");
@@ -97,7 +98,7 @@ function getRawData() {
     JSZip.loadAsync(data).then(function (zip) {
       zip.files['other-Lyft_B02510.csv'].async("string")
         .then(function (data) {
-          processLyftData(data);
+          lyftFrame = processData.processLyftData(data, lyftFrame);
           total++;
         });
     });
@@ -107,7 +108,7 @@ function getRawData() {
     JSZip.loadAsync(data).then(function (zip) {
       zip.files['other-FHV-services_jan-aug-2015.csv'].async("string")
         .then(function (data) {
-          processTripData(data, "FHV");
+          fhvTripFrame = processData.processTripData(data, "FHV", fhvTripFrame, uberTripFrame);
           total++;
         });
     });
@@ -117,278 +118,12 @@ function getRawData() {
     JSZip.loadAsync(data).then(function (zip) {
       zip.files['Uber-Jan-Feb-FOIL.csv'].async("string")
         .then(function (data) {
-          processTripData(data, "uber");
+          uberTripFrame = processData.processTripData(data, "uber", fhvTripFrame, uberTripFrame);
           total++;
         });
     });
   });
   
-}
-
-
-var completedFrame = false;
-function processTripData(allText, type) {
-  completedFrame = false;
-  allText = allText.replace(/['"]+/g, '') //remove all " from input
-  allText = allText.toLowerCase();
-  var allTextLines = allText.split(/\r\n|\n/); //Split the input based on new lines
-  var headers = allTextLines[0].split(','); //Split the first line and get the headers based on comma
-  for (var i = 1; i < allTextLines.length; i++) { //travarse all lines
-    var data = allTextLines[i].split(','); //split each line based on comma
-    if (data.length == headers.length) { //make sure to check if data exists
-      if(data[2] == "03/01/2015"){
-        console.log("Finished fhvTripFrame, Size:",fhvTripFrame.length);
-        console.log("Sample", fhvTripFrame[0]);
-        return;
-      }
-      var e = new callInfo(); //create a new callInfo object
-      switch(type){
-        case "uber":
-          data[1] = data[1].replace(/\//g, '.');
-          Object.assign(e.Date = data[1]);
-          Object.assign(e.ActiveVehicle = data[2].trim());
-          Object.assign(e.Trips = data[3].trim());
-          uberTripFrame.push(e);
-        case "FHV":
-          if(data[2] && data[3] && data[4]){
-            data[2] = data[2].replace(/\//g, '.');
-            data[2] = data[2].replace(/\b0/g, '')
-            Object.assign(e.Date = data[2]);
-            Object.assign(e.ActiveVehicle = data[3].trim());
-            Object.assign(e.Trips = data[4].trim());
-            fhvTripFrame.push(e);
-          }
-      }
-       //Push the object callInfo into the data frame
-    }
-  }
-  console.log("Finished uberTripFrame, Size:",uberTripFrame.length);
-  console.log("Sample", uberTripFrame[0]);
-  
-}
-
-
-function processUberData(allText) {
-  allText = allText.replace(/['"]+/g, '') //remove all " from input
-  allText = allText.toLowerCase();
-  var allTextLines = allText.split(/\r\n|\n/); //Split the input based on new lines
-  var headers = allTextLines[0].split(','); //Split the first line and get the headers based on comma
-  for (var i = 1; i < allTextLines.length; i++) { //travarse all lines
-    var data = allTextLines[i].split(','); //split each line based on comma
-    if (data.length == headers.length) { //make sure to check if data exists
-      var e = new callInfo(); //create a new callInfo object
-      var res = data[0].split(" "); //split the date and timew
-      res[0] = res[0].replace(/\//g, '.');
-      Object.assign(e.Date = res[0]); //assign the date
-      Object.assign(e.Time = res[1].slice(0, -3)); //assign time
-      Object.assign(e.Lat = data[1]); //assign Latitude
-      Object.assign(e.Lon = data[2]); //assign Longitude
-      //Object.assign(e.Base = data[3]); //assign Base ID
-      uberFrame.push(e); //Push the object callInfo into the data frame
-    }
-  }
-  if(uberFrame.length > 2000000){
-    console.log("Finished uberFrame, Size:", uberFrame.length);
-    console.log("Sample", uberFrame[0]);
-  }
-  
-}
-
-
-function processLyftData(allText) {
-  allText = allText.replace(/['"]+/g, '') //remove all " from input
-  allText = allText.toLowerCase();
-  var allTextLines = allText.split(/\r\n|\n/); //Split the input based on new lines
-  var headers = allTextLines[0].split(','); //Split the first line and get the headers based on comma
-  for (var i = 1; i < allTextLines.length; i++) { //travarse all lines
-    var data = allTextLines[i].split(','); //split each line based on comma
-    if (data.length == headers.length) { //make sure to check if data exists
-      var e = new callInfo(); //create a new callInfo object
-      var res = data[0].split(" "); //split the date and timew
-
-      var tempHolder = res[0].split('/'); //same changes with uber date
-      var tempRes = tempHolder[0];
-      tempHolder[1] = tempHolder[1];
-      tempHolder[0] = tempRes;
-      res[0] = tempHolder.join();
-      res[0] = res[0].replace(/,/g, '.');
-      Object.assign(e.Date = res[0]); //assign the date
-      Object.assign(e.Time = res[1]); //assign time
-      Object.assign(e.Lat = data[1]); //assign Latitude
-      Object.assign(e.Lon = data[2]); //assign Longitude
-      //Object.assign(e.Date = data[0]);
-      lyftFrame.push(e); //Push the object callInfo into the data frame
-    }
-  }
-  console.log("Finished lyftFrame, Size:", lyftFrame.length);
-  console.log("Sample", lyftFrame[0]);
-}
-
-
-function processData(allText) {
-  dataFrame = [];
-  allText = allText.replace(/['"]+/g, '') //remove all " from input
-  allText = allText.toLowerCase();
-  var allTextLines = allText.split(/\r\n|\n/); //Split the input based on new lines
-  var headers = allTextLines[0].split(','); //Split the first line and get the headers based on comma
-  for (var i = 1; i < allTextLines.length - 1; i++) { //travarse all lines
-    var data = allTextLines[i].split(',');
-
-    if (data[3].trim() != "" && data[4].trim() != "" && data[5].trim() != "") {
-      try {
-        var e = new callInfo(); //create a new callInfo object
-        var newDate = data[0].trim().replace(/\b0/g, '').split('.');
-        data[0] = newDate[1] + "." + newDate[2] + "." + newDate[0]; //data[0] = newDate[2] + "." + newDate[1] + "." + newDate[0];
-        Object.assign(e.Date = data[0].trim()); //assign the date
-        Object.assign(e.Time = data[1].trim()); //assign time
-        Object.assign(e.State = data[2].trim());
-        Object.assign(e.City = data[3].trim());
-        Object.assign(e.Address = data[4].trim() + " " + data[5].trim());
-        Object.assign(e.House = data[4].trim());
-        Object.assign(e.Street = data[5].trim());
-        Object.defineProperty(e, "houseNum", {
-          enumerable: false
-        });
-        Object.defineProperty(e, "street", {
-          enumerable: false
-        });
-        dataFrame.push(e);
-      } catch (err) {
-        console.log('PROBLEM Creating Data Frame', err)
-      }
-    }
-  }
-  console.log("Finished dataFrame, Size:", dataFrame.length);
-  console.log("Sample", dataFrame[0]);
-}
-
-function searchDataFrame(dataFrame, key, field) { //returns an array of callInfo that matches key
-  var tempDF = [];
-  let keycls = new keyClass(field, key.toLowerCase());
-
-  //tempDF = searchPopulatedCities(dataFrame, key, field);
-  //tempDF = searchDaysOfWeek(dataFrame, key, "Manhattan", "110 Bleecker St", "Bleecker St");
-
-  tempDF = keycls.keySearch(dataFrame);
-
-  return tempDF;
-}
-
-function searchPopulatedCities(dataFrame, key, field) {
-  var tempDF = [];
-  var count = [];
-
-  let analyticscls = new analyticsClass(field, key.toLowerCase());
-  tempDF = analyticscls.popCitiesSearch(dataFrame);
-  count = analyticscls.count;
-  tempDF.push("SEPARATOR");
-  tempDF = tempDF.concat(count);
-  //console.dir(count);
-  //console.dir(tempDF);
-  return tempDF;
-}
-
-function searchDaysOfWeek(dataFrame, state, city, address, street) {
-  var days = [];
-  var searchDF = [];
-  searchDF = dataFrame;
-  var tempCheck = 1;
-
-  if (state != "") {
-    let keycls = new keyClass("State", state.toLowerCase());
-    // console.log("State: " + keycls.state)
-    console.log("Searching state");
-    searchDF = keycls.keySearch(searchDF);
-    tempCheck = 0;
-  }
-  if (city != "") {
-    let keycls = new keyClass("City", city.toLowerCase());
-    console.log("Searching city");
-    searchDF = keycls.keySearch(searchDF);
-    tempCheck = 0;
-  }
-  if (address != "") {
-    let keycls = new keyClass("Address", address.toLowerCase());
-    console.log("Searching address");
-    searchDF = keycls.keySearch(searchDF);
-    tempCheck = 0;
-  }
-  if (street != "") {
-    let keycls = new keyClass("Street", street.toLowerCase());
-    console.log("Searching Street");
-    searchDF = keycls.keySearch(searchDF);
-    tempCheck = 0;
-  }
-
-  let analyticscls = new analyticsClass("", "");
-  if (tempCheck) { //none was picked
-    searchDF = "";
-  }
-  days = analyticscls.weekDaysSearch(searchDF);
-  //console.dir(days);
-  return days;
-}
-
-function addData(dataFrame, date, time, state, city, address) {
-  var e = new callInfo();
-  if (date == "" || time == "" || state == "" || city == "" || address == "") {
-    console.log("Error not adding anymore");
-    return false;
-  }
-  date = date.toLowerCase();
-  time = time.toLowerCase();
-  state = state.toLowerCase();
-  city = city.toLowerCase();
-  address = address.toLowerCase();
-
-  date = date.split('.');
-  date = date[1] + '.' + date[2] + '.' + date[0];
-
-  Object.assign(e.Date = date);
-  Object.assign(e.Time = time);
-  Object.assign(e.State = state);
-  Object.assign(e.City = city);
-  Object.assign(e.Address = address);
-  var index = address.indexOf(" ");
-  Object.assign(e.House = address.substr(0, index));
-  Object.assign(e.Street = address.substr(index + 1));
-  Object.defineProperty(e, "houseNum", {
-    enumerable: false
-  });
-  Object.defineProperty(e, "street", {
-    enumerable: false
-  });
-  dataFrame.push(e);
-  return true;
-}
-
-function deleteData(dataFrame, date, time, state, city, address) {
-  for (var i = 0; i < dataFrame.length; ++i) {
-    if (date == dataFrame[i].Date && time == dataFrame[i].Time && state == dataFrame[i].State && city == dataFrame[i].City && address == dataFrame[i].Address) {
-      dataFrame.splice(i, 1); //.splice(index, how many to delete)
-      return true;
-    }
-  }
-  return false;
-}
-
-function editData(dataFrame, tempOld, tempNew) {
-  var editOld = tempOld.split(",");
-  var editNew = tempNew.split(",");
-  for (var i = 0; i < dataFrame.length; ++i) {
-    if (editOld[0] == dataFrame[i].Date && editOld[1] == dataFrame[i].Time && editOld[2] == dataFrame[i].State && editOld[3] == dataFrame[i].City && editOld[4] == dataFrame[i].Address) {
-      dataFrame[i].Date = editNew[0].toLowerCase();
-      dataFrame[i].Time = editNew[1].toLowerCase();
-      dataFrame[i].State = editNew[2].toLowerCase();
-      dataFrame[i].City = editNew[3].toLowerCase();
-      dataFrame[i].Address = editNew[4].toLowerCase();
-      var index = editNew[4].indexOf(" ");
-      dataFrame[i].House = editNew[4].substr(0, index).toLowerCase();
-      dataFrame[i].Street = editNew[4].substr(index + 1).toLowerCase();
-      return true;
-    }
-  }
-  return false;
 }
 
 // FUNCTION TO FIND UNIQUE CITIES IN DATAFRAME
@@ -478,223 +213,6 @@ function createJSON(tempDF) {
   return stringToJsonObject;
 }
 
-function monthGenerator(startMonth) {
-  switch (startMonth) {
-    case '1':
-      return "Janurary";
-      break;
-    case '2':
-      return "February";
-      break;
-    case '3':
-      return "March";
-      break;
-    case '4':
-      return "April";
-      break;
-    case '5':
-      return "May";
-      break;
-    case '6':
-      return "June";
-      break;
-    case '7':
-      return "July";
-      break;
-    case '8':
-      return "August";
-      break;
-    case '9':
-      return "September";
-      break;
-    case '10':
-      return "October";
-      break;
-    case '11':
-      return "November";
-      break;
-    case '12':
-      return "December";
-      break;
-  }
-  return "Error In Month Calculation" //should never come here
-}
-
-function compareSearch(dataFrame, startDate, endDate) {
-  console.log("DF SIZE: ", dataFrame[0].date, uberFrame[0].date, lyftFrame[0].date);
-  var uberCompArr = [];
-  var lyftCompArr = [];
-  var totalArr = [];
-  var tempField = "Month";
-  var startMonth = startDate;
-  var endMonth = endDate;
-  var dateUber = {}
-  var dateLyFt = {}
-  while (Number(startMonth) != Number(endMonth) + 1) {
-    let keycls = new keyClass(tempField, (Number(startMonth)).toString());
-    console.log("Comparing This Month rn: ", (Number(startMonth)).toString());
-    var uberArr = keycls.keySearch(uberFrame);
-    var lyftArr = keycls.keySearch(lyftFrame);
-
-    Object.assign(dateUber, getDateUnique(uberArr));
-    Object.assign(dateLyFt, getDateUnique(lyftArr));
-    
-    console.log("Uber size for this month: ", uberArr.length);
-    console.log("Lyft size for this month: ", lyftArr.length);
-    uberCompArr.push((monthGenerator(Number(startMonth).toString()) + ": " + uberArr.length).toString());
-    lyftCompArr.push((monthGenerator(Number(startMonth).toString()) + ": " + lyftArr.length).toString());
-    startMonth = Number(startMonth) + 1;
-    startMonth = startMonth.toString();
-  }
-  //uberCompArr.push("SEPARATOR");
-  //-----------------Incase we expand, this block checks to see if one dataset returns null while other does not------------//
-  /*if (uberCompArr.length > 1 && lyftCompArr.length > 0) {
-		totalArr = uberCompArr.concat(lyftCompArr);
-	}
-	else if (uberCompArr.length > 1) { //greater than 1 bc uber will always have separator at end
-		totalArr = uberCompArr;
-	}
-	else if (lyftCompArr.length > 0) {
-		lyftCompArr = lyftCompArr.unshift("SEPARATOR"); //adds separator to the beginning
-		totalArr = lyftCompArr;
-  }*/
-  //console.log(dateUber)
-  //totalArr = uberCompArr.concat(lyftCompArr);
-  totalArr.push(uberCompArr)
-  totalArr.push(lyftCompArr)
-  totalArr.push(dateUber);
-  totalArr.push(dateLyFt);
-  return totalArr; //will return null if no data in both sets
-}
-
-function weeksInMonth(dataFrame, compArr) {
-	for (var i = 0; i < dataFrame.length; ++i) {
-        	var tempDate = (dataFrame[i].Date).split('.');
-        	switch(tempDate[0]) { //switch months
-                	case '7':
-                        	var getMonth = compArr[0];
-                       		if (Number(tempDate[1]) <= 7) { //week 1
-                        	        getMonth[0] = getMonth[0] + 1;
-                        	}
-                        	else if (Number(tempDate[1]) <= 14) { //week 2
-                        	        getMonth[1] = getMonth[1] + 1;
-                        	}
-                        	else if (Number(tempDate[1]) <= 21) { //week 3
-                        	        getMonth[2] = getMonth[2] + 1;
-                        	}
-                        	else { //week 4
-                        	        getMonth[3] = getMonth[3] + 1;
-                        	}
-                       		compArr[0] = getMonth;
-                        	break;
-                	case '8':
-                	        var getMonth = compArr[1];
-                	        if (Number(tempDate[1]) <= 7) { //week 1
-                	                getMonth[0] = getMonth[0] + 1;
-                	        }
-                	        else if (Number(tempDate[1]) <= 14) { //week 2
-                	                getMonth[1] = getMonth[1] + 1;
-                	        }
-                	        else if (Number(tempDate[1]) <= 21) { //week 3
-                	                getMonth[2] = getMonth[2] + 1;
-                	        }
-                	        else { //week 4
-                	                getMonth[3] = getMonth[3] + 1;
-                	        }
-                	        compArr[1] = getMonth;
-                	        break;
-                	case '9':
-                	        var getMonth = compArr[2];
-                	        if (Number(tempDate[1]) <= 7) { //week 1
-                	                getMonth[0] = getMonth[0] + 1;
-                	        }
-                	        else if (Number(tempDate[1]) <= 14) { //week 2
-                	                getMonth[1] = getMonth[1] + 1;
-                	        }
-                       		else if (Number(tempDate[1]) <= 21) { //week 3
-                        	        getMonth[2] = getMonth[2] + 1;
-                        	}
-                        	else { //week 4
-                        	        getMonth[3] = getMonth[3] + 1;
-                        	}
-                        	compArr[2] = getMonth;
-                        	break;
-        		}
-  	}
-	return compArr;
-}
-
-function getWeeklyPercentage(compArr) {
-	var prevCount = 0;
-	var returningCompArr = [];
-	for (var i = 0; i < 3; ++i) {
-		var tempCompArr = compArr[i];
-		var tempPlaceHolder = [];
-        	for (var j = 0; j < 4; ++j) {
-			if (i == 0 && j == 0) {
-				prevCount = tempCompArr[j];
-				tempPlaceHolder.push(0);
-			}
-			/*else if (i != 0 && j == 0) {
-				tempCompArr[j] = tempCompArr[j] / prevCount;
-			else if (*/
-			else {
-				//var temp = tempCompArr[j] / prevCount;
-				//prevCount = tempCompArr[j];
-				tempPlaceHolder.push(((tempCompArr[j] / prevCount) - 1) * 100);
-				prevCount = tempCompArr[j];
-			}
-		}
-		returningCompArr.push(tempPlaceHolder);
-	}
-	return returningCompArr;
-}
-
-function compareMonths(dataFrame, uberFrame, lyftFrame) {
-  var dialCompArr = [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]];
-  var uberCompArr = [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]];
-  var lyftCompArr = [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]];
-  var totalArr = [];
-
-  dialCompArr = weeksInMonth(dataFrame, dialCompArr);
-  uberCompArr = weeksInMonth(uberFrame, uberCompArr);
-  lyftCompArr = weeksInMonth(lyftFrame, lyftCompArr);
-
-  var dialPercentArr = [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]];
-  var uberPercentArr = [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]];
-  var lyftPercentArr = [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]];
-
-  dialPercentArr = getWeeklyPercentage(dialCompArr);	
-  uberPercentArr = getWeeklyPercentage(uberCompArr);
-  lyftPercentArr = getWeeklyPercentage(lyftCompArr);
-  
-  totalArr.push(dialCompArr);
-  totalArr.push(uberCompArr);
-  totalArr.push(lyftCompArr);
-  totalArr.push(dialPercentArr);
-  totalArr.push(uberPercentArr);
-  totalArr.push(lyftPercentArr);
-
-  return totalArr; //will return null if no data in both sets
-}
-
-function getDateUnique(arr) {
-  var counts = {};
-  for (var i = 0; i < arr.length; i++) {
-    counts[arr[i].date] = 1 + (counts[arr[i].date] || 0);
-  }
-  return counts;
-}
-
-function getDateUnique(arr) {
-
-  var counts = {};
-  for (var i = 0; i < arr.length; i++) {
-    counts[arr[i].date] = 1 + (counts[arr[i].date] || 0);
-  }
-  return counts;
-}
-
 
 const express = require('express');
 const {
@@ -716,7 +234,7 @@ app.get('/search', (req, res) => {
   console.log("key name = " + key_name);
   console.log("field name = " + field);
 
-  var data = searchDataFrame(dataFrame, key_name, field);
+  var data = search.searchDataFrame(dataFrame, key_name, field);
   res.header("Content-Type", 'application/json');
   res.json(data);
 });
@@ -759,7 +277,7 @@ app.get('/add', (req, res) => {
   var tempCity = req.query.city;
   var tempAddress = req.query.address;
   console.log("Adding this: ", tempDate, tempTime, tempState, tempCity, tempAddress);
-  var data = addData(dataFrame, tempDate, tempTime, tempState, tempCity, tempAddress);
+  var data = operations.addData(dataFrame, tempDate, tempTime, tempState, tempCity, tempAddress);
   res.header("Content-Type", 'application/json');
   res.json(data);
 });
@@ -771,7 +289,7 @@ app.get('/delete', (req, res) => {
   var tempCity = req.query.city;
   var tempAddress = req.query.address;
   console.log("Deleting this: ", tempDate, tempTime, tempState, tempCity, tempAddress);
-  var data = deleteData(dataFrame, tempDate, tempTime, tempState, tempCity, tempAddress);
+  var data = operations.deleteData(dataFrame, tempDate, tempTime, tempState, tempCity, tempAddress);
   res.header("Content-Type", 'application/json');
   res.json(data);
 });
@@ -791,7 +309,7 @@ app.get('/edit', (req, res) => {
     } else {
       console.log("Editing this: ", tempOld);
       console.log("To look like this: ", tempNew);
-      var data = editData(dataFrame, tempOld, tempNew);
+      var data = operations.editData(dataFrame, tempOld, tempNew);
       res.header("Content-Type", 'application/json');
       res.json(data);
     }
@@ -806,7 +324,7 @@ app.get('/compare', (req, res) => {
   if (Number(startDate) > Number(endDate)) {
     var data = "ErrorCode1";
   } else {
-    var data = compareSearch(dataFrame, startDate, endDate);
+    var data = analytics.compareSearch(dataFrame, uberFrame, lyftFrame, startDate, endDate);
   }
   res.header("Content-Type", 'application/json');
   res.json(data);
@@ -817,7 +335,7 @@ app.get('/busiest', (req, res) => {
   var busyCity = req.query.city;
   var busyAddress = req.query.address;
   var busyStreet = req.query.street;
-  var data = searchDaysOfWeek(dataFrame, busyState, busyCity, busyAddress, busyStreet)
+  var data = analytics.searchDaysOfWeek(dataFrame, busyState, busyCity, busyAddress, busyStreet)
   if (data.join() == "0,0,0,0,0,0,0") {
     data = "ErrorCode1";
   }
@@ -827,15 +345,14 @@ app.get('/busiest', (req, res) => {
 
 app.get('/population', (req, res) => {
   var searchTarget = req.query.search;
-  var searchField = "State"; //this is never used in analytics class btw
-  var data = searchPopulatedCities(dataFrame, searchTarget.toLowerCase(), searchField);
+  var data = analytics.searchPopulatedCities(dataFrame, searchTarget.toLowerCase());
   res.header("Content-Type", 'application/json');
   res.json(data);
 });
 
 app.get('/quarterPopularity', (req, res) => {
   console.log("Init Quarter Pop Comparision");
-  var data = compareMonths(dataFrame, uberFrame, lyftFrame);
+  var data = analytics.compareMonths(dataFrame, uberFrame, lyftFrame);
   console.log("Done");
   res.header("Content-Type", 'application/json');
   res.json(data);
@@ -843,61 +360,3 @@ app.get('/quarterPopularity', (req, res) => {
 
 app.listen(PORT, () => console.log('Listening on port', PORT));
 
-/*var http = require('http')
-const port = 3000
-
-
-const server = http.createServer(function (req, res) {
-  res.writeHead(200, {
-    'Content-Type': 'text/html'
-  })
-  fs.readFile('public/index.html', function (error, data) {
-    if (error) {
-      res.writeHead(404)
-      res.write('Error: file not found')
-    } else {
-      res.write(data)
-    }
-    res.end()
-  })
-
-  if (req.url === '/response') {
-    console.log('received hello from client')
-    res.writeHead(200, {
-      'Content-Type': 'text/html'
-    })
-    res.write('<p>Hello From the Server</p>')
-  }
-	
-	if (req.url === '/search') {
-		console.log('\nsearching...\n'); //for testing purposes: checking to see if it works
-		getKey(req, input => {
-			key = input.searchBar;
-			var temp = searchDataFrame(dataFrame, key);
-			res.write(`Searched for ${input.searchBar}`); //change this to actual output!
-/* ---------------- BELOW IS FOR TESTING PURPOSES ONLY ---------------------------
-			//console.log(temp);
-      //console.log(temp.length);
-
-      var resJSON = createJSON(temp);
-      for (i = 0; i < 20; i++) {
-        res.write('<p>' + JSON.stringify(resJSON[i]).toUpperCase() + '</p>');
-      }
-    });
-  }
-
-  if (req.url == '/data') { //check the URL of the current request
-    res.writeHead(200, { 'Content-Type': 'application/json' });
-    res.write(JSON.stringify({ message: "Hello World"}));  
-    res.end();  
-  }
-    
-})
-
-server.listen(port, function (error) {
-  if (error) {
-    console.log('Something went wrong', error)
-  } else {
-    console.log('Server is listening on port', port)
-  }
-});*/
