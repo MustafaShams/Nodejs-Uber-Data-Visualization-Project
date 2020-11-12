@@ -276,19 +276,22 @@ function timeOfDaySearch(dataFrame) {
 
 		if (hour[0] < 6) {
 			// console.log("night: " + dataFrame[i].time);
-			tempDF[3]++;
+			tempDF[0]++;
 		}
 		else if (hour[0] >= 6 && hour[0] < 12) {
 			// console.log("morning: " + dataFrame[i].time);
-			tempDF[0]++;
+			tempDF[1]++;
 		}
 		else if (dataFrame[i].time >= "12:00" && dataFrame[i].time < "18:00") {
+			if(dataFrame[i].time > "18:00"){
+
+			}
 			// console.log("afternoon: " + dataFrame[i].time);
-			tempDF[1]++;
+			tempDF[2]++;
 		}
 		else if (dataFrame[i].time >= "18:00" && dataFrame[i].time <= "23:59") {
 			// console.log("evening: " + dataFrame[i].time);
-			tempDF[2]++;
+			tempDF[3]++;
 		}
 		else {
 			// console.log("Invalid time: " + dataFrame[i].time);
