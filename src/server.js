@@ -567,6 +567,125 @@ function compareSearch(dataFrame, startDate, endDate) {
   return totalArr; //will return null if no data in both sets
 }
 
+function weeksInMonth(dataFrame, compArr) {
+	for (var i = 0; i < dataFrame.length; ++i) {
+        	var tempDate = (dataFrame[i].Date).split('.');
+        	switch(tempDate[0]) { //switch months
+                	case '7':
+                        	var getMonth = compArr[0];
+                       		if (Number(tempDate[1]) <= 7) { //week 1
+                        	        getMonth[0] = getMonth[0] + 1;
+                        	}
+                        	else if (Number(tempDate[1]) <= 14) { //week 2
+                        	        getMonth[1] = getMonth[1] + 1;
+                        	}
+                        	else if (Number(tempDate[1]) <= 21) { //week 3
+                        	        getMonth[2] = getMonth[2] + 1;
+                        	}
+                        	else { //week 4
+                        	        getMonth[3] = getMonth[3] + 1;
+                        	}
+                       		compArr[0] = getMonth;
+                        	break;
+                	case '8':
+                	        var getMonth = compArr[1];
+                	        if (Number(tempDate[1]) <= 7) { //week 1
+                	                getMonth[0] = getMonth[0] + 1;
+                	        }
+                	        else if (Number(tempDate[1]) <= 14) { //week 2
+                	                getMonth[1] = getMonth[1] + 1;
+                	        }
+                	        else if (Number(tempDate[1]) <= 21) { //week 3
+                	                getMonth[2] = getMonth[2] + 1;
+                	        }
+                	        else { //week 4
+                	                getMonth[3] = getMonth[3] + 1;
+                	        }
+                	        compArr[1] = getMonth;
+                	        break;
+                	case '9':
+                	        var getMonth = compArr[2];
+                	        if (Number(tempDate[1]) <= 7) { //week 1
+                	                getMonth[0] = getMonth[0] + 1;
+                	        }
+                	        else if (Number(tempDate[1]) <= 14) { //week 2
+                	                getMonth[1] = getMonth[1] + 1;
+                	        }
+                       		else if (Number(tempDate[1]) <= 21) { //week 3
+                        	        getMonth[2] = getMonth[2] + 1;
+                        	}
+                        	else { //week 4
+                        	        getMonth[3] = getMonth[3] + 1;
+                        	}
+                        	compArr[2] = getMonth;
+                        	break;
+        		}
+  	}
+	return compArr;
+}
+
+function getWeeklyPercentage(compArr) {
+	var prevCount = 0;
+	var returningCompArr = [];
+	for (var i = 0; i < 3; ++i) {
+		var tempCompArr = compArr[i];
+		var tempPlaceHolder = [];
+        	for (var j = 0; j < 4; ++j) {
+			if (i == 0 && j == 0) {
+				prevCount = tempCompArr[j];
+				tempPlaceHolder.push(0);
+			}
+			/*else if (i != 0 && j == 0) {
+				tempCompArr[j] = tempCompArr[j] / prevCount;
+			else if (*/
+			else {
+				//var temp = tempCompArr[j] / prevCount;
+				//prevCount = tempCompArr[j];
+				tempPlaceHolder.push(((tempCompArr[j] / prevCount) - 1) * 100);
+				prevCount = tempCompArr[j];
+			}
+		}
+		returningCompArr.push(tempPlaceHolder);
+	}
+	return returningCompArr;
+}
+
+function compareMonths(dataFrame, uberFrame, lyftFrame) {
+  var dialCompArr = [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]];
+  var uberCompArr = [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]];
+  var lyftCompArr = [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]];
+  var totalArr = [];
+
+  dialCompArr = weeksInMonth(dataFrame, dialCompArr);
+  uberCompArr = weeksInMonth(uberFrame, uberCompArr);
+  lyftCompArr = weeksInMonth(lyftFrame, lyftCompArr);
+
+  var dialPercentArr = [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]];
+  var uberPercentArr = [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]];
+  var lyftPercentArr = [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]];
+
+  dialPercentArr = getWeeklyPercentage(dialCompArr);	
+  uberPercentArr = getWeeklyPercentage(uberCompArr);
+  lyftPercentArr = getWeeklyPercentage(lyftCompArr);
+  
+  totalArr.push(dialCompArr);
+  totalArr.push(uberCompArr);
+  totalArr.push(lyftCompArr);
+  totalArr.push(dialPercentArr);
+  totalArr.push(uberPercentArr);
+  totalArr.push(lyftPercentArr);
+
+  return totalArr; //will return null if no data in both sets
+}
+
+function getDateUnique(arr) {
+  var counts = {};
+  for (var i = 0; i < arr.length; i++) {
+    counts[arr[i].date] = 1 + (counts[arr[i].date] || 0);
+  }
+  return counts;
+}
+
 function getDateUnique(arr) {
 
   var counts = {};
@@ -710,6 +829,14 @@ app.get('/population', (req, res) => {
   var searchTarget = req.query.search;
   var searchField = "State"; //this is never used in analytics class btw
   var data = searchPopulatedCities(dataFrame, searchTarget.toLowerCase(), searchField);
+  res.header("Content-Type", 'application/json');
+  res.json(data);
+});
+
+app.get('/quarterPopularity', (req, res) => {
+  console.log("Init Quarter Pop Comparision");
+  var data = compareMonths(dataFrame, uberFrame, lyftFrame);
+  console.log("Done");
   res.header("Content-Type", 'application/json');
   res.json(data);
 });
