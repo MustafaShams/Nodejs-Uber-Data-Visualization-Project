@@ -752,6 +752,18 @@ function daysArtifact() {
 	});
 }
 
+function timesArtifact() {
+    var url = "http://localhost:3000/timePopularity";
+    $.get(url, function (data) {
+        if (data == "ErrorCode1") {
+            showPopUp("Error: Your Entry Was Not Found In Our Database!");
+        } else {
+            console.log(data);
+            console.dir(data);
+		}
+	});
+}
+
 function compareArtifact() {
     $('#comparisonChart').remove();
     $('.comparisonHolder').html('<canvas id="comparisonChart"></canvas>');

@@ -295,9 +295,64 @@ function timeOfDaySearch(dataFrame) {
 		}
 	}
 	console.log("Total dataframe for parsing for timeOfDaySearch: ", dataFrame.length);
+	console.dir(tempDF);
 	return tempDF;
 }
 
+function activeVechicleTypeSearch(fhvTripFrame, uberTripFrame) {
+	var tempDF = [];
+	var uberDates = [];
+	var fhvDates = [];
+	
+	fhvDates = activeVehicleLoop(fhvTripFrame);
+	uberDates = activeVehicleLoop(uberTripFrame);
 
+	tempDF.push(fhvDates);
+	tempDF.push(uberDates);
+	return tempDF;
+}
 
-module.exports = { monthGenerator, compareSearch, weeksInMonth, getWeeklyPercentage, compareMonths, searchPopulatedCities, searchDaysOfWeek, getDateUnique, popCitiesSearch, weekDaysSearch, timeOfDaySearch};
+function activeVehicleLoop(dataFrame) {
+	var tempDF = [0,0,0,0,0,0,0,0];
+
+	for(var i = 0; i < dataFrame.length; i++) {
+		var date = new Date(dataFrame[i].date);
+		//checks month of jan
+		if (date.getMonth() == 0) {
+			if (date.getDate() < 8) {
+				tempDF[0]++;
+			}
+			else if (date.getDate() < 15) {
+				tempDF[1]++;
+			}
+			else if (date.getDate() < 22) {
+				tempDF[2]++;
+			}
+			else if (date.getDate() < 31) {
+				tempDF[3]++;
+			}
+		}
+		//checks month of feb
+		else if (date.getMonth() == 1) {
+			if (date.getDate() < 8) {
+				tempDF[4]++;
+			}
+			else if (date.getDate() < 15) {
+				tempDF[5]++;
+			}
+			else if (date.getDate() < 22) {
+				tempDF[6]++;
+			}
+			else if (date.getDate() < 31) {
+				tempDF[7]++;
+			}
+		}
+		// else {
+		// 	console.log("Date is: " + date);
+		// }
+	}
+	console.dir(tempDF);
+	return tempDF;
+}
+
+module.exports = { monthGenerator, compareSearch, weeksInMonth, getWeeklyPercentage, compareMonths, searchPopulatedCities, searchDaysOfWeek, getDateUnique, popCitiesSearch, weekDaysSearch, timeOfDaySearch, activeVechicleTypeSearch};

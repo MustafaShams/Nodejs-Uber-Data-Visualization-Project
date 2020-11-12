@@ -235,6 +235,7 @@ app.get('/search', (req, res) => {
   console.log("field name = " + field);
 
   var data = search.searchDataFrame(dataFrame, key_name, field);
+
   res.header("Content-Type", 'application/json');
   res.json(data);
 });
@@ -357,6 +358,17 @@ app.get('/quarterPopularity', (req, res) => {
   res.header("Content-Type", 'application/json');
   res.json(data);
 });
+
+app.get('/timePopularity', (req, res) => {
+  var data = analytics.timeOfDaySearch(dataFrame);
+  if (data.join() == "0,0,0,0") {
+    data = "ErrorCode1";
+  }
+  res.header("Content-Type", 'application/json');
+  res.json(data);
+});
+
+
 
 app.listen(PORT, () => console.log('Listening on port', PORT));
 
