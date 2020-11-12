@@ -759,10 +759,23 @@ function timesArtifact() {
             showPopUp("Error: Your Entry Was Not Found In Our Database!");
         } else {
             console.log(data);
-            console.dir(data);
+            timeRange(data);
 		}
 	});
 }
+
+function activeVehicleArtifact(){
+    var url = "http://localhost:3000/activeVehicle";
+    $.get(url, function (data) {
+        if (data == "ErrorCode1") {
+            showPopUp("Error: Your Entry Was Not Found In Our Database!");
+        } else {
+            console.log(data[1].length, data[0].le);
+            activeVehicleGraph(data[1], data[0]);
+		}
+	});
+}
+
 
 function compareArtifact() {
     $('#comparisonChart').remove();
@@ -857,6 +870,7 @@ function separatorObject(sArr, sArr2){
 }
 
 function compareChart(charType, y_Ax, uber_Arr, lyft_Arr) {
+    console.log("Called Compare");
     $( "#switchGraph" ).show();
     var bgColor = [
         'rgba(255, 99, 132, 0.2)',
@@ -918,6 +932,77 @@ function compareChart(charType, y_Ax, uber_Arr, lyft_Arr) {
 
     });
     return comparisonChart;
+}
+
+function activeVehicleGraph(uber_Arr, fhv_Arr) {
+    var bgColor = [
+        'rgba(255, 99, 132, 0.2)',
+        'rgba(54, 162, 235, 0.2)'
+    ];
+
+    var bdColor = [
+        'rgba(255, 99, 132, 1)',
+        'rgba(54, 162, 235, 1)'
+    ];
+
+    $('#activeVehicleChart').remove();
+    $('.activeVehicleHolder').html('<canvas id="activeVehicleChart"></canvas>');
+    var ctx = document.getElementById('activeVehicleChart').getContext('2d');
+
+    var activeVehicleChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: ["Jan 2015 Week 1","Jan 2015 Week 2","Jan 2015 Week 3","Jan 2015 Week 4", "Feb 2015 Week 1","Feb 2015 Week 2","Feb 2015 Week 3","Feb 2015 Week 4"],
+            datasets: [{
+                    // label: 'Number of between Uber vs Lyft',
+
+                    label: 'Uber',
+                    data: uber_Arr,
+                    backgroundColor: bgColor[0],
+                    borderColor: bdColor[0],
+                    borderWidth: 1
+                },
+
+                {
+                    label: 'For Hire Vehicle',
+                    data: fhv_Arr,
+                    backgroundColor: bgColor[1],
+                    borderColor: bdColor[1],
+                    borderWidth: 1
+                },
+            ]
+
+
+        },
+        options: {
+            maintainAspectRatio: false,
+            legend: {
+                display: true,
+                position: 'bottom',
+                yAxis: [{
+                    display: true,
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'Number of Call'
+                    }
+                }]
+
+            },
+            title:{
+                display: true,
+                text: 'Number of Active Vehicles Uber vs For Hire Vehicle',
+                fontSize: 20,
+            },
+            tooltips:{
+				mode: 'label',
+				intersect: false
+			},
+
+        }
+
+
+    });
+    return activeVehicleChart;
 }
 
 //Line chart for busy days 
@@ -984,8 +1069,78 @@ function daysChart(y_Axis){
 
 }
 
-function citiesChart(x_Axis,y_Axis){
+
+function timeRange(y_Axis){
     
+    const  x_Axis = ["00:00 - 05:59","06:00 - 11:59","12:00 - 17:59","18:00 : 23:59"];
+    console.log("Called Time Range");
+    console.log("X_axis",x_Axis);
+    console.log("Y_axis",y_Axis);
+
+    var bgColor = [
+        'rgba(255, 99, 132, 0.2)',
+        'rgba(54, 162, 235, 0.2)'
+    ];
+
+    var bdColor = [
+        'rgba(255, 99, 132, 1)',
+        'rgba(54, 162, 235, 1)'
+    ];
+
+    $('#timeGraph').remove();
+    $('.timeHolder').html('<canvas id="timeGraph"></canvas>');
+    var ctx = document.getElementById('timeGraph').getContext('2d');
+    var busyChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: x_Axis,
+            datasets: [{
+                label: "Days of Week",
+                data: y_Axis,
+                backgroundColor: bgColor[0],
+                borderColor: bdColor[0],
+                fill: false,
+                lineTension: 0,
+            }]
+        },
+        options: {
+            maintainAspectRatio: false,
+            scales: {
+                xAxes: [{
+                    ticks: {
+                        fontSize: 20,
+                        fontColor: "black"
+                    }
+                }],
+                yAxes: [{
+                    ticks: {
+                        fontSize: 20,
+                        fontColor: "black"
+                    }
+                }]
+            },
+            legend: {
+                display: true,
+                text: 'Busiest Days of Week Based on Calls',
+                position: 'bottom',
+                labels: {
+                    fontColor: "#000000",
+                    fontSize: 20,
+                },
+            },
+            title:{
+                display: true,
+                text: 'What Time of Day is the Busiest',
+                fontSize: 20,
+            },
+        }
+
+    });
+
+}
+
+function citiesChart(x_Axis,y_Axis){
+    console.log("Cities Chart");
     var bgColor = [
         'rgba(255, 99, 235, 0.2)'
         ];

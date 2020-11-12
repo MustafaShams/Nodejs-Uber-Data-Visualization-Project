@@ -35,7 +35,7 @@
                             <a href="platform_comparison.html">Platform Comparison</a>
                             <a href="time_popularity.html">Traffic Time of Day</a>
 							<a href="active_vehicles.html">Types of Active Vehicles</a>
-							<a href="year_popularity.html">Platform Comparison Over a Year</a>
+							<a href="year_popularity.html">Increase/Decrease in Platforms</a>
                         </div>
                     </div>
                 </li>
@@ -52,8 +52,21 @@
             <a class="popuptext" id="myPopup">Notification Popup</a>
         </div>
     </header>
+    <div class="loader"></div>
 
-    <div id="containerYear">
+    <div id="mainContainer">
         <!---->
+        <fieldset id="checkArray">
+            <label>Show Graph for:</label>
+            <input type="checkbox" id="July" name="July" class="chk" value="July" checked/>
+            <label for="July">July</label>
+            <input type="checkbox" id="August" name="August" class="chk" value="August" checked/>
+            <label for="August">August</label>
+            <input type="checkbox" id="September" name="September" class="chk" value="September" checked />
+            <label for="September">September</label>
+        </fieldset>
+        <div class="containerYearHolder">
+            <canvas id="containerYearChart"></canvas>
+        </div>
     </div>
 </body>

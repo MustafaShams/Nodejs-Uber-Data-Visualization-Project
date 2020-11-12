@@ -26,10 +26,7 @@ body {
     background: rgb(94, 91, 91);
 }
 
-#containerComparison,
-#containerYear,
-#containerTime,
-#containerVehicles {
+#mainContainer {
     margin-top: 5px;
     width: 100%;
     padding: 50px;
@@ -38,7 +35,10 @@ body {
 
 .comparisonHolder,
 .populationHolder,
-.busyHolder {
+.busyHolder, 
+.timeHolder,
+.activeVehicleHolder,
+.containerYearHolder{
     height: 100%;
     width: 100%;
     text-align: center;
@@ -134,7 +134,12 @@ input[type=search] {
     color: black;
 }
 
-button{
+
+#checkArray{
     color: black;
-    padding: 6px;
+    border: none;
+}
+label{
+    color: black;
+    font-size: 18px;
 }

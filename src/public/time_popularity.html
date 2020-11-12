@@ -35,7 +35,7 @@
                             <a href="platform_comparison.html">Platform Comparison</a>
                             <a href="time_popularity.html">Traffic Time of Day</a>
 							<a href="active_vehicles.html">Types of Active Vehicles</a>
-                            <a href="year_popularity.html">Platform Comparison Over a Year</a>
+                            <a href="year_popularity.html">Increase/Decrease in Platforms</a>
                             
                         </div>
                     </div>
@@ -54,26 +54,27 @@
         </div>
     </header>
 
-    <div class="hours_dropdown">
+     <div class="hours_dropdown">
         <li>
-            <div class="hours_menu">
+            <!---<div class="hours_menu">
                 <form action="">
-                    <label for="hours_selection" id="hours-selection">Range of Hours</label>
+                   <label for="hours_selection" id="hours-selection">Range of Hours</label>
                     <select name="hours_selection" id="hours_selection">
-                        <option value="Night">Night (0-6)</option>
+                         <option value="Night">Night (0-6)</option>
                         <option value="Morning">Morning (6-12)</option>
                         <option value="Afternoon">Afternoon (12-18)</option>
                         <option value="Evening">Evening (18-24)</option>
                     </select>
                 </form>
-            </div>
+            </div> --->
         </li>
         <li>
-            <button id="hours_submit" onclick=timesArtifact()>Go</div>
+            <button id="hours_submit" onclick=timesArtifact()>Show Graph</div>
         </li>
     </div>
-
-    <div id="containerTime">
-        <!---->
+    <div id="mainContainer">
+        <div class="timeHolder">
+            <canvas id="timeGraph"></canvas>
+        </div>
     </div>
 </body>

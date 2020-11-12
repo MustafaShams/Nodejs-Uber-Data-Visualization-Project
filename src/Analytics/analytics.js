@@ -320,31 +320,31 @@ function activeVehicleLoop(dataFrame) {
 		//checks month of jan
 		if (date.getMonth() == 0) {
 			if (date.getDate() < 8) {
-				tempDF[0]++;
+				tempDF[0]= +tempDF[0] + +dataFrame[i].ActiveVehicle;
 			}
 			else if (date.getDate() < 15) {
-				tempDF[1]++;
+				tempDF[1]= +tempDF[1] + +dataFrame[i].ActiveVehicle;
 			}
 			else if (date.getDate() < 22) {
-				tempDF[2]++;
+				tempDF[2]= +tempDF[2] + +dataFrame[i].ActiveVehicle;
 			}
 			else if (date.getDate() < 31) {
-				tempDF[3]++;
+				tempDF[3]= +tempDF[3] + +dataFrame[i].ActiveVehicle;
 			}
 		}
 		//checks month of feb
 		else if (date.getMonth() == 1) {
 			if (date.getDate() < 8) {
-				tempDF[4]++;
+				tempDF[4]= +tempDF[4] + +dataFrame[i].ActiveVehicle;
 			}
 			else if (date.getDate() < 15) {
-				tempDF[5]++;
+				tempDF[5]= +tempDF[5] + +dataFrame[i].ActiveVehicle;
 			}
 			else if (date.getDate() < 22) {
-				tempDF[6]++;
+				tempDF[6]= +tempDF[6] + +dataFrame[i].ActiveVehicle;
 			}
 			else if (date.getDate() < 31) {
-				tempDF[7]++;
+				tempDF[7]= +tempDF[7] + +dataFrame[i].ActiveVehicle;
 			}
 		}
 		// else {

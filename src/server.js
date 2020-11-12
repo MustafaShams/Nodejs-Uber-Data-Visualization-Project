@@ -88,7 +88,7 @@ function getRawData() {
           uberFrame = processData.processUberData(data, uberFrame);
           total++;
           if(total == 7){
-            console.log("DONE");
+            console.log("DONE Fetching all Data");
           }
         });
     });
@@ -362,6 +362,16 @@ app.get('/quarterPopularity', (req, res) => {
 app.get('/timePopularity', (req, res) => {
   var data = analytics.timeOfDaySearch(dataFrame);
   if (data.join() == "0,0,0,0") {
+    data = "ErrorCode1";
+  }
+  res.header("Content-Type", 'application/json');
+  res.json(data);
+});
+
+app.get('/activeVehicle', (req, res) => {
+  console.log(uberTripFrame.length, fhvTripFrame.length);
+  var data = analytics.activeVechicleTypeSearch(fhvTripFrame, uberTripFrame);
+  if (data.join() == "0,0,0,0,0,0,0,0") {
     data = "ErrorCode1";
   }
   res.header("Content-Type", 'application/json');

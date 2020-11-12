@@ -14,7 +14,7 @@ function processTripData(allText, type, fhvTripFrame, uberTripFrame) {
       if(data[2] == "03/01/2015"){
         console.log("Finished fhvTripFrame, Size:",fhvTripFrame.length);
         console.log("Sample", fhvTripFrame[0]);
-        return;
+        return fhvTripFrame;
       }
       var e = new callInfo(); //create a new callInfo object
       switch(type){
@@ -40,7 +40,7 @@ function processTripData(allText, type, fhvTripFrame, uberTripFrame) {
   console.log("Finished uberTripFrame, Size:",uberTripFrame.length);
   console.log("Sample", uberTripFrame[0]);
   switch(type) {
-	case "uber":
+	  case "uber":
 		return uberTripFrame;
         case "FHV":
 		return fhvTripFrame;

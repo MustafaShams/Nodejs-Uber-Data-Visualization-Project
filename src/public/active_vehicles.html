@@ -35,7 +35,7 @@
                             <a href="platform_comparison.html">Platform Comparison</a>
                             <a href="time_popularity.html">Traffic Time of Day</a>
 							<a href="active_vehicles.html">Types of Active Vehicles</a>
-							<a href="year_popularity.html">Platform Comparison Over a Year</a>
+							<a href="year_popularity.html">Increase/Decrease in Platforms</a>
                         </div>
                     </div>
                 </li>
@@ -54,7 +54,7 @@
     </header>
 
     <div class="date_container">
-        <ul>
+        <ul> <!---
         <li>
             <div class="start_date_menu">
                 <label for="start_date">Start Date</label>
@@ -66,14 +66,17 @@
                 <label for="end_start_date">End Date</label>
                 <input type="date" id="end_date" name="end_date" min="2015-01-01" max="2015-02-28" value="2015-01-01">
             </div>
-        </li>
+        </li> --->
         <li>
-            <button id="date_submit">Go</button>
+            <button id="date_submit" onclick="activeVehicleArtifact()">Show Weekly Graph</button>
         </li>
     </ul>
     </div>
 
-    <div id="containerVehicles">
+    <div id="mainContainer">
         <!---->
+        <div class="activeVehicleHolder">
+            <canvas id="activeVehicleChart"></canvas>
+        </div>
     </div>
 </body>
