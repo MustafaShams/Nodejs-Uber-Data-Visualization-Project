@@ -11,8 +11,8 @@ function getQuarterCompare() {
                 	var lyftArray = data[2];
 			var dialPercent = data[3];
 			var uberPercent = data[4];
-			//var lyftPercent = data[5];  	 // [0, null, null, null]
-			var lyftPercent = [0, 0, 0, 0,]; // first month of lyft data contains few values so it is omitted
+			var lyftPercent = data[5];  	// [0, null, null, null]
+			lyftPercent[0] = [0, 0, 0, 0,]; // first month of lyft data contains few values so it is omitted
 			console.log("dialArray: ", dialArray);
                 	console.log("uberArray: ", uberArray);
                 	console.log("lyftArray: ", lyftArray);
