@@ -21,6 +21,9 @@
             <nav class="nav main_nav">
                 <ul>
                     <li>
+                        <a href="index.html"> Home </a>
+                    </li>
+                    <li>
                         <div class="menu_dropdown">
                             <buton class="menu">Artifact Menu
                                 <i class="fa fa-caret-down"></i>
@@ -34,9 +37,6 @@
                                 <a href="year_popularity.html">Platform Comparison Over a Year</a>
                               </div>
                         </div> 
-                    </li>
-                    <li>
-                        <a href="index.html"> Home </a>
                     </li>
                     <li>
                         <a onclick=saveBackup()>Backup Data </a>
@@ -54,13 +54,19 @@
 
         <header>
             <div class="population_search">
-                <input type="search" placeholder="Search" name="searchbar" id="searchbar">
+                <select name="search" id="searchbar">
+                    <option value="ny">New York</option>
+                    <option value="nj">New Jersey</option>
+                  </select>
                 <button id=population_submit onclick=populationSearch()>Go</button>
+               
             </div>
         </header>
-        <div class="populationHolder">
-            <canvas id="populationChart"></canvas>
-        </div>
+        <div id="containerComparison">
+            <div class="populationHolder">
+                <canvas id="populationChart"></canvas>
+            </div>
+    </div>
     </body>
 
 </html>

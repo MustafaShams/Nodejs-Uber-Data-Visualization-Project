@@ -22,6 +22,9 @@
         <nav class="nav main_nav">
             <ul>
                 <li>
+                    <a href="index.html"> Home </a>
+                </li>
+                <li>
                     <div class="menu_dropdown">
                         <buton class="menu">Artifact Menu
                             <i class="fa fa-caret-down"></i>
@@ -37,15 +40,11 @@
                     </div>
                 </li>
                 <li>
-                    <a href="index.html"> Home </a>
-                </li>
-                <li>
                     <a onclick=saveBackup()>Backup Data </a>
                 </li>
                 <li>
                     <a onclick=deleteBackup()>Delete Backup </a>
                 </li>
-
             </ul>
         </nav>
         <div class="popup">
@@ -83,7 +82,7 @@
 
     </header>
     <div id="containerComparison">
-        <input type="button" id="switchGraph" onclick="changeGraph()">
+        <input type="button" id="switchGraph">
         <div class="comparisonHolder">
             <canvas id="comparisonChart"></canvas>
             

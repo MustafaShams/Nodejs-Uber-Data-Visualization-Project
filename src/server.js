@@ -75,7 +75,7 @@ function getRawData() {
     JSZip.loadAsync(data).then(function (zip) {
       zip.files['uber-raw-data-aug14.csv'].async("string")
         .then(function (data) {
-          uberFrame = uberFrame.concat(processData.processUberData(data, uberFrame));
+          uberFrame = processData.processUberData(data, uberFrame);
           total++;
         });
     });
@@ -85,7 +85,7 @@ function getRawData() {
     JSZip.loadAsync(data).then(function (zip) {
       zip.files['uber-raw-data-sep14.csv'].async("string")
         .then(function (data) {
-          uberFrame = uberFrame.concat(processData.processUberData(data, uberFrame));
+          uberFrame = processData.processUberData(data, uberFrame);
           total++;
           if(total == 7){
             console.log("DONE");

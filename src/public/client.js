@@ -17,6 +17,9 @@ $(document).ready(function () {
         evt.element.value = value;
 
     });
+    $('#closePop').click(function() {
+        $('.entryText').hide();
+    });
 });
 
 function backupCheck() {
@@ -57,7 +60,6 @@ function searchTableCreate() {
         sendField = $("#data_selection").val();
         console.log(sendField);
         if (sendKey) {
-            console.log("button", sendKey);
             var url = "http://localhost:3000/search?field=" + sendField + "&id=" + sendKey;
             $.get(url, function (data) {
                 var parent = document.getElementById('table');
@@ -791,7 +793,7 @@ function compareArtifact() {
 
                 separatorObject(uberArray, lyftArray);
                 $('#switchGraph').val("Date");
-                $( "#switchGraph" ).click(function() {
+                $( "#switchGraph" ).unbind('click').click(function() {
                     console.log($('#switchGraph').val())
                     if($('#switchGraph').val()== 'Date'){
                         compareChart('line',labelArr, uberDateArr, lyftDateArr)
@@ -885,6 +887,7 @@ function compareChart(charType, y_Ax, uber_Arr, lyft_Arr) {
 
         },
         options: {
+            maintainAspectRatio: false,
             legend: {
                 display: true,
                 position: 'bottom',
@@ -922,7 +925,8 @@ function daysChart(y_Axis){
         'rgba(54, 162, 235, 1)'
     ];
 
-    
+    $('#busyChart').remove();
+    $('.busyHolder').html('<canvas id="busyChart"></canvas>');
     var ctx = document.getElementById('busyChart').getContext('2d');
     var busyChart = new Chart(ctx, {
         type: 'line',
@@ -938,6 +942,7 @@ function daysChart(y_Axis){
             }]
         },
         options: {
+            maintainAspectRatio: false,
             scales: {
                 xAxes: [{
                     ticks: {
@@ -981,36 +986,49 @@ function citiesChart(x_Axis,y_Axis){
     var ctx = document.getElementById('populationChart').getContext('2d');
     var populationChart = new Chart(ctx,{
         type: 'line',
+        
         data: {
             labels: x_Axis,
             datasets:[
                 {
-                    
+                    label: "Cities",
                     data: y_Axis,
                     backgroundColor: bgColor[0],
                     borderColor: bdColor[0],
                     //borderWidth: 1,
                     //barPercentage: 50,
                     fill: false,
-                    pointRadius:10,
-                    showLine: false  
+                    pointRadius:20,
+                    showLine: false,
+                    pointHoverRadius: 30,  
                 }
             ]
         },
         options: {
+            maintainAspectRatio: false,
+            scales: {
+                xAxes: [{
+                    ticks: {
+                        fontSize: 14,
+                        fontColor: "black"
+                    }
+                }],
+                yAxes: [{
+                    ticks: {
+                        fontSize: 17,
+                        fontColor: "black"
+                    }
+                }]
+            },
             responsive: true,
             title:{
                 display: true,
-                text: 'Number of calls per city'
+                text: 'Number of calls per city',
+                fontSize: 20,
             },
-            // legend: {
-            //     display: true,
-            //     position: 'bottom',
-            //     labels: {
-            //       fontColor: "#ffffff",
-            //     },
-            
-            // }
+             legend: {
+                 display: true,
+             }
         }
 
     });

@@ -40,10 +40,13 @@ body {
 .populationHolder,
 .busyHolder {
     height: 100%;
-    width: 80%;
+    width: 100%;
     text-align: center;
 }
 
+canvas{
+    position: absolute;
+}
 
 .population_search,
 .boxes,
@@ -69,14 +72,21 @@ input[type=search] {
 }
 
 .loader {
+    
+    position: fixed;
     display: none;
     border: 16px solid #f3f3f3;
     border-radius: 50%;
-    border-top: 16px solid #3498db;
-    width: 120px;
-    height: 120px;
+    border-top: 20px solid #3498db;
+    width: 200px;
+    height: 200px;
     -webkit-animation: spin 2s linear infinite; /* Safari */
     animation: spin 2s linear infinite;
+    z-index: 9999;
+    left: 50%;
+    top: 50%;
+    margin-top: -100px;
+    margin-bottom: -100px;
   }
 
   @keyframes spin {
@@ -97,22 +107,34 @@ input[type=search] {
 }
 
 /*~~~~~Active Vehicles~~~~~*/
+.date_container{
+    padding-top: 10px;
+}
 
 .date_container label {
     color: black;
+    
 }
 
 .date_container [type=date] {
-    width: 67%;
+    width: 80%;
     padding: 6px 10px;
     margin: 8px 0;
     box-sizing: border-box;
     color: black;
-    font-size: 16px;
+    font-size: 14px;
 }
 
 .date_container li {
-    display: inline-block;
     color: black;
-    left: 35%;
+    display: inline-block;
+}
+
+.date_container ul {
+    color: black;
+}
+
+button{
+    color: black;
+    padding: 6px;
 }

@@ -22,6 +22,9 @@
         <nav class="nav main_nav">
             <ul>
                 <li>
+                    <a href="index.html"> Home </a>
+                </li>
+                <li>
                     <div class="menu_dropdown">
                         <buton class="menu">Artifact Menu
                             <i class="fa fa-caret-down"></i>
@@ -35,9 +38,6 @@
 							<a href="year_popularity.html">Platform Comparison Over a Year</a>
                         </div>
                     </div>
-                </li>
-                <li>
-                    <a href="index.html"> Home </a>
                 </li>
                 <li>
                     <a onclick=saveBackup()>Backup Data </a>
@@ -54,21 +54,23 @@
     </header>
 
     <div class="date_container">
+        <ul>
         <li>
             <div class="start_date_menu">
                 <label for="start_date">Start Date</label>
-                <input type="date" id="start_date" name="start_date" min="2014-01-01" max="2014-12-31">
+                <input type="date" id="start_date" name="start_date" min="2015-01-01" max="2015-02-28" value="2015-01-01">
             </div>
         </li>
         <li>
             <div class="end_date_menu">
                 <label for="end_start_date">End Date</label>
-                <input type="date" id="end_date" name="end_date" min="2014-01-01" max="2014-12-31">
+                <input type="date" id="end_date" name="end_date" min="2015-01-01" max="2015-02-28" value="2015-01-01">
             </div>
         </li>
         <li>
             <button id="date_submit">Go</button>
         </li>
+    </ul>
     </div>
 
     <div id="containerVehicles">
