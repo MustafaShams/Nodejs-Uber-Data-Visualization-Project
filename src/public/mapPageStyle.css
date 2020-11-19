@@ -1,0 +1,86 @@
+html,
+body{
+	margin: 0;
+    padding: 0;
+}
+
+
+.nav li {
+			display: inline;
+			padding-right: 10px;
+	}
+	
+	.nav a {
+			padding: .5em;
+			color: white;
+			display: inline-block;
+			text-decoration: none;
+	}
+	
+	.nav a:hover {
+			background-color: rgba(255, 255, 255, .5);
+			cursor: pointer;
+	}
+	
+	.nav ul {
+			margin: 0;
+			
+	}
+	
+	.main_nav {
+		top: -120%;
+		background: black;
+			text-align: left;
+			font-size: 1.1m;
+			font-weight: lighter;
+			border-bottom: 1px solid rgba(255, 255, 255, .5);
+			
+	
+	}
+    #viewDiv {
+      padding: 0;
+      margin: 0;
+      height: 96%;
+      width: 100%;
+		}
+		
+		.search_bar {
+			position: absolute;
+			top: 10px;
+			right: 10px;
+			/*padding: 10px;*/
+			margin-top: 30px;
+			z-index: 99 !important;
+		}
+
+
+.search_bar input[type=search] {
+	font-size: 17px;
+	width: 300px;
+	color: black;
+}
+
+.search_bar button {
+	background: rgb(50, 50, 50);
+	font-size: 17px;
+	padding: 3px 5px;
+	border: none;
+	cursor: pointer;
+	color: white;
+}
+
+.search_bar dropdown input[type=text],
+select {
+    background-color: white;
+    padding: 5px 5px;
+    margin: 8px 0;
+    display: inline-block;
+    color: black;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+.search_bar button:hover {
+    background: rgb(94, 91, 91);
+}

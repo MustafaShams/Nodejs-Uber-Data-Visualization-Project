@@ -28,8 +28,6 @@ function getQuarterCompare() {
 				 
 				 selectingMonth(checkedArray, dialArray,dialPercent, uberArray,uberPercent, lyftArray,lyftPercent)
 			});
-			
-			
 		}
 		else {
 			showPopUp("Fatal Error With Quarter Comparison!"); //will never get here

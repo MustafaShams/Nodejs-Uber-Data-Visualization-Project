@@ -403,8 +403,8 @@ function search_Unique(check_Arr, value) {
 
     }
     return 1;
-
 }
+
 const unique_Arr = [
     [],
     [],
@@ -1072,7 +1072,7 @@ function daysChart(y_Axis){
 
 function timeRange(y_Axis){
     
-    const  x_Axis = ["00:00 - 05:59","06:00 - 11:59","12:00 - 17:59","18:00 : 23:59"];
+    const  x_Axis = ["12:00 AM - 05:59 AM","06:00 AM - 11:59 AM","12:00 PM - 05:59 PM","06:00 PM - 11:59 PM"];
     console.log("Called Time Range");
     console.log("X_axis",x_Axis);
     console.log("Y_axis",y_Axis);

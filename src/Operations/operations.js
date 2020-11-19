@@ -44,6 +44,28 @@ function deleteData(dataFrame, date, time, state, city, address) {
   return false;
 }
 
+function deleteDataLatLon(uberFrame, lyftFrame, del) {
+  var deleteData = del.split(",");
+  if(deleteData[4] == "uber"){
+    for (var i = 0; i < uberFrame.length; ++i) {
+      if (deleteData[0] == uberFrame[i].Date && deleteData[1] == uberFrame[i].Time && deleteData[2] == uberFrame[i].Lat && deleteData[3] == uberFrame[i].Lon) {
+        uberFrame.splice(i, 1); //.splice(index, how many to delete)
+        return true;
+      }
+    }
+  }
+  else{
+    for (var i = 0; i < lyftFrame.length; ++i) {
+      if (deleteData[0] == lyftFrame[i].Date && deleteData[1] == lyftFrame[i].Time && deleteData[2] == lyftFrame[i].Lat && deleteData[3] == lyftFrame[i].Lon) {
+        lyftFrame.splice(i, 1); //.splice(index, how many to delete)
+        return true;
+      }
+    }
+  }
+  
+  return false;
+}
+
 function editData(dataFrame, tempOld, tempNew) {
   var editOld = tempOld.split(",");
   var editNew = tempNew.split(",");
@@ -63,4 +85,33 @@ function editData(dataFrame, tempOld, tempNew) {
   return false;
 }
 
-module.exports = { addData, deleteData, editData };
+function editLatLonData(uberFrame, lyftFrame, tempOld, tempNew) {
+  var editOld = tempOld.split(",");
+  var editNew = tempNew.split(",");
+  if(editOld[4] == "uber"){
+    for (var i = 0; i < uberFrame.length; ++i) {
+      if (editOld[0] == uberFrame[i].Date && editOld[1] == uberFrame[i].Time && editOld[2] == uberFrame[i].Lat && editOld[3] == uberFrame[i].Lon) {
+        uberFrame[i].Date = editNew[0].toLowerCase();
+        uberFrame[i].Time = editNew[1].toLowerCase();
+        uberFrame[i].Lat = editNew[2].toLowerCase();
+        uberFrame[i].Lon = editNew[3].toLowerCase();
+        return true;
+      }
+    }
+  }
+  else{
+    for (var i = 0; i < lyftFrame.length; ++i) {
+      if (editOld[0] == lyftFrame[i].Date && editOld[1] == lyftFrame[i].Time && editOld[2] == lyftFrame[i].Lat && editOld[3] == lyftFrame[i].Lon) {
+        lyftFrame[i].Date = editNew[0].toLowerCase();
+        lyftFrame[i].Time = editNew[1].toLowerCase();
+        lyftFrame[i].Lat = editNew[2].toLowerCase();
+        lyftFrame[i].Lon = editNew[3].toLowerCase();
+        return true;
+      }
+    }
+  }
+  
+  return false;
+}
+
+module.exports = { addData, deleteData, editData, editLatLonData, deleteDataLatLon };

@@ -379,6 +379,51 @@ app.get('/activeVehicle', (req, res) => {
 });
 
 
+app.get('/searchLatLon', (req, res) => {
+  var id = req.query.id;
+  field = req.query.field; //already init field
+  var key_name = id;
+  console.log("Lat lon key name = " + key_name);
+  console.log("field name = " + field);
+  var data = []
+  data[0] = search.searchDataFrame(uberFrame, key_name, field);
+  data[1] = search.searchDataFrame(lyftFrame, key_name, field);
+  res.header("Content-Type", 'application/json');
+  res.json(data);
+});
+
+app.get('/editLatLon', (req, res) => {
+  if (req.query.new == null) {
+    var data = false; //more than one edit check
+    res.header("Content-Type", 'application/json');
+    res.json(data);
+  } else { //single edits
+    var tempOld = req.query.old;
+    var tempNew = req.query.new;
+    if (tempOld.toLowerCase() == tempNew.toLowerCase()) {
+      var data = false;
+      res.header("Content-Type", 'application/json');
+      res.json(data);
+    } else {
+      console.log("Editing this:", tempOld);
+      console.log("To look like this:", tempNew);
+      var data = operations.editLatLonData(uberFrame, lyftFrame, tempOld, tempNew);
+      
+      res.header("Content-Type", 'application/json');
+      res.json(data);
+    }
+  }
+});
+
+app.get('/delteLatLon', (req, res) => {
+    var deleteData = req.query.data;
+    console.log("deleting this:", deleteData);
+    var data = operations.deleteDataLatLon(uberFrame, lyftFrame, deleteData);
+    res.header("Content-Type", 'application/json');
+    res.json(data);
+});
+
+
 
 app.listen(PORT, () => console.log('Listening on port', PORT));
 
