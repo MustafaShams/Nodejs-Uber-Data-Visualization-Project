@@ -415,12 +415,20 @@ app.get('/editLatLon', (req, res) => {
   }
 });
 
-app.get('/delteLatLon', (req, res) => {
+app.get('/deleteLatLon', (req, res) => {
     var deleteData = req.query.data;
     console.log("deleting this:", deleteData);
     var data = operations.deleteDataLatLon(uberFrame, lyftFrame, deleteData);
     res.header("Content-Type", 'application/json');
     res.json(data);
+});
+
+app.get('/addLatLon', (req, res) => {
+  var addData = req.query.data;
+  console.log("Adding this:", addData);
+  var data = operations.addDataLatLon(uberFrame, lyftFrame, addData);
+  res.header("Content-Type", 'application/json');
+  res.json(data);
 });
 
 
