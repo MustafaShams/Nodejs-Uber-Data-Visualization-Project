@@ -272,12 +272,58 @@ function popInc(state, city){
 
 
 
-function incrementDesign(date, time, state, city, address){
+function incrementDesignFHV(date, time, state, city, address){
 
   //Busy Days
   busyIncrementalDesign(date, state, city, address);
   timeOfDayIncDesign(time);
   popInc(state, city);
+}
+
+function incrementDesignVehicle(type, tempDate, tempVehicle){
+  if(ActiveVechicleType){
+    var index;
+    console.log(type);
+    if(type == "uber"){
+      index = 1;
+    }
+    else{
+      index = 0;
+    }
+    var date = new Date(tempDate);
+    console.log("index",index,"day",date.getDate(),"month",date.getMonth())
+    if (date.getMonth() == 0) {
+			if (date.getDate() < 8) {
+        console.log(ActiveVechicleType[index][0])
+				ActiveVechicleType[index][0] =  +ActiveVechicleType[index][0] + +tempVehicle;
+			}
+			else if (date.getDate() < 15) {
+				ActiveVechicleType[index][1] =  +ActiveVechicleType[index][1] + +tempVehicle;
+			}
+			else if (date.getDate() < 22) {
+				ActiveVechicleType[index][2] =  +ActiveVechicleType[index][2] + +tempVehicle;
+			}
+			else if (date.getDate() < 31) {
+				ActiveVechicleType[index][3] =  +ActiveVechicleType[index][3] + +tempVehicle;
+			}
+		}
+		//checks month of feb
+		else if (date.getMonth() == 1) {
+			if (date.getDate() < 8) {
+				ActiveVechicleType[index][4] =  +ActiveVechicleType[index][4] + +tempVehicle;
+			}
+			else if (date.getDate() < 15) {
+				ActiveVechicleType[index][5] =  +ActiveVechicleType[index][5] + +tempVehicle;
+			}
+			else if (date.getDate() < 22) {
+				ActiveVechicleType[index][6] =  +ActiveVechicleType[index][6] + +tempVehicle;
+			}
+			else if (date.getDate() < 31) {
+				ActiveVechicleType[index][7] =  +ActiveVechicleType[index][7] + +tempVehicle;
+			}
+		}
+  }
+  
 }
 
 
@@ -306,6 +352,21 @@ app.get('/search', (req, res) => {
   res.header("Content-Type", 'application/json');
   res.json(data);
 });
+
+app.get('/searchActive', (req, res) => {
+  var id = req.query.id;
+  console.log("key name = " + id);
+  var data;
+  if(id == "Uber"){
+    data = uberTripFrame;
+  }
+  else if(id == "For-Hire Vehicle"){
+    data = fhvTripFrame;
+  }
+  res.header("Content-Type", 'application/json');
+  res.json(data);
+});
+
 
 app.get('/checkBackup', (req, res) => {
   var exists = checkBackUp();
@@ -344,12 +405,26 @@ app.get('/add', (req, res) => {
   var tempState = req.query.state.toLowerCase();
   var tempCity = req.query.city.toLowerCase();
   var tempAddress = req.query.address.toLowerCase();
-  incrementDesign(tempDate, tempTime, tempState, tempCity, tempAddress)
+  incrementDesignFHV(tempDate, tempTime, tempState, tempCity, tempAddress)
   console.log("Adding this: ", tempDate, tempTime, tempState, tempCity, tempAddress);
   var data = operations.addData(dataFrame, tempDate, tempTime, tempState, tempCity, tempAddress, tempQuarter);
   res.header("Content-Type", 'application/json');
   res.json(data);
 });
+
+app.get('/addVehicle', (req, res) => {
+  console.log("Add vechicle called");
+  var tempDate = req.query.date.toLowerCase();
+  var tempVehicle = req.query.activeVehicle.toLowerCase();
+  var temptrips = req.query.trips.toLowerCase();
+  var type = req.query.type.toLowerCase();
+
+  var data = operations.addVehicleData(uberTripFrame, fhvTripFrame, type, tempDate, tempVehicle, temptrips);
+  incrementDesignVehicle(type, tempDate, tempVehicle)
+  res.header("Content-Type", 'application/json');
+  res.json(data);
+});
+
 
 app.get('/delete', (req, res) => {
   var tempDate = req.query.date;
@@ -362,6 +437,19 @@ app.get('/delete', (req, res) => {
   res.header("Content-Type", 'application/json');
   res.json(data);
 });
+
+app.get('/deleteActive', (req, res) => {
+  var tempDate = req.query.date;
+  var tempTime = req.query.time;
+  var tempState = req.query.state;
+  var tempCity = req.query.city;
+  var tempAddress = req.query.address;
+  console.log("Deleting this: ", tempDate, tempTime, tempState, tempCity, tempAddress);
+  var data = operations.deleteData(dataFrame, tempDate, tempTime, tempState, tempCity, tempAddress, tempQuarter);
+  res.header("Content-Type", 'application/json');
+  res.json(data);
+});
+
 
 app.get('/edit', (req, res) => {
   if (req.query.new == null) {
@@ -379,6 +467,29 @@ app.get('/edit', (req, res) => {
       console.log("Editing this: ", tempOld);
       console.log("To look like this: ", tempNew);
       var data = operations.editData(dataFrame, tempOld, tempNew, tempQuarter);
+      res.header("Content-Type", 'application/json');
+      res.json(data);
+    }
+  }
+});
+
+app.get('/editActive', (req, res) => {
+  if (req.query.new == null) {
+    var data = false; //more than one edit check
+    res.header("Content-Type", 'application/json');
+    res.json(data);
+  } else { //single edits
+    var tempOld = req.query.old;
+    var tempNew = req.query.new;
+    if (tempOld.toLowerCase() == tempNew.toLowerCase()) {
+      var data = false;
+      res.header("Content-Type", 'application/json');
+      res.json(data);
+    } else {
+      console.log("Editing this: ", tempOld);
+      console.log("To look like this: ", tempNew);
+      var data;
+      //var data = operations.editData(dataFrame, tempOld, tempNew, tempQuarter);
       res.header("Content-Type", 'application/json');
       res.json(data);
     }
@@ -554,7 +665,6 @@ app.get('/activeVehicle', (req, res) => {
   var t0 = performance.now()
   console.log(uberTripFrame.length, fhvTripFrame.length);
   var data = [];
-
   if (ActiveVechicleType === undefined || ActiveVechicleType.length == 0) {
     data = analytics.activeVechicleTypeSearch(fhvTripFrame, uberTripFrame);
     ActiveVechicleType = data;

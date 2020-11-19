@@ -9,10 +9,8 @@
 	<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"> </script>
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.1.6/Chart.bundle.min.js">
 	</script>
-	<script src="https://cdn.jsdelivr.net/timepicker.js/latest/timepicker.min.js"></script>
-	<link href="https://cdn.jsdelivr.net/timepicker.js/latest/timepicker.min.css" rel="stylesheet" />
 
-	<script src="client.js"></script>
+	<script src="activeVehicle.js"></script>
 </head>
 </head>
 
@@ -56,27 +54,17 @@
 			<a class="popuptext" id="myPopup">Notification Popup</a>
 		</div>
 
-		<h1 class="project_name"></h1>
-		</h1>
-
 		<div class="search_bar">
-			<input type="Search" placeholder="Search" name="searchBar" id="searchBar">
-			<button id="submit">Go</button>
 			<div class="dropdown">
 				<form action="">
 					<label for="data_selection">Choose a dataset</label>
 					<select name="data_selection" id="data_selection">
-						<option value="State">State</option>
-						<option value="City">City</option>
-						<option value="Street">Street Name</option>
-						<option value="Address">Address</option>
-						<option value="Year">Year</option>
-						<option value="Month">Month</option>
-						<option value="Date">Date</option>
-						<option value="Time">Time</option>
+						<option value="Uber">Uber</option>
+						<option value="For-Hire Vehicle">For-Hire Vehicle</option>
 					</select>
 				</form>
 			</div>
+			<button id="submit">Go</button>
 		</div>
 
 		<div id="myModal" class="modal">
@@ -97,10 +85,8 @@
 				<texttable>
 					<h3>Add A New Entry:</h3>
 					<input type="date" id="date" placeholder="Date">
-					<input type="text" id="time" placeholder="Time">
-					<input type="text" id="state" placeholder="State">
-					<input type="text" id="city" placeholder="City">
-					<input type="text" id="address" placeholder="Address">
+					<input type="text" id="activeVehicle" placeholder="Active Vehicles">
+					<input type="text" id="trips" placeholder="Trips">
 					<input type="button" class="submitAdd" value="Save" onclick="addData()">
 					<input type="button" class="submitAdd" id="closePop" value="Close">
 				</texttable>
@@ -109,11 +95,7 @@
 
 		<div id="container">
 			<div class="tableHolder">
-
 				<a id="table"></a>
-			</div>
-			<div class="graphHolder">
-				<canvas id="myChart"></canvas>
 			</div>
 		</div>
 	</header>

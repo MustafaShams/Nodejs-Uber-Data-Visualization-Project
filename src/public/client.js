@@ -167,49 +167,6 @@ function addEntry() {
     $("#addEntry").click(function (data) {
         $(".entryText").fadeIn(500);
     })
-    /*
-        var sendKey;
-        var sendField;
-        sendKey = $("#searchBar").val();
-        sendField = $("#data_selection").val();
-
-        var parent = document.getElementById('textTable');
-        parent.innerHTML = "";
-
-        // so I'm basically re-querying the data just to get how many columns. If we store th data in the future, I can change this
-        var url = "http://localhost:3000/search?field=" + sendField + "&id=" + sendKey;
-        $.get(url, function (data) {
-            var textTable = _textTable_.cloneNode(false);
-            
-            var h1 = document.createElement("H3");
-            var t = document.createTextNode("Add A New Entry:");
-            h1.appendChild(t);
-            textTable.appendChild(h1);
-            // add text boxes
-            for(var key in data[0]) {
-                var inputBox = document.createElement('input');
-                inputBox.type = "text";
-		        inputBox.id = key.toString(); //lower cases: date time state city address
-		        inputBox.placeholder = key.charAt(0).toUpperCase() + key.slice(1);
-                textTable.appendChild(inputBox);
-            }
-		
-	    
-
-            //add save button
-            var submitAdd = document.createElement('input');
-            submitAdd.type = "button";
-            submitAdd.className = "submitAdd";
-            submitAdd.onclick = function() {
-                addData();
-            }
-            submitAdd.value = "Save";
-
-            textTable.appendChild(submitAdd);
-        
-            parent.appendChild(textTable);
-        });
-    });*/
 }
 
 var _table_ = document.createElement('table'),
@@ -773,7 +730,8 @@ function activeVehicleArtifact(){
         if (data == "ErrorCode1") {
             showPopUp("Error: Your Entry Was Not Found In Our Database!");
         } else {
-            console.log(data[1].length, data[0].le);
+            console.log(data);
+            console.log(data[1].length, data[0].length);
             activeVehicleGraph(data[1], data[0]);
 		}
 	});
