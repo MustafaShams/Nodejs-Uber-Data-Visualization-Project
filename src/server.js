@@ -14,6 +14,12 @@ var lyftFrame = []
 var dataFrame = []
 var fhvTripFrame = []
 var uberTripFrame = []
+var PopulatedCitiesNY = [];
+var PopulatedCitiesNJ = [];
+var DaysOfWeekNY = [];
+var DaysOfWeekNJ = [];
+var TimeOfDay = [];
+var ActiveVechicleType = [];
 var key;
 var field;
 
@@ -336,7 +342,37 @@ app.get('/busiest', (req, res) => {
   var busyCity = req.query.city;
   var busyAddress = req.query.address;
   var busyStreet = req.query.street;
-  var data = analytics.searchDaysOfWeek(dataFrame, busyState, busyCity, busyAddress, busyStreet)
+  var data = [];
+  //console.log("Target: " + busyState);
+
+  if (busyCity == "" && busyAddress == "" && busyStreet == "") {
+    if (busyState == "Ny") {
+      if (DaysOfWeekNY === undefined || DaysOfWeekNY.length == 0) {
+        // console.log("NY New");
+        data = analytics.searchDaysOfWeek(dataFrame, busyState, busyCity, busyAddress, busyStreet);
+        DaysOfWeekNY = data;
+      }
+      else {
+        // console.log("NY OLD");
+        data = DaysOfWeekNY;
+      }
+    }
+    else if (busyState == "Nj") {
+      if (DaysOfWeekNJ === undefined || DaysOfWeekNJ.length == 0) {
+        // console.log("NJ New");
+        data = analytics.searchDaysOfWeek(dataFrame, busyState, busyCity, busyAddress, busyStreet);
+        DaysOfWeekNJ = data;
+      }
+      else {
+        // console.log("NJ OLD");
+        data = DaysOfWeekNJ;
+      }
+    }
+  }
+  else {
+    data = analytics.searchDaysOfWeek(dataFrame, busyState, busyCity, busyAddress, busyStreet);
+  }
+
   if (data.join() == "0,0,0,0,0,0,0") {
     data = "ErrorCode1";
   }
@@ -346,7 +382,31 @@ app.get('/busiest', (req, res) => {
 
 app.get('/population', (req, res) => {
   var searchTarget = req.query.search;
-  var data = analytics.searchPopulatedCities(dataFrame, searchTarget.toLowerCase());
+  //console.log("Target: " + searchTarget);
+  var data = [];
+  if (searchTarget == "ny") {
+    if (PopulatedCitiesNY === undefined || PopulatedCitiesNY.length == 0) {
+      //console.log("NY New");
+      data = analytics.searchPopulatedCities(dataFrame, searchTarget.toLowerCase());  
+      PopulatedCitiesNY = data;
+    }
+    else {
+      //console.log("NY OLD");
+      data = PopulatedCitiesNY;
+    }
+  }
+  else if (searchTarget == "nj") {
+    if (PopulatedCitiesNJ === undefined || PopulatedCitiesNJ.length == 0) {
+      //console.log("NJ New");
+      data = analytics.searchPopulatedCities(dataFrame, searchTarget.toLowerCase());  
+      PopulatedCitiesNJ = data;
+    }
+    else {
+      //console.log("NJ OLD");
+      data = PopulatedCitiesNJ;
+    }
+  }
+
   res.header("Content-Type", 'application/json');
   res.json(data);
 });
@@ -360,7 +420,18 @@ app.get('/quarterPopularity', (req, res) => {
 });
 
 app.get('/timePopularity', (req, res) => {
-  var data = analytics.timeOfDaySearch(dataFrame);
+  var data = [];
+
+  if (TimeOfDay === undefined || TimeOfDay.length == 0) {
+    data = analytics.timeOfDaySearch(dataFrame);
+    TimeOfDay = data;
+    //console.log("NEW");
+  }
+  else {
+    data = TimeOfDay;
+    //console.log("OLD");
+  }
+
   if (data.join() == "0,0,0,0") {
     data = "ErrorCode1";
   }
@@ -370,7 +441,18 @@ app.get('/timePopularity', (req, res) => {
 
 app.get('/activeVehicle', (req, res) => {
   console.log(uberTripFrame.length, fhvTripFrame.length);
-  var data = analytics.activeVechicleTypeSearch(fhvTripFrame, uberTripFrame);
+  var data = [];
+
+  if (ActiveVechicleType === undefined || ActiveVechicleType.length == 0) {
+    data = analytics.activeVechicleTypeSearch(fhvTripFrame, uberTripFrame);
+    ActiveVechicleType = data;
+    //console.log("NEW");
+  }
+  else {
+    data = ActiveVechicleType;
+    //console.log("OLD");
+  }
+
   if (data.join() == "0,0,0,0,0,0,0,0") {
     data = "ErrorCode1";
   }
