@@ -260,7 +260,7 @@ require([
 						var url = "http://localhost:3000/delteLatLon?data=" + previousData;
 						$.get(url, function (data) {})
 						editor.viewModel.cancelWorkflow();
-					} else {s
+					} else {
 
 						console.log("EDITS");
 						// Once edits are applied to the layer, remove the Editor from the UI
