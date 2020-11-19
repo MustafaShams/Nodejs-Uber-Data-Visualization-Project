@@ -693,6 +693,7 @@ function populationSearch() {
     var searchTarget = $("#searchbar").val()
         var url = "http://localhost:3000/population?search=" + searchTarget;
         $.get(url, function (data) {
+        console.log(data);
 		var separatorIndex = data.indexOf("SEPARATOR");
 		var citiesInState = data.slice(0, separatorIndex);
                 var citiesCount = data.slice(separatorIndex + 1);

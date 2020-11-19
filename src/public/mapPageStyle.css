@@ -6,37 +6,41 @@ body{
 
 
 .nav li {
-			display: inline;
-			padding-right: 10px;
-	}
+	display: inline-block;
+	padding-right: 10px;
+}
+
+.nav a {
+	padding: .5em;
+	color: white;
+	display: inline-block;
+	text-decoration: none;
+}
+
+.nav a:hover {
+	background-color: rgba(255, 255, 255, .5);
+	cursor: pointer;
+}
+
+.nav ul {
+	margin: 0;
+	display: inline;
+}
+
+.main_nav {
+	text-align: left;
+	font-size: 1.1m;
+	font-weight: lighter;
+	border-bottom: 1px solid rgba(255, 255, 255, .5);
 	
-	.nav a {
-			padding: .5em;
-			color: white;
-			display: inline-block;
-			text-decoration: none;
-	}
+
+}
+
+.main_nav {
+	padding: 0 1%;
 	
-	.nav a:hover {
-			background-color: rgba(255, 255, 255, .5);
-			cursor: pointer;
-	}
-	
-	.nav ul {
-			margin: 0;
-			
-	}
-	
-	.main_nav {
-		top: -120%;
-		background: black;
-			text-align: left;
-			font-size: 1.1m;
-			font-weight: lighter;
-			border-bottom: 1px solid rgba(255, 255, 255, .5);
-			
-	
-	}
+}
+
     #viewDiv {
       padding: 0;
       margin: 0;
@@ -44,7 +48,7 @@ body{
       width: 100%;
 		}
 		
-		.search_bar {
+		.map_search_bar {
 			position: absolute;
 			top: 10px;
 			right: 10px;
@@ -54,13 +58,13 @@ body{
 		}
 
 
-.search_bar input[type=search] {
+.map_search_bar input[type=search] {
 	font-size: 17px;
 	width: 300px;
 	color: black;
 }
 
-.search_bar button {
+.map_search_bar button {
 	background: rgb(50, 50, 50);
 	font-size: 17px;
 	padding: 3px 5px;
@@ -68,8 +72,11 @@ body{
 	cursor: pointer;
 	color: white;
 }
+.map_search_bar label{
+	color: black;
+}
 
-.search_bar dropdown input[type=text],
+.map_search_bar dropdown input[type=text],
 select {
     background-color: white;
     padding: 5px 5px;
@@ -81,6 +88,6 @@ select {
     box-sizing: border-box;
 }
 
-.search_bar button:hover {
+.map_search_bar button:hover {
     background: rgb(94, 91, 91);
 }

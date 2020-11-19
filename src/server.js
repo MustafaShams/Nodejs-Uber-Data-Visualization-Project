@@ -7,6 +7,9 @@ const processData = require('./Operations/processData.js')
 
 var JSZip = require("jszip");
 const fs = require('fs');
+const {
+  performance
+} = require('perf_hooks');
 
 var whichData = "none";
 var uberFrame = []
@@ -17,7 +20,7 @@ var uberTripFrame = []
 var PopulatedCitiesNY = [];
 var PopulatedCitiesNJ = [];
 var DaysOfWeekNY = [];
-var DaysOfWeekNJ = [];
+var BusyDaysOfWeek = {};
 var TimeOfDay = [];
 var ActiveVechicleType = [];
 var key;
@@ -219,6 +222,64 @@ function createJSON(tempDF) {
   return stringToJsonObject;
 }
 
+function busyIncrementalDesign(date, state, city, address){
+  var currDate = new Date(date);
+  var index = currDate.getDay()
+  if(state in BusyDaysOfWeek){
+    BusyDaysOfWeek[state][index] = BusyDaysOfWeek[state][index] +  1;
+  }
+  if(city in BusyDaysOfWeek){
+    BusyDaysOfWeek[city][index] = BusyDaysOfWeek[city][index] +  1;
+  }
+  if(address in BusyDaysOfWeek){
+    BusyDaysOfWeek[address][index] = BusyDaysOfWeek[address][index] +  1;
+  }
+}
+
+function timeOfDayIncDesign(time){
+  if(TimeOfDay.length > 0){
+    var hour = time.split(':')[0];
+    if(hour < 6){
+      TimeOfDay[0] += 1
+    }
+    else if(hour < 12){
+      TimeOfDay[1] += 1
+    }
+    else if(hour < 18){
+      TimeOfDay[2] += 1
+    }
+    else if(hour < 24){
+      TimeOfDay[3] += 1
+    }
+  }
+
+}
+
+function popInc(state, city){
+  if(PopulatedCitiesNY.length > 0){
+    if(state == "ny"){
+      index = PopulatedCitiesNY.indexOf(city)
+      PopulatedCitiesNY[337 + index] += 1
+    }
+  }
+  if(PopulatedCitiesNJ.length > 0){
+    if(state == "nj"){
+      index = PopulatedCitiesNJ.indexOf(city)
+      PopulatedCitiesNJ[340 + index] += 1
+    }
+  }
+}
+
+
+
+function incrementDesign(date, time, state, city, address){
+
+  //Busy Days
+  busyIncrementalDesign(date, state, city, address);
+  timeOfDayIncDesign(time);
+  popInc(state, city);
+}
+
 
 const express = require('express');
 const {
@@ -278,11 +339,12 @@ app.get('/deleteBackup', (req, res) => {
 });
 
 app.get('/add', (req, res) => {
-  var tempDate = req.query.date;
-  var tempTime = req.query.time;
-  var tempState = req.query.state;
-  var tempCity = req.query.city;
-  var tempAddress = req.query.address;
+  var tempDate = req.query.date.toLowerCase();
+  var tempTime = req.query.time.toLowerCase();
+  var tempState = req.query.state.toLowerCase();
+  var tempCity = req.query.city.toLowerCase();
+  var tempAddress = req.query.address.toLowerCase();
+  incrementDesign(tempDate, tempTime, tempState, tempCity, tempAddress)
   console.log("Adding this: ", tempDate, tempTime, tempState, tempCity, tempAddress);
   var data = operations.addData(dataFrame, tempDate, tempTime, tempState, tempCity, tempAddress, tempQuarter);
   res.header("Content-Type", 'application/json');
@@ -355,8 +417,94 @@ function getDateForCompare(tempCompare, startDate, endDate) {
     return tempTotalData;
 }
 
+app.get('/population', (req, res) => {
+  var t0 = performance.now()
+  var searchTarget = req.query.search.toLowerCase();
+  //console.log("Target: " + searchTarget);
+  var data = [];
+  if (searchTarget == "ny") {
+    if (PopulatedCitiesNY === undefined || PopulatedCitiesNY.length == 0) {
+      console.log("NY New");
+      data = analytics.searchPopulatedCities(dataFrame, searchTarget.toLowerCase());  
+      PopulatedCitiesNY = data;
+    }
+    else {
+      console.log("NY OLD");
+      data = PopulatedCitiesNY;
+    }
+  }
+  else if (searchTarget == "nj") {
+    if (PopulatedCitiesNJ === undefined || PopulatedCitiesNJ.length == 0) {
+      console.log("NJ New");
+      data = analytics.searchPopulatedCities(dataFrame, searchTarget.toLowerCase());  
+      PopulatedCitiesNJ = data;
+    }
+    else {
+      console.log("NJ OLD");
+      data = PopulatedCitiesNJ;
+    }
+  }
+
+  res.header("Content-Type", 'application/json');
+  res.json(data);
+  var t1 = performance.now()
+  console.log("Call to Analyze Population took " + (t1 - t0) + " milliseconds.")
+});
+
+app.get('/busiest', (req, res) => {
+  var t0 = performance.now()
+  var busyState = req.query.state.toLowerCase();
+  var busyCity = req.query.city.toLowerCase();
+  var busyAddress = req.query.address.toLowerCase();
+  var busyStreet = req.query.street.toLowerCase();
+  var data = [];
+  //console.log("Target: " + busyState);
+  if(busyStreet){
+    if(busyStreet in BusyDaysOfWeek){
+      data = BusyDaysOfWeek[busyStreet]
+    }
+    else{
+      data = analytics.searchDaysOfWeek(dataFrame, busyState, busyCity, busyAddress, busyStreet);;
+      BusyDaysOfWeek[busyStreet] = data
+    }
+  }
+  else if(busyAddress){
+    if(busyAddress in BusyDaysOfWeek){
+      data = BusyDaysOfWeek[busyAddress]
+    }
+    else{
+      data = analytics.searchDaysOfWeek(dataFrame, busyState, busyCity, busyAddress, busyStreet);;
+      BusyDaysOfWeek[busyAddress] = data
+    }
+  }
+  else if(busyCity){
+    if(busyCity in BusyDaysOfWeek){
+      data = BusyDaysOfWeek[busyCity]
+    }
+    else{
+      data = analytics.searchDaysOfWeek(dataFrame, busyState, busyCity, busyAddress, busyStreet);;
+      BusyDaysOfWeek[busyCity] = data
+    }
+  }
+  else if(busyState){
+    if(busyState in BusyDaysOfWeek){
+      data = BusyDaysOfWeek[busyState]
+    }
+    else{
+      data = analytics.searchDaysOfWeek(dataFrame, busyState, busyCity, busyAddress, busyStreet);;
+      BusyDaysOfWeek[busyState] = data
+    }
+  }
+  res.header("Content-Type", 'application/json');
+  res.json(data);
+
+  var t1 = performance.now()
+  console.log("Call to Analyze Busy Days took " + (t1 - t0) + " milliseconds.")
+});
+
 var tempCompare = "";
 app.get('/compare', (req, res) => {
+  var t0 = performance.now()
   var startDate = req.query.startDate;
   var endDate = req.query.endDate;
   console.log("Start month: ", startDate);
@@ -375,99 +523,12 @@ app.get('/compare', (req, res) => {
 }
   res.header("Content-Type", 'application/json');
   res.json(data);
-});
-
-app.get('/busiest', (req, res) => {
-  var busyState = req.query.state;
-  var busyCity = req.query.city;
-  var busyAddress = req.query.address;
-  var busyStreet = req.query.street;
-  var data = [];
-  //console.log("Target: " + busyState);
-
-  if (busyCity == "" && busyAddress == "" && busyStreet == "") {
-    if (busyState == "Ny") {
-      if (DaysOfWeekNY === undefined || DaysOfWeekNY.length == 0) {
-        // console.log("NY New");
-        data = analytics.searchDaysOfWeek(dataFrame, busyState, busyCity, busyAddress, busyStreet);
-        DaysOfWeekNY = data;
-      }
-      else {
-        // console.log("NY OLD");
-        data = DaysOfWeekNY;
-      }
-    }
-    else if (busyState == "Nj") {
-      if (DaysOfWeekNJ === undefined || DaysOfWeekNJ.length == 0) {
-        // console.log("NJ New");
-        data = analytics.searchDaysOfWeek(dataFrame, busyState, busyCity, busyAddress, busyStreet);
-        DaysOfWeekNJ = data;
-      }
-      else {
-        // console.log("NJ OLD");
-        data = DaysOfWeekNJ;
-      }
-    }
-  }
-  else {
-    data = analytics.searchDaysOfWeek(dataFrame, busyState, busyCity, busyAddress, busyStreet);
-  }
-
-  if (data.join() == "0,0,0,0,0,0,0") {
-    data = "ErrorCode1";
-  }
-  res.header("Content-Type", 'application/json');
-  res.json(data);
-});
-
-app.get('/population', (req, res) => {
-  var searchTarget = req.query.search;
-  //console.log("Target: " + searchTarget);
-  var data = [];
-  if (searchTarget == "ny") {
-    if (PopulatedCitiesNY === undefined || PopulatedCitiesNY.length == 0) {
-      //console.log("NY New");
-      data = analytics.searchPopulatedCities(dataFrame, searchTarget.toLowerCase());  
-      PopulatedCitiesNY = data;
-    }
-    else {
-      //console.log("NY OLD");
-      data = PopulatedCitiesNY;
-    }
-  }
-  else if (searchTarget == "nj") {
-    if (PopulatedCitiesNJ === undefined || PopulatedCitiesNJ.length == 0) {
-      //console.log("NJ New");
-      data = analytics.searchPopulatedCities(dataFrame, searchTarget.toLowerCase());  
-      PopulatedCitiesNJ = data;
-    }
-    else {
-      //console.log("NJ OLD");
-      data = PopulatedCitiesNJ;
-    }
-  }
-
-  res.header("Content-Type", 'application/json');
-  res.json(data);
-});
-
-var tempQuarter = "";
-app.get('/quarterPopularity', (req, res) => {
-  console.log("Init Quarter Pop Comparision");
-	var data;
-	if (tempQuarter == "") {
-		data = analytics.compareMonths(dataFrame, uberFrame, lyftFrame);
-		tempQuarter = data;
-	}
-	else {
-		data = tempQuarter;
-	}
-  console.log("Done");
-  res.header("Content-Type", 'application/json');
-  res.json(data);
+  var t1 = performance.now()
+  console.log("Call to Analyze Comparison took " + (t1 - t0) + " milliseconds.")
 });
 
 app.get('/timePopularity', (req, res) => {
+  var t0 = performance.now()
   var data = [];
 
   if (TimeOfDay === undefined || TimeOfDay.length == 0) {
@@ -485,9 +546,12 @@ app.get('/timePopularity', (req, res) => {
   }
   res.header("Content-Type", 'application/json');
   res.json(data);
+  var t1 = performance.now()
+  console.log("Call to Analyze Time of Day took " + (t1 - t0) + " milliseconds.")
 });
 
 app.get('/activeVehicle', (req, res) => {
+  var t0 = performance.now()
   console.log(uberTripFrame.length, fhvTripFrame.length);
   var data = [];
 
@@ -506,8 +570,28 @@ app.get('/activeVehicle', (req, res) => {
   }
   res.header("Content-Type", 'application/json');
   res.json(data);
+  var t1 = performance.now()
+  console.log("Call to Analyze Active Vehicles took " + (t1 - t0) + " milliseconds.")
 });
 
+var tempQuarter = "";
+app.get('/quarterPopularity', (req, res) => {
+  var t0 = performance.now()
+  console.log("Init Quarter Pop Comparision");
+	var data;
+	if (tempQuarter == "") {
+		data = analytics.compareMonths(dataFrame, uberFrame, lyftFrame);
+		tempQuarter = data;
+	}
+	else {
+		data = tempQuarter;
+	}
+  console.log("Done");
+  res.header("Content-Type", 'application/json');
+  res.json(data);
+  var t1 = performance.now()
+  console.log("Call to Popular Vehicle took " + (t1 - t0) + " milliseconds.")
+});
 
 app.get('/searchLatLon', (req, res) => {
   var id = req.query.id;
@@ -518,6 +602,14 @@ app.get('/searchLatLon', (req, res) => {
   var data = []
   data[0] = search.searchDataFrame(uberFrame, key_name, field);
   data[1] = search.searchDataFrame(lyftFrame, key_name, field);
+  res.header("Content-Type", 'application/json');
+  res.json(data);
+});
+
+app.get('/addLatLon', (req, res) => {
+  var addData = req.query.data;
+  console.log("Adding this:", addData);
+  var data = operations.addDataLatLon(uberFrame, lyftFrame, addData, tempQuarter, tempCompare);
   res.header("Content-Type", 'application/json');
   res.json(data);
 });
@@ -553,13 +645,6 @@ app.get('/deleteLatLon', (req, res) => {
     res.json(data);
 });
 
-app.get('/addLatLon', (req, res) => {
-  var addData = req.query.data;
-  console.log("Adding this:", addData);
-  var data = operations.addDataLatLon(uberFrame, lyftFrame, addData, tempQuarter, tempCompare);
-  res.header("Content-Type", 'application/json');
-  res.json(data);
-});
 
 
 

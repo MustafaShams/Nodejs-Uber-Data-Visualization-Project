@@ -3,7 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no">
-  <title>Map View Search</title>
+	<title>Map View Search</title>
+	<link rel="stylesheet" href="styles.css">
 	<link rel="stylesheet" href="mapPageStyle.css">
 	<link rel="stylesheet" href="https://js.arcgis.com/4.17/esri/themes/light/main.css">
 	<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"> </script>
@@ -22,6 +23,21 @@
 				<a href="map.html"> Map </a>
 			</li>
 			<li>
+				<div class="menu_dropdown">
+					<a class="menu">Artifact Menu
+						<i class="fa fa-caret-down"></i>
+					</a>
+					<div class="menu_content">
+						<a href="population.html">Population</a>
+						<a href="busiest_day.html">Busiest Day</a>
+						<a href="platform_comparison.html">Platform Comparison</a>
+						<a href="time_popularity.html">Traffic Time of Day</a>
+						<a href="active_vehicles.html">Types of Active Vehicles</a>
+						<a href="year_popularity.html">Increase/Decrease in Platforms</a>
+					</div>
+				</div>
+			</li>
+			<li>
 				<a onclick=saveBackup()>Backup Data </a>
 			</li>
 			<li>
@@ -29,7 +45,8 @@
 			</li>
 		</ul>
 	</nav>
-	<div class="search_bar">
+	</header>
+	<div class="map_search_bar">
 		<input type="Search" placeholder="Search" name="searchBar" id="searchBar">
 		<button id="submit">Go</button>
 		<div class="dropdown">
