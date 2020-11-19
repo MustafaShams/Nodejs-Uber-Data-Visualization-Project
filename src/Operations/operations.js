@@ -154,6 +154,7 @@ function deleteData(dataFrame, date, time, state, city, address, tempQuarter) {
   for (var i = 0; i < dataFrame.length; ++i) {
     if (date == dataFrame[i].Date && time == dataFrame[i].Time && state == dataFrame[i].State && city == dataFrame[i].City && address == dataFrame[i].Address) {
       dataFrame.splice(i, 1); //.splice(index, how many to delete)
+	var tempDate = date.split('.');
 	if (tempQuarter != "") {
 		var tempMonth = Number(tempDate[0]) - 7;
                 var tempWeek = Number(tempDate[1]);
