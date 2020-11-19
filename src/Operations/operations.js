@@ -34,6 +34,28 @@ function addData(dataFrame, date, time, state, city, address) {
   return true;
 }
 
+function addDataLatLon(uberFrame, lyftFrame, addData) {
+
+  var addition = addData.split(",");
+  var e = new callInfo();
+  Object.assign(e.Date = addition[0]);
+  Object.assign(e.Time = addition[1]);
+  Object.assign(e.Lat = addition[2]);
+  Object.assign(e.Lon = addition[3]);
+
+  if(addition[4] == "uber"){
+    console.log("Adding Uber",e);
+    uberFrame.push(e);
+  }
+  else{
+    console.log("Adding Lyft",e);
+    lyftFrame.push(e);
+  }
+ 
+  return true;
+}
+
+
 function deleteData(dataFrame, date, time, state, city, address) {
   for (var i = 0; i < dataFrame.length; ++i) {
     if (date == dataFrame[i].Date && time == dataFrame[i].Time && state == dataFrame[i].State && city == dataFrame[i].City && address == dataFrame[i].Address) {
@@ -114,4 +136,4 @@ function editLatLonData(uberFrame, lyftFrame, tempOld, tempNew) {
   return false;
 }
 
-module.exports = { addData, deleteData, editData, editLatLonData, deleteDataLatLon };
+module.exports = { addData, deleteData, editData, editLatLonData, deleteDataLatLon, addDataLatLon};

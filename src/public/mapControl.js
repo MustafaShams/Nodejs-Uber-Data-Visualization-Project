@@ -79,7 +79,6 @@ require([
 				}
 			],
 		}, ],
-
 		actions: [editThisAction]
 	};
 
@@ -95,6 +94,8 @@ require([
 	};
 
 
+	let editor; 
+	let layerPoint = new FeatureLayer({});
 
 
 	$("#submit").click(function () {
@@ -105,7 +106,8 @@ require([
 		if (sendKey) {
 			var url = "http://localhost:3000/searchLatLon?field=" + sendField + "&id=" + sendKey;
 			$.get(url, function (info) {
-				layer.removeAll();
+				layerPoint.destroy();
+				view.ui.remove(editor);
 				//console.log(data);
 				var data = info[0];
 				for (var x = 0; x < data.length; x++) {
@@ -125,19 +127,21 @@ require([
 					var type = "lyft";
 					createPoint(lat, lon, time, date, type);
 				}
-
-				const layerPoint = new FeatureLayer({
+				
+				layerPoint = new FeatureLayer({
 
 					// create an instance of esri/layers/support/Field for each field object
 					fields: [{
 							name: "Latitude",
 							alias: "Latitude",
-							type: "string"
+							type: "string",
+							editable: false
 						},
 						{
 							name: "Longitude",
 							alias: "Longitude",
-							type: "string"
+							type: "string",
+							editable: false
 						},
 						{
 							name: "Time",
@@ -152,8 +156,7 @@ require([
 						{
 							name: "type",
 							alias: "Type",
-							type: "string",
-							editable: false
+							type: "string"
 						}
 					],
 					objectIdField: "name", // inferred from fields array if not specified
@@ -161,7 +164,6 @@ require([
 					// in the source array if they are not specified.
 					source: layer.graphics, //  an array of graphics with geometry and attributes
 					symbol: markerSymbol,
-
 					// popupTemplate and symbol are not required in each feature
 					// since those are handled with the popupTemplate and
 					// renderer properties of the layer
@@ -172,14 +174,16 @@ require([
 
 
 
-
-
+				
+			
 				map.add(layerPoint);
-				let editor = new Editor({
+				editor = new Editor({
 					view: view,
 					// Pass in the configurations.
 					layer: layerPoint
 				});
+				view.ui.add(editor, "bottom-right");
+				
 
 
 				view.popup.on("trigger-action", function (event) {
@@ -197,15 +201,13 @@ require([
 
 					// If the EditorViewModel's activeWorkflow is null, make the popup not visible
 					if (!editor.viewModel.activeWorkFlow) {
-
+						console.log("here")
 						var currPop = view.popup
 						currPop.visible = false;
 						// Call the Editor update feature edit workflow
 						initial = view.popup.selectedFeature.attributes;
 						editor.startUpdateWorkflowAtFeatureEdit(
 							view.popup.selectedFeature
-
-
 						);
 						view.ui.add(editor, "bottom-right");
 						view.popup.spinnerEnabled = false;
@@ -229,6 +231,7 @@ require([
 								// Prevent the default behavior for the back button and instead remove the editor and reopen the popup
 								evt.preventDefault();
 								view.ui.remove(editor);
+								view.ui.add(editor, "bottom-right");
 								//currPop.visible = true;
 								view.popup.open({
 									features: features
@@ -252,15 +255,32 @@ require([
 				layerPoint.on("apply-edits", function (results) {
 					console.log(results)
 					view.ui.remove(editor);
+					view.ui.add(editor, "bottom-right");
 					if (results.edits.deleteFeatures) {
 						var previous = results.edits.deleteFeatures[0].attributes
 						var previousData = [previous.Date, previous.Time, previous.Latitude, previous.Longitude, previous.type]
 						console.log("Delete", previousData);
 						
-						var url = "http://localhost:3000/delteLatLon?data=" + previousData;
+						var url = "http://localhost:3000/deleteLatLon?data=" + previousData;
 						$.get(url, function (data) {})
 						editor.viewModel.cancelWorkflow();
-					} else {
+					}
+					else if(results.edits.addFeatures){
+						console.log("Adding")
+						var addInfo = results.edits.addFeatures[0].attributes
+						addInfo.Latitude = results.edits.addFeatures[0].geometry.latitude
+						addInfo.Longitude = results.edits.addFeatures[0].geometry.longitude
+						console.log(addInfo);
+						view.popup.open({
+							features: addInfo
+						});
+						view.popup.close();
+						var previousData = [addInfo.Date, addInfo.Time, addInfo.Latitude, addInfo.Longitude, addInfo.type]
+						var url = "http://localhost:3000/addLatLon?data=" + previousData;
+						$.get(url, function (data) {})
+						editor.viewModel.cancelWorkflow();
+					} 
+					else {
 
 						console.log("EDITS");
 						// Once edits are applied to the layer, remove the Editor from the UI
