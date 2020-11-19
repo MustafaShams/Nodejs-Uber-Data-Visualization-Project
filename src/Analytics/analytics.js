@@ -52,17 +52,17 @@ function getDateUnique(arr) {
 }
 
 function compareSearch(dataFrame, uberFrame, lyftFrame, startDate, endDate) {
-  	//console.log("DF SIZE: ", dataFrame[0].date, uberFrame[0].date, lyftFrame[0].date);
 	var uberCompArr = [];
  	var lyftCompArr = [];
   	var totalArr = [];
-  	var startMonth = startDate;
+  	var startMonth = startDate; //dont need this anymore maybe?
   	var endMonth = endDate;
   	var dateUber = {}
   	var dateLyFt = {}
-  	while (Number(startMonth) != Number(endMonth) + 1) {
-    		let keycls = new keyClass("Month", (Number(startMonth)).toString());
-    		console.log("Comparing This Month rn: ", (Number(startMonth)).toString());
+	var tempCounter = 7; //start date
+  	while (tempCounter != 10) {//(Number(startMonth) != Number(endMonth) + 1) {
+    		let keycls = new keyClass("Month", (Number(tempCounter)).toString());
+    		console.log("Comparing This Month rn: ", (Number(tempCounter).toString()));
     		var uberArr = keycls.keySearch(uberFrame);
     		var lyftArr = keycls.keySearch(lyftFrame);
 
@@ -71,15 +71,20 @@ function compareSearch(dataFrame, uberFrame, lyftFrame, startDate, endDate) {
     
     		console.log("Uber size for this month: ", uberArr.length);
     		console.log("Lyft size for this month: ", lyftArr.length);
-    		uberCompArr.push((monthGenerator(Number(startMonth).toString()) + ": " + uberArr.length).toString());
-    		lyftCompArr.push((monthGenerator(Number(startMonth).toString()) + ": " + lyftArr.length).toString());
-    		startMonth = Number(startMonth) + 1;
-    		startMonth = startMonth.toString();
+    		uberCompArr.push((monthGenerator(Number(tempCounter).toString()) + ": " + uberArr.length).toString());
+    		lyftCompArr.push((monthGenerator(Number(tempCounter).toString()) + ": " + lyftArr.length).toString());
+    		//startMonth = Number(startMonth) + 1;
+    		//startMonth = startMonth.toString();
+		++tempCounter;
   	}
   	totalArr.push(uberCompArr)
   	totalArr.push(lyftCompArr)
   	totalArr.push(dateUber);
   	totalArr.push(dateLyFt);
+
+
+	//console.log("This is dateLyft: ", totalArr[3]);
+	//console.log("This is dateUber: ", totalArr[2]);
   	return totalArr; //will return null if no data in both sets
 }
 	

@@ -284,7 +284,7 @@ app.get('/add', (req, res) => {
   var tempCity = req.query.city;
   var tempAddress = req.query.address;
   console.log("Adding this: ", tempDate, tempTime, tempState, tempCity, tempAddress);
-  var data = operations.addData(dataFrame, tempDate, tempTime, tempState, tempCity, tempAddress);
+  var data = operations.addData(dataFrame, tempDate, tempTime, tempState, tempCity, tempAddress, tempQuarter);
   res.header("Content-Type", 'application/json');
   res.json(data);
 });
@@ -296,7 +296,7 @@ app.get('/delete', (req, res) => {
   var tempCity = req.query.city;
   var tempAddress = req.query.address;
   console.log("Deleting this: ", tempDate, tempTime, tempState, tempCity, tempAddress);
-  var data = operations.deleteData(dataFrame, tempDate, tempTime, tempState, tempCity, tempAddress);
+  var data = operations.deleteData(dataFrame, tempDate, tempTime, tempState, tempCity, tempAddress, tempQuarter);
   res.header("Content-Type", 'application/json');
   res.json(data);
 });
@@ -316,23 +316,63 @@ app.get('/edit', (req, res) => {
     } else {
       console.log("Editing this: ", tempOld);
       console.log("To look like this: ", tempNew);
-      var data = operations.editData(dataFrame, tempOld, tempNew);
+      var data = operations.editData(dataFrame, tempOld, tempNew, tempQuarter);
       res.header("Content-Type", 'application/json');
       res.json(data);
     }
   }
 });
 
+function getDateForCompare(tempCompare, startDate, endDate) {
+	var tempTotalData = [];
+    var tempUberCompare = [];
+    var tempLyftCompare = [];
+    var tempUberDate = [];
+    var tempLyftDate = [];
+    //var newArrayCounter = 0;
+    for (var i = Number(startDate) - 7; i <= Number(endDate) - 7; ++i) {
+        tempUberCompare.push(tempCompare[0][i]);
+        tempLyftCompare.push(tempCompare[1][i]);
+        //tempUberDate.push(tempCompare[2][i]);
+        //tempLyftDate.push(tempCompare[3][i]);
+	//Object.assign(tempUberDate, analytics.getDateUnique(tempUberCompare));
+	//Object.assign(tempLyftDate, analytics.getDateUnique(tempLyftCompare));
+	    //console.log("THIS IS U-date: ", tempUberDate);
+	    //console.log("THIS IS L-date: ", tempLyftDate);
+    }
+	tempUberDate = tempCompare[2];
+	tempLyftDate = tempCompare[3]
+    tempTotalData.push(tempUberCompare);
+    tempTotalData.push(tempLyftCompare);
+    tempTotalData.push(tempUberDate);
+    tempTotalData.push(tempLyftDate);
+
+        console.log("THIS IS UBER: ", tempUberCompare);
+          console.log("THIS IS lyft: ", tempLyftCompare);
+          //console.log("THIS IS U-date: ", tempUberDate);
+          //console.log("THIS IS L-date: ", tempLyftDate);
+
+    return tempTotalData;
+}
+
+var tempCompare = "";
 app.get('/compare', (req, res) => {
   var startDate = req.query.startDate;
   var endDate = req.query.endDate;
   console.log("Start month: ", startDate);
   console.log("End month: ", endDate);
+  var data = "";
   if (Number(startDate) > Number(endDate)) {
-    var data = "ErrorCode1";
-  } else {
+    data = "ErrorCode1";
+  } 
+  if (data != "ErrorCode1" && tempCompare == "") {
     var data = analytics.compareSearch(dataFrame, uberFrame, lyftFrame, startDate, endDate);
+    tempCompare = data;
+    data = getDateForCompare(data, startDate, endDate);
   }
+  else if (data != "ErrorCode1") {
+	data = getDateForCompare(tempCompare, startDate, endDate);
+}
   res.header("Content-Type", 'application/json');
   res.json(data);
 });
@@ -411,9 +451,17 @@ app.get('/population', (req, res) => {
   res.json(data);
 });
 
+var tempQuarter = "";
 app.get('/quarterPopularity', (req, res) => {
   console.log("Init Quarter Pop Comparision");
-  var data = analytics.compareMonths(dataFrame, uberFrame, lyftFrame);
+	var data;
+	if (tempQuarter == "") {
+		data = analytics.compareMonths(dataFrame, uberFrame, lyftFrame);
+		tempQuarter = data;
+	}
+	else {
+		data = tempQuarter;
+	}
   console.log("Done");
   res.header("Content-Type", 'application/json');
   res.json(data);
@@ -489,7 +537,7 @@ app.get('/editLatLon', (req, res) => {
     } else {
       console.log("Editing this:", tempOld);
       console.log("To look like this:", tempNew);
-      var data = operations.editLatLonData(uberFrame, lyftFrame, tempOld, tempNew);
+      var data = operations.editLatLonData(uberFrame, lyftFrame, tempOld, tempNew, tempQuarter, tempCompare);
       
       res.header("Content-Type", 'application/json');
       res.json(data);
@@ -500,7 +548,7 @@ app.get('/editLatLon', (req, res) => {
 app.get('/deleteLatLon', (req, res) => {
     var deleteData = req.query.data;
     console.log("deleting this:", deleteData);
-    var data = operations.deleteDataLatLon(uberFrame, lyftFrame, deleteData);
+    var data = operations.deleteDataLatLon(uberFrame, lyftFrame, deleteData, tempQuarter, tempCompare);
     res.header("Content-Type", 'application/json');
     res.json(data);
 });
@@ -508,7 +556,7 @@ app.get('/deleteLatLon', (req, res) => {
 app.get('/addLatLon', (req, res) => {
   var addData = req.query.data;
   console.log("Adding this:", addData);
-  var data = operations.addDataLatLon(uberFrame, lyftFrame, addData);
+  var data = operations.addDataLatLon(uberFrame, lyftFrame, addData, tempQuarter, tempCompare);
   res.header("Content-Type", 'application/json');
   res.json(data);
 });

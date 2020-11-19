@@ -110,6 +110,8 @@ function addData() {
                 var table = document.getElementById('table').childNodes[0];
                 var tr = _tr_.cloneNode(false);
                 var tempArr = [];
+		extractedDate = extractedDate.replace(/\b0/g, '').split('.');
+		extractedDate = extractedDate[1] + "." + extractedDate[2] + "." + extractedDate[0];
                 tempArr.push(extractedDate);
                 tempArr.push(extractedTime);
                 tempArr.push(extractedState.charAt(0).toUpperCase() + extractedState.slice(1).toLowerCase());
