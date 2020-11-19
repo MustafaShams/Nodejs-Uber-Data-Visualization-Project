@@ -418,7 +418,7 @@ function editLatLonData(uberFrame, lyftFrame, tempOld, tempNew, tempQuarter, tem
                         }
                 }
                 console.log("tempQuarter BEFORE delete: ", tempQuarter[2][dtempMonth][dtempIndex]);
-                tempQuarter[1][dtempMonth][dtempIndex] = Number(tempQuarter[2][dtempMonth][dtempIndex]) - 1;
+                tempQuarter[2][dtempMonth][dtempIndex] = Number(tempQuarter[2][dtempMonth][dtempIndex]) - 1;
                 console.log("tempQuarter AFTER delete: ", tempQuarter[2][dtempMonth][dtempIndex]);
 //----------------------------------- ADD -----------------------------------//
                 var addDate = editNew[0].split('.');
@@ -433,7 +433,7 @@ function editLatLonData(uberFrame, lyftFrame, tempOld, tempNew, tempQuarter, tem
                         }
                 }
                 console.log("tempQuarter BEFORE add: ", tempQuarter[2][atempMonth][atempIndex]);
-                tempQuarter[1][atempMonth][atempIndex] = Number(tempQuarter[2][atempMonth][atempIndex]) + 1;
+                tempQuarter[2][atempMonth][atempIndex] = Number(tempQuarter[2][atempMonth][atempIndex]) + 1;
                 console.log("tempQuarter AFTER add: ", tempQuarter[2][atempMonth][atempIndex]);
         }
         else {
@@ -459,7 +459,7 @@ function editLatLonData(uberFrame, lyftFrame, tempOld, tempNew, tempQuarter, tem
                 var getCompareNum = tempCompare[1][atempMonth].split(' ');
                 getCompareNum[1] = Number(getCompareNum[1]) + 1;
                 getCompareNum = getCompareNum.join().replace(',', " ");
-                tempCompare[0][atempMonth] = getCompareNum;
+                tempCompare[1][atempMonth] = getCompareNum;
                 console.log("tempCompare AFTER add: ", tempCompare[1][atempMonth]);
         }
 	else {
