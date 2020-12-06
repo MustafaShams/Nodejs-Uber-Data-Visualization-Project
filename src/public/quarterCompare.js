@@ -134,6 +134,26 @@ function comparison_over_yearChart(x_Axis,dialArray,dialPercent, uberArray,uberP
 		options: {
 			reponsive: true,
 			maintainAspectRatio: false,
+			scales: {
+				xAxes: [{
+						gridLines: {
+								color: "rgba(255,255,255,.2)"
+						},
+						ticks: {
+								fontSize: 20,
+								fontColor: "white"
+						}
+				}],
+				yAxes: [{
+						gridLines: {
+								color: "rgba(255,255,255,.2)"
+						},
+						ticks: {
+								fontSize: 20,
+								fontColor: "white"
+						}
+				}]
+		},
 			tooltips:{
 				mode: 'label',
 				intersect: false
@@ -171,11 +191,16 @@ function comparison_over_yearChart(x_Axis,dialArray,dialPercent, uberArray,uberP
 			legend:{
 				display: true,
 				position: 'bottom',
+				labels: {
+					fontColor: "#FFFFFF",
+					fontSize: 20,
+			},
 			},
 			title:{
 				display: true,
 				text: 'Popularity of Different Kinds of Vehicles Over Time',
 				fontSize: 20,
+				fontColor: "white"
 		},
 
 		}

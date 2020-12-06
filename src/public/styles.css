@@ -7,15 +7,83 @@ html,
 body {
     margin: 0;
     padding: 0;
-}
-
-.main_header {
-
     background-image: linear-gradient(rgba(0, 0, 0, 0.7),
             rgba(0, 0, 0, 0.7)),
         url("NY_night.jpg");
-    background-size: 100%;
+    background-size: cover;
 }
+
+#myVideo {
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    min-width: 100%;
+      min-height: 100%;
+  }
+  
+  /* Add some content at the bottom of the video/page */
+  .content {
+    position: fixed;
+    top: 0;
+    background: rgba(0, 0, 0, 0.5);
+    color: #f1f1f1;
+    width: 100%;
+    font-size: 16px;
+    
+  }
+
+  .homepageContent {
+
+    position: fixed;
+    top: 35px;
+    background: rgba(0, 0, 0, 0.5);
+    color: #f1f1f1;
+    width: 100%;
+    font-size: 16px;
+    height: 100%;
+    z-index: 500;
+    
+  }
+
+  .infoContent{
+    width: 1000px;
+    height: 300px;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    margin-top: -150px;
+    margin-left: -500px;
+    text-align: center;
+  }
+
+  .line{
+    width: auto;
+    margin: 0 20px;
+    border-bottom: 2px solid white;
+}
+
+  .infoContent h1{
+      font-size: 80px;
+      margin: 0;
+  }
+
+  .infoContent p{
+    
+    margin: 10px;
+    font-size: 20px;
+    margin-top: 25px;
+}
+
+  #getStarted{
+    padding: 10px 20px;
+    font-size: 30px;
+    border: 3px solid white;
+    border-radius: 30px;
+    color: white;
+    text-decoration: none;
+  }
+
+
 
   
   .menu_dropdown .menu {
@@ -26,6 +94,7 @@ body {
     background-color: inherit;
     font-family: inherit; 
     margin: 0; 
+    z-index: 999;
   }
   
   .main_nav a:hover, .menu_dropdown:hover .menu {
@@ -39,7 +108,11 @@ body {
     padding-top: 8px;
     min-width: 160px;
     box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-    z-index: 1;
+    z-index: 999;
+  }
+
+  .nav{
+      z-index: 999;
   }
   
   .menu_content a {
@@ -55,8 +128,18 @@ body {
     background-color: #ddd;
   }
 
+  .menu_dropdown{
+      display: inline-block;
+
+  }
+
   .menu_dropdown:hover .menu_content {
     display: block;
+    
+  }
+
+  .menu_content{
+    z-index: 999;
   }
 
   .menu_dropdown .menu_content a {
@@ -253,8 +336,8 @@ select {
     /*background-color: blue;*/
     color: #ddd;
     text-align: center;
-    overflow: auto;
     height: 100%;
+    overflow: hidden;
 }
 
 .graphHolder {
@@ -268,6 +351,8 @@ select {
     text-align: center;
 }
 
+
+
 .tableHolder table {
     background: rgba(255, 255, 255, 0.1);
     font-family: Arial, Helvetica, sans-serif;
@@ -278,6 +363,19 @@ select {
     text-align: center;
     border-collapse: collapse;
     text-transform: capitalize;
+    color : white;
+}
+
+.tableHolder #myTable{
+    overflow: auto;
+}
+
+.tableHolder #myTable_info, #myTable_paginate a{
+    color: white !important;
+}
+
+#myTable_paginate .paginate_button.current{
+    color: black !important;
 }
 
 .tableHolder table td,
@@ -286,13 +384,41 @@ select {
     padding: 9px 5px;
 }
 
+.tableHolder #myTable_length option{
+    color: black;
+}
+
 .tableHolder table tbody td {
-    font-size: 15px;
+    font-size: 18px;
     color: #E6E6E6;
 }
 
 .tableHolder table tr:nth-child(even) {
     background: #7D7D7D;
+}
+
+.tableHolder #myTable_wrapper{
+    color: white;
+}
+
+.tableHolder #myTable_length, .tableHolder #myTable_filter, .tableHolder select, .tableHolder #myTable_filter input{
+    color: white;
+}
+
+table.dataTable tbody tr.myeven {
+    background-color: rgba(126, 126, 126, 0.8);
+}
+table.dataTable tbody tr.myodd {
+    background-color:  rgba(29, 29, 29, 0.4);
+}
+
+.dataTables_wrapper {
+    font-family: tahoma;
+    font-size: 17px;
+    position: relative;
+    clear: both;
+    *zoom: 1;
+    zoom: 1;
 }
 
 
@@ -410,11 +536,55 @@ td[contenteditable="true"]:focus {
     border-radius: 6px;
     padding: 5px;
     display: none;
+    z-index: 9999;
   }
 
   .popup .popuptext{
     margin: auto;
     color : white;
+    font-size: 15px;
   }
 
+
+  .active_vehicles button, .entryInput button{
+    padding: 6px;
+    background: rgb(50, 50, 50);
+    font-size: 17px;
+    border: none;
+    cursor: pointer;
+    color: white;
+  }
+
+  .active_content{
+      width: 100%;
+      text-align:center;
+  }
+
+.entryInput{
+    float: right;
+    padding-right: 50px;
+}
+
+.entryInput button{
+    display: none;
+}
+
+/* width */
+::-webkit-scrollbar {
+    width: 10px;
+  }
   
+  /* Track */
+  ::-webkit-scrollbar-track {
+    background: #f1f1f1; 
+  }
+   
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: #888; 
+  }
+  
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+    background: #555; 
+  }

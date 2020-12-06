@@ -1,3 +1,4 @@
+const { remove } = require('jszip');
 const callInfo = require('../dataFrameClass.js')
 const keyClass = require('../keyClass.js')
 
@@ -8,13 +9,39 @@ function addVehicleData(uberTripFrame, fhvTripFrame, type, date, vehicle, trip) 
         Object.assign(e.ActiveVehicle = vehicle);
         Object.assign(e.Trips = trip);
         if(type == "uber"){
-                uberTripFrame.push(e);
+                uberTripFrame.unshift(e);
         }
         else if(type == "for-hire vehicle"){
-                fhvTripFrame.push(e);
+                fhvTripFrame.unshift(e);
         }
         return true;
 }
+
+function removeVehicleData(uberTripFrame, fhvTripFrame, type, date, vehicle, trip ){
+        if(type == "uber"){
+                for(var i = 0; i < uberTripFrame.length; i++){
+                        if(uberTripFrame[i].Date == date && uberTripFrame[i].ActiveVehicle == vehicle && uberTripFrame[i].Trips == trip){
+                                uberTripFrame.splice(i, 1);
+                        }
+                }
+        }
+        else if(type == "for-hire vehicle"){
+                for(var i = 0; i < fhvTripFrame.length; i++){
+                        if(fhvTripFrame[i].Date == date && fhvTripFrame[i].ActiveVehicle == vehicle && fhvTripFrame[i].Trips == trip){
+                                fhvTripFrame.splice(i, 1);
+                        }
+                }
+        }
+        return true;
+        
+}
+
+function editVehicleData(uberTripFrame, fhvTripFrame, tempOld, tempNew, type){
+        var oldData = tempOld.split(',');
+        var newData = tempNew.split(',');
+        addVehicleData(uberTripFrame, fhvTripFrame, type , newData[0], newData[1], newData[2]);
+        removeVehicleData(uberTripFrame, fhvTripFrame, type , oldData[0], oldData[1], oldData[2]);
+}       
 
 function addData(dataFrame, date, time, state, city, address, tempQuarter) {
         var e = new callInfo();
@@ -32,10 +59,10 @@ function addData(dataFrame, date, time, state, city, address, tempQuarter) {
         date = date[1] + '.' + date[2] + '.' + date[0];
         */
 
-        date = date.replace(/\b0/g, '').split('.');
-        var combinedDate = date[1] + '.' + date[2] + '.' + date[0];
+        //date = date.replace(/\b0/g, '').split('.');
+        //var combinedDate = date[1] + '.' + date[2] + '.' + date[0];
 
-        Object.assign(e.Date = combinedDate);
+        Object.assign(e.Date = date);
         Object.assign(e.Time = time);
         Object.assign(e.State = state);
         Object.assign(e.City = city);
@@ -50,12 +77,13 @@ function addData(dataFrame, date, time, state, city, address, tempQuarter) {
                 enumerable: false
         });
         dataFrame.push(e);
-        console.log("Date Format: ", date[1], date[2], date[0]);
-        if (tempQuarter != "" && Number(date[1]) <= 9 && Number(date[1]) >= 7) {
-                var tempMonth = Number(date[1]) - 7;
+        date = date.split('.');
+        console.log("Date Format: ", date[0], date[1], date[2]);
+        if (tempQuarter != "" && Number(date[0]) <= 9 && Number(date[0]) >= 7) {
+                var tempMonth = Number(date[0]) - 7;
                 console.log("tempMonth: ", tempMonth);
-                console.log("date for month using: ", Number(date[1]));
-                var tempWeek = Number(date[2]);
+                console.log("date for month using: ", Number(date[0]));
+                var tempWeek = Number(date[1]);
                 var tempIndex = 0;
                 for (var i = 0; i < 4; ++i) {
                         tempWeek = tempWeek - 8;
@@ -69,7 +97,7 @@ function addData(dataFrame, date, time, state, city, address, tempQuarter) {
                 tempQuarter[0][tempMonth][tempIndex] = tempQuarter[0][tempMonth][tempIndex] + 1;
                 console.log("New tempQuarter: ", tempQuarter[0][tempMonth][tempIndex]);
         } else {
-                console.log("tempQuarter not Init"); //delete me
+                //console.log("tempQuarter not Init"); //delete me
         }
         return true;
 }
@@ -103,7 +131,7 @@ function addDataLatLon(uberFrame, lyftFrame, addData, tempQuarter, tempCompare) 
                         tempQuarter[1][tempMonth][tempIndex] = Number(tempQuarter[1][tempMonth][tempIndex]) + 1;
                         console.log("New tempQuarter: ", tempQuarter[1][tempMonth][tempIndex]);
                 } else {
-                        console.log("tempQuarter not Init");
+                        //console.log("tempQuarter not Init");
                 }
                 if (tempCompare != "" && Number(tempDate[0]) <= 9 && Number(tempDate[0]) >= 7) { //identical to uber delete but its tempCompare[1] not [0]
                         var tempMonth = Number(tempDate[0]) - 7;
@@ -141,7 +169,7 @@ function addDataLatLon(uberFrame, lyftFrame, addData, tempQuarter, tempCompare) 
 
                         console.log("New tempQuarter: ", tempQuarter[2][tempMonth][tempIndex]);
                 } else {
-                        console.log("tempQuarter not Init");
+                       // console.log("tempQuarter not Init");
                 }
                 if (tempCompare != "" && Number(tempDate[0]) <= 9 && Number(tempDate[0]) >= 7) {
                         var tempMonth = Number(tempDate[0]) - 7;
@@ -181,7 +209,7 @@ function deleteData(dataFrame, date, time, state, city, address, tempQuarter) {
                                 tempQuarter[0][tempMonth][tempIndex] = tempQuarter[0][tempMonth][tempIndex] - 1;
                                 console.log("New tempQuarter: ", tempQuarter[0][tempMonth][tempIndex]);
                         } else {
-                                console.log("tempQuarter not Init"); //delete me
+                                //console.log("tempQuarter not Init"); //delete me
                         }
                         return true;
                 }
@@ -211,7 +239,7 @@ function deleteDataLatLon(uberFrame, lyftFrame, del, tempQuarter, tempCompare) {
                                         tempQuarter[1][tempMonth][tempIndex] = tempQuarter[1][tempMonth][tempIndex] - 1;
                                         console.log("New tempQuarter: ", tempQuarter[1][tempMonth][tempIndex]);
                                 } else {
-                                        console.log("tempQuarter not Init");
+                                        //console.log("tempQuarter not Init");
                                 }
 
                                 if (tempCompare != "" && Number(tempDate[0]) <= 9 && Number(tempDate[0]) >= 7) {
@@ -249,7 +277,7 @@ function deleteDataLatLon(uberFrame, lyftFrame, del, tempQuarter, tempCompare) {
                                         tempQuarter[2][tempMonth][tempIndex] = tempQuarter[2][tempMonth][tempIndex] - 1;
                                         console.log("New tempQuarter: ", tempQuarter[2][tempMonth][tempIndex]);
                                 } else {
-                                        console.log("tempQuarter not Init");
+                                        //console.log("tempQuarter not Init");
                                 }
                                 if (tempCompare != "" && Number(tempDate[0]) <= 9 && Number(tempDate[0]) >= 7) {
                                         var tempMonth = Number(tempDate[0]) - 7;
@@ -380,7 +408,7 @@ function editLatLonData(uberFrame, lyftFrame, tempOld, tempNew, tempQuarter, tem
                                                 console.log("tempQuarter AFTER add: ", tempQuarter[1][atempMonth][atempIndex]);
                                         }
                                 } else {
-                                        console.log("tempQuarter not Init");
+                                       // console.log("tempQuarter not Init");
                                 }
                                 var deleteDate = editOld[0].split('.');
                                 var addDate = editNew[0].split('.');
@@ -459,7 +487,7 @@ function editLatLonData(uberFrame, lyftFrame, tempOld, tempNew, tempQuarter, tem
                                                 console.log("tempQuarter AFTER add: ", tempQuarter[2][atempMonth][atempIndex]);
                                         }
                                 } else {
-                                        console.log("tempQuarter not Init");
+                                      //  console.log("tempQuarter not Init");
                                 }
                                 var deleteDate = editOld[0].split('.');
                                 var addDate = editNew[0].split('.');
@@ -506,5 +534,7 @@ module.exports = {
         editLatLonData,
         deleteDataLatLon,
         addDataLatLon,
-        addVehicleData
+        addVehicleData,
+        removeVehicleData,
+        editVehicleData
 };

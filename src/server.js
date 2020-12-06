@@ -4,6 +4,7 @@ const analytics = require('./Analytics/analytics.js')
 const operations = require('./Operations/operations.js')
 const search = require('./Operations/search.js')
 const processData = require('./Operations/processData.js')
+const incrementDesign = require('./Analytics/incrementalDesign.js')
 
 var JSZip = require("jszip");
 const fs = require('fs');
@@ -17,12 +18,9 @@ var lyftFrame = []
 var dataFrame = []
 var fhvTripFrame = []
 var uberTripFrame = []
-var PopulatedCitiesNY = [];
-var PopulatedCitiesNJ = [];
-var DaysOfWeekNY = [];
-var BusyDaysOfWeek = {};
-var TimeOfDay = [];
-var ActiveVechicleType = [];
+
+
+
 var key;
 var field;
 
@@ -210,7 +208,6 @@ function deleteBackup() {
   return true;
 }
 
-
 function createJSON(tempDF) {
   var shortArray = [];
   for (i = 0; i < 20; i++) {
@@ -222,115 +219,13 @@ function createJSON(tempDF) {
   return stringToJsonObject;
 }
 
-function busyIncrementalDesign(date, state, city, address){
-  var currDate = new Date(date);
-  var index = currDate.getDay()
-  if(state in BusyDaysOfWeek){
-    BusyDaysOfWeek[state][index] = BusyDaysOfWeek[state][index] +  1;
-  }
-  if(city in BusyDaysOfWeek){
-    BusyDaysOfWeek[city][index] = BusyDaysOfWeek[city][index] +  1;
-  }
-  if(address in BusyDaysOfWeek){
-    BusyDaysOfWeek[address][index] = BusyDaysOfWeek[address][index] +  1;
-  }
-}
-
-function timeOfDayIncDesign(time){
-  if(TimeOfDay.length > 0){
-    var hour = time.split(':')[0];
-    if(hour < 6){
-      TimeOfDay[0] += 1
-    }
-    else if(hour < 12){
-      TimeOfDay[1] += 1
-    }
-    else if(hour < 18){
-      TimeOfDay[2] += 1
-    }
-    else if(hour < 24){
-      TimeOfDay[3] += 1
-    }
-  }
-
-}
-
-function popInc(state, city){
-  if(PopulatedCitiesNY.length > 0){
-    if(state == "ny"){
-      index = PopulatedCitiesNY.indexOf(city)
-      PopulatedCitiesNY[337 + index] += 1
-    }
-  }
-  if(PopulatedCitiesNJ.length > 0){
-    if(state == "nj"){
-      index = PopulatedCitiesNJ.indexOf(city)
-      PopulatedCitiesNJ[340 + index] += 1
-    }
-  }
-}
-
-
-
-function incrementDesignFHV(date, time, state, city, address){
-
-  //Busy Days
-  busyIncrementalDesign(date, state, city, address);
-  timeOfDayIncDesign(time);
-  popInc(state, city);
-}
-
-function incrementDesignVehicle(type, tempDate, tempVehicle){
-  if(ActiveVechicleType){
-    var index;
-    console.log(type);
-    if(type == "uber"){
-      index = 1;
-    }
-    else{
-      index = 0;
-    }
-    var date = new Date(tempDate);
-    console.log("index",index,"day",date.getDate(),"month",date.getMonth())
-    if (date.getMonth() == 0) {
-			if (date.getDate() < 8) {
-        console.log(ActiveVechicleType[index][0])
-				ActiveVechicleType[index][0] =  +ActiveVechicleType[index][0] + +tempVehicle;
-			}
-			else if (date.getDate() < 15) {
-				ActiveVechicleType[index][1] =  +ActiveVechicleType[index][1] + +tempVehicle;
-			}
-			else if (date.getDate() < 22) {
-				ActiveVechicleType[index][2] =  +ActiveVechicleType[index][2] + +tempVehicle;
-			}
-			else if (date.getDate() < 31) {
-				ActiveVechicleType[index][3] =  +ActiveVechicleType[index][3] + +tempVehicle;
-			}
-		}
-		//checks month of feb
-		else if (date.getMonth() == 1) {
-			if (date.getDate() < 8) {
-				ActiveVechicleType[index][4] =  +ActiveVechicleType[index][4] + +tempVehicle;
-			}
-			else if (date.getDate() < 15) {
-				ActiveVechicleType[index][5] =  +ActiveVechicleType[index][5] + +tempVehicle;
-			}
-			else if (date.getDate() < 22) {
-				ActiveVechicleType[index][6] =  +ActiveVechicleType[index][6] + +tempVehicle;
-			}
-			else if (date.getDate() < 31) {
-				ActiveVechicleType[index][7] =  +ActiveVechicleType[index][7] + +tempVehicle;
-			}
-		}
-  }
-  
-}
-
 
 const express = require('express');
 const {
   callbackify
 } = require('util');
+const { get } = require('http')
+const { updateFHV } = require('./Analytics/incrementalDesign.js')
 const app = express();
 const PORT = 3000;
 
@@ -405,7 +300,7 @@ app.get('/add', (req, res) => {
   var tempState = req.query.state.toLowerCase();
   var tempCity = req.query.city.toLowerCase();
   var tempAddress = req.query.address.toLowerCase();
-  incrementDesignFHV(tempDate, tempTime, tempState, tempCity, tempAddress)
+  incrementDesign.addFHV(tempDate, tempTime, tempState, tempCity, tempAddress)
   console.log("Adding this: ", tempDate, tempTime, tempState, tempCity, tempAddress);
   var data = operations.addData(dataFrame, tempDate, tempTime, tempState, tempCity, tempAddress, tempQuarter);
   res.header("Content-Type", 'application/json');
@@ -420,36 +315,34 @@ app.get('/addVehicle', (req, res) => {
   var type = req.query.type.toLowerCase();
 
   var data = operations.addVehicleData(uberTripFrame, fhvTripFrame, type, tempDate, tempVehicle, temptrips);
-  incrementDesignVehicle(type, tempDate, tempVehicle)
+  incrementDesign.addAV(type, tempDate, tempVehicle)
   res.header("Content-Type", 'application/json');
   res.json(data);
 });
 
-
 app.get('/delete', (req, res) => {
-  var tempDate = req.query.date;
-  var tempTime = req.query.time;
-  var tempState = req.query.state;
-  var tempCity = req.query.city;
-  var tempAddress = req.query.address;
+  var tempDate = req.query.date.toLowerCase();
+  var tempTime = req.query.time.toLowerCase();
+  var tempState = req.query.state.toLowerCase();
+  var tempCity = req.query.city.toLowerCase();
+  var tempAddress = req.query.address.toLowerCase();
   console.log("Deleting this: ", tempDate, tempTime, tempState, tempCity, tempAddress);
+  incrementDesign.deleteFHV(tempDate, tempTime, tempState, tempCity, tempAddress);
   var data = operations.deleteData(dataFrame, tempDate, tempTime, tempState, tempCity, tempAddress, tempQuarter);
   res.header("Content-Type", 'application/json');
   res.json(data);
 });
 
 app.get('/deleteActive', (req, res) => {
-  var tempDate = req.query.date;
-  var tempTime = req.query.time;
-  var tempState = req.query.state;
-  var tempCity = req.query.city;
-  var tempAddress = req.query.address;
-  console.log("Deleting this: ", tempDate, tempTime, tempState, tempCity, tempAddress);
-  var data = operations.deleteData(dataFrame, tempDate, tempTime, tempState, tempCity, tempAddress, tempQuarter);
+  var tempDate = req.query.date.toLowerCase();
+  var tempVehicle = req.query.activeVehicle.toLowerCase();
+  var temptrips = req.query.trips.toLowerCase();
+  var type = req.query.type.toLowerCase();
+  console.log("Deleting this: ", tempDate, tempVehicle, temptrips, type);
+  var data = operations.removeVehicleData(uberTripFrame, fhvTripFrame, type, tempDate, tempVehicle, temptrips);
   res.header("Content-Type", 'application/json');
   res.json(data);
 });
-
 
 app.get('/edit', (req, res) => {
   if (req.query.new == null) {
@@ -457,13 +350,14 @@ app.get('/edit', (req, res) => {
     res.header("Content-Type", 'application/json');
     res.json(data);
   } else { //single edits
-    var tempOld = req.query.old;
-    var tempNew = req.query.new;
+    var tempOld = req.query.old.toLowerCase();
+    var tempNew = req.query.new.toLowerCase();
     if (tempOld.toLowerCase() == tempNew.toLowerCase()) {
       var data = false;
       res.header("Content-Type", 'application/json');
       res.json(data);
     } else {
+      incrementDesign.updateFHV(tempOld, tempNew);
       console.log("Editing this: ", tempOld);
       console.log("To look like this: ", tempNew);
       var data = operations.editData(dataFrame, tempOld, tempNew, tempQuarter);
@@ -481,6 +375,7 @@ app.get('/editActive', (req, res) => {
   } else { //single edits
     var tempOld = req.query.old;
     var tempNew = req.query.new;
+    var type = req.query.type.toLowerCase();
     if (tempOld.toLowerCase() == tempNew.toLowerCase()) {
       var data = false;
       res.header("Content-Type", 'application/json');
@@ -488,8 +383,9 @@ app.get('/editActive', (req, res) => {
     } else {
       console.log("Editing this: ", tempOld);
       console.log("To look like this: ", tempNew);
+      console.log("Type: ", type);
       var data;
-      //var data = operations.editData(dataFrame, tempOld, tempNew, tempQuarter);
+      var data = operations.editVehicleData(uberTripFrame, fhvTripFrame, tempOld, tempNew, type);
       res.header("Content-Type", 'application/json');
       res.json(data);
     }
@@ -531,31 +427,15 @@ function getDateForCompare(tempCompare, startDate, endDate) {
 app.get('/population', (req, res) => {
   var t0 = performance.now()
   var searchTarget = req.query.search.toLowerCase();
-  //console.log("Target: " + searchTarget);
   var data = [];
-  if (searchTarget == "ny") {
-    if (PopulatedCitiesNY === undefined || PopulatedCitiesNY.length == 0) {
-      console.log("NY New");
-      data = analytics.searchPopulatedCities(dataFrame, searchTarget.toLowerCase());  
-      PopulatedCitiesNY = data;
-    }
-    else {
-      console.log("NY OLD");
-      data = PopulatedCitiesNY;
-    }
+  someData = incrementDesign.getPopulationDesign(searchTarget)
+  if (someData === undefined || someData == 0) {
+    data = analytics.searchPopulatedCities(dataFrame, searchTarget);  
+    incrementDesign.setPopulationDesign(searchTarget, data);
   }
-  else if (searchTarget == "nj") {
-    if (PopulatedCitiesNJ === undefined || PopulatedCitiesNJ.length == 0) {
-      console.log("NJ New");
-      data = analytics.searchPopulatedCities(dataFrame, searchTarget.toLowerCase());  
-      PopulatedCitiesNJ = data;
-    }
-    else {
-      console.log("NJ OLD");
-      data = PopulatedCitiesNJ;
-    }
+  else {
+    data = someData;
   }
-
   res.header("Content-Type", 'application/json');
   res.json(data);
   var t1 = performance.now()
@@ -571,39 +451,31 @@ app.get('/busiest', (req, res) => {
   var data = [];
   //console.log("Target: " + busyState);
   if(busyStreet){
-    if(busyStreet in BusyDaysOfWeek){
-      data = BusyDaysOfWeek[busyStreet]
-    }
-    else{
+    data = incrementDesign.getBusyDesign(busyStreet);
+    if(!data){
       data = analytics.searchDaysOfWeek(dataFrame, busyState, busyCity, busyAddress, busyStreet);;
-      BusyDaysOfWeek[busyStreet] = data
+      incrementDesign.setBusyDesign(busyStreet, data);
     }
   }
   else if(busyAddress){
-    if(busyAddress in BusyDaysOfWeek){
-      data = BusyDaysOfWeek[busyAddress]
-    }
-    else{
+    data = incrementDesign.getBusyDesign(busyAddress);
+    if(!data){
       data = analytics.searchDaysOfWeek(dataFrame, busyState, busyCity, busyAddress, busyStreet);;
-      BusyDaysOfWeek[busyAddress] = data
+      incrementDesign.setBusyDesign(busyAddress, data);
     }
   }
   else if(busyCity){
-    if(busyCity in BusyDaysOfWeek){
-      data = BusyDaysOfWeek[busyCity]
-    }
-    else{
+    data = incrementDesign.getBusyDesign(busyCity);
+    if(!data){
       data = analytics.searchDaysOfWeek(dataFrame, busyState, busyCity, busyAddress, busyStreet);;
-      BusyDaysOfWeek[busyCity] = data
+      incrementDesign.setBusyDesign(busyCity, data);
     }
   }
   else if(busyState){
-    if(busyState in BusyDaysOfWeek){
-      data = BusyDaysOfWeek[busyState]
-    }
-    else{
+    data = incrementDesign.getBusyDesign(busyState);
+    if(!data){
       data = analytics.searchDaysOfWeek(dataFrame, busyState, busyCity, busyAddress, busyStreet);;
-      BusyDaysOfWeek[busyState] = data
+      incrementDesign.setBusyDesign(busyState, data);
     }
   }
   res.header("Content-Type", 'application/json');
@@ -640,18 +512,13 @@ app.get('/compare', (req, res) => {
 
 app.get('/timePopularity', (req, res) => {
   var t0 = performance.now()
-  var data = [];
+  var data = incrementDesign.getTimeOfDayDesign();
 
-  if (TimeOfDay === undefined || TimeOfDay.length == 0) {
+  if (data === undefined || data == 0) {
     data = analytics.timeOfDaySearch(dataFrame);
-    TimeOfDay = data;
+    incrementDesign.setTimeOfDayDesign(data);
     //console.log("NEW");
   }
-  else {
-    data = TimeOfDay;
-    //console.log("OLD");
-  }
-
   if (data.join() == "0,0,0,0") {
     data = "ErrorCode1";
   }
@@ -664,19 +531,10 @@ app.get('/timePopularity', (req, res) => {
 app.get('/activeVehicle', (req, res) => {
   var t0 = performance.now()
   console.log(uberTripFrame.length, fhvTripFrame.length);
-  var data = [];
-  if (ActiveVechicleType === undefined || ActiveVechicleType.length == 0) {
+  var data = incrementDesign.getActiveDesign();
+  if (data === undefined || data.length == 0) {
     data = analytics.activeVechicleTypeSearch(fhvTripFrame, uberTripFrame);
-    ActiveVechicleType = data;
-    //console.log("NEW");
-  }
-  else {
-    data = ActiveVechicleType;
-    //console.log("OLD");
-  }
-
-  if (data.join() == "0,0,0,0,0,0,0,0") {
-    data = "ErrorCode1";
+    incrementDesign.setActiveDesign(data);
   }
   res.header("Content-Type", 'application/json');
   res.json(data);

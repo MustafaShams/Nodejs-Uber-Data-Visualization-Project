@@ -2,6 +2,7 @@ html,
 body {
     margin: 0;
     padding: 0;
+    color: white;
 }
 
 .search_terms {
@@ -15,7 +16,7 @@ body {
 }
 
 .search_terms label {
-    color: black;
+    color: white;
 }
 
 .boxes label {
@@ -42,6 +43,10 @@ body {
     height: 100%;
     width: 100%;
     text-align: center;
+}
+
+#populationChart{
+    color: white;
 }
 
 canvas{
@@ -140,6 +145,17 @@ input[type=search] {
     border: none;
 }
 label{
-    color: black;
+    color: white;
     font-size: 18px;
+}
+
+#population_submit, #submit_day, #submit_month, #hours_submit, #date_submit{
+    padding: 6px;
+    margin-top: 8px;
+    margin-right: 20px;
+    background: rgb(50, 50, 50);
+    font-size: 17px;
+    border: none;
+    cursor: pointer;
+    color: white;
 }

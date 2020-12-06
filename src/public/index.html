@@ -1,122 +1,73 @@
+
 <!DOCTYPE html>
 <html>
 
 <head>
 	<meta charset="UTF-8">
 	<title>Uber Team Dataset</title>
-	<link rel="stylesheet" href="styles.css">
-	</link>
-	<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"> </script>
-	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.1.6/Chart.bundle.min.js">
-	</script>
-	<script src="https://cdn.jsdelivr.net/timepicker.js/latest/timepicker.min.js"></script>
-	<link href="https://cdn.jsdelivr.net/timepicker.js/latest/timepicker.min.css" rel="stylesheet" />
-
-	<script src="client.js"></script>
+	<link rel="stylesheet" href="styles.css"></link>
 </head>
 </head>
 
 <body>
 	<header class="main_header">
-		<nav class="nav main_nav">
-			<ul>
-				<li>
-					<a href="index.html"> Home </a>
-				</li>
-				<li>
-					<a href="map.html"> Map </a>
-				</li>
-				<li>
-					<a href="activeVehicle.html"> Active Vehicles </a>
-				</li>
-				<li>
-					<div class="menu_dropdown">
-						<a class="menu">Analyze
-							<i class="fa fa-caret-down"></i>
-						</a>
-						<div class="menu_content">
-							<a href="population.html">Population</a>
-							<a href="busiest_day.html">Busiest Day</a>
-							<a href="platform_comparison.html">Platform Comparison</a>
-							<a href="time_popularity.html">Traffic Time of Day</a>
-							<a href="active_vehicles.html">Types of Active Vehicles</a>
-							<a href="year_popularity.html">Increase/Decrease in Platforms</a>
+		<video autoplay muted loop id="myVideo">
+			<source src="nyctraffic.mp4" type="video/mp4">
+		</video>
+		<div class="content">
+			<nav class="nav main_nav">
+				<ul>
+					<li>
+						<a href="index.html"> Home </a>
+					</li>
+					<li>
+						<div class="menu_dropdown">
+							<a class="menu">Search
+								<i class="fa fa-caret-down"></i>
+							</a>
+							<div class="menu_content">
+								<a href="search.html">For-Hire Vehicle</a>
+								<a href="map.html">Uber/Lyft</a>
+								<a href="activeVehicle.html">Active Vehicles</a>
+							</div>
 						</div>
-					</div>
-				</li>
-				<li>
-					<a onclick=saveBackup()>Backup Data </a>
-				</li>
-				<li>
-					<a onclick=deleteBackup()>Delete Backup </a>
-				</li>
-			</ul>
-		</nav>
-		<div class="popup">
-			<a class="popuptext" id="myPopup">Notification Popup</a>
-		</div>
-
-		<h1 class="project_name"></h1>
-		</h1>
-
-		<div class="search_bar">
-			<input type="Search" placeholder="Search" name="searchBar" id="searchBar">
-			<button id="submit">Go</button>
-			<div class="dropdown">
-				<form action="">
-					<label for="data_selection">Choose a dataset</label>
-					<select name="data_selection" id="data_selection">
-						<option value="State">State</option>
-						<option value="City">City</option>
-						<option value="Street">Street Name</option>
-						<option value="Address">Address</option>
-						<option value="Year">Year</option>
-						<option value="Month">Month</option>
-						<option value="Date">Date</option>
-						<option value="Time">Time</option>
-					</select>
-				</form>
+					</li>
+					<li>
+						<div class="menu_dropdown">
+							<a class="menu">Analyze
+								<i class="fa fa-caret-down"></i>
+							</a>
+							<div class="menu_content">
+								<a href="population.html">Population</a>
+								<a href="busiest_day.html">Busiest Day</a>
+								<a href="platform_comparison.html">Platform Comparison</a>
+								<a href="time_popularity.html">Traffic Time of Day</a>
+								<a href="active_vehicles.html">Types of Active Vehicles</a>
+								<a href="year_popularity.html">Increase/Decrease in Platforms</a>
+							</div>
+						</div>
+					</li>
+					<li>
+						<a onclick=saveBackup()>Backup Data </a>
+					</li>
+					<li>
+						<a onclick=deleteBackup()>Delete Backup </a>
+					</li>
+				</ul>
+			</nav>
+			<div class="homepageContent">
+				<div class="infoContent">
+					<h1>Vehicles For Hire</h1>
+					<div class="line"></div>
+					<p>A web application that contains the information of New York's and New Jersey's uber and other for-higher vehicle data. It allows users to update this information as well as add to it. This application includes analysis for this information as well.</p>
+					<br><br><br>
+					<a id="getStarted" href="search.html"> Get Started </a>
+				</div>
+				
 			</div>
 		</div>
 
-		<div id="myModal" class="modal">
-			<!-- Modal content -->
-			<div class="modal-content">
-				<span class="close">&times;</span>
-				<p>You have a previous backup saved. Would you like to load that backup?</p>
-				<button id="backupYes">Yes</button>
-				<button id="backupNo">No</button>
-			</div>
-		</div>
-
-		<div class="addButton">
-			<button id="addEntry">Add Entry</button>
-		</div>
-		<div class="entryText">
-			<a id="textTable">
-				<texttable>
-					<h3>Add A New Entry:</h3>
-					<input type="date" id="date" placeholder="Date">
-					<input type="text" id="time" placeholder="Time">
-					<input type="text" id="state" placeholder="State">
-					<input type="text" id="city" placeholder="City">
-					<input type="text" id="address" placeholder="Address">
-					<input type="button" class="submitAdd" value="Save" onclick="addData()">
-					<input type="button" class="submitAdd" id="closePop" value="Close">
-				</texttable>
-			</a>
-		</div>
-
-		<div id="container">
-			<div class="tableHolder">
-
-				<a id="table"></a>
-			</div>
-			<div class="graphHolder">
-				<canvas id="myChart"></canvas>
-			</div>
-		</div>
-	</header>
+		
 
 </body>
 

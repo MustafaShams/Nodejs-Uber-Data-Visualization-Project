@@ -1,179 +1,154 @@
-$(document).ready(function() {
+$(document).ready(function () {
 
 	searchTableCreate();
+	
 	$("#addEntry").click(function (data) {
-			$(".entryText").fadeIn(500);
+		$("#date").val("");
+		$("#activeVehicle").val("");
+		$("#trips").val("");
+
+		$(".entryText").fadeIn(500);
 	})
-	$('#closePop').click(function() {
+	$('#closePop').click(function () {
 		$('.entryText').hide();
-});
+	});
+	
+
+	$('#addData').on('click', function () {
+		console.log("clicked");
+		addData();
+	});
+	
 
 });
+let type;
+
 function searchTableCreate() {
 	var sendField;
-	$("#submit").click(function () {
-		console.log("cicked")
-			sendField = $("#data_selection").val();
-			console.log(sendField);
-			if (sendField) {
-					var url = "http://localhost:3000/searchActive?id=" + sendField;
-					$.get(url, function (data) {
-							console.log(data);
-							var parent = document.getElementById('table');
-							parent.innerHTML = "";
-							if (data.length == 0) {
-									$("#addEntry").hide();
-									showPopUp("No Data Found, Check Spelling.");
-							} else {
-									//ProcessData(data);
-									parent.appendChild(buildHtmlTable(data.slice(0, 300)));
-									// when search goes through, turn on addEntry button
-									$("#addEntry").show();
-							}
-					});
-			} else {
+	$(".active_vehicles").click(function (evt) {
+		sendField = evt.target.value;
+		window.type = sendField;
+		console.log(window.type);
+		if (sendField) {
+			var url = "http://localhost:3000/searchActive?id=" + sendField;
+			$.get(url, function (data) {
+				console.log(data);
+				if (data.length == 0) {
 					$("#addEntry").hide();
-					showPopUp("Please Enter A Keyword!");
-			}
+					showPopUp("No Data Found, Check Spelling.");
+				} else {
+					var newData = [];
+					for(var i = 0; i < data.length; i++){
+							const propertyNames = Object.values(data[i]);
+							newData.push(propertyNames);
+					}
+					createTable();
+					convertDataTable(newData);
+					$("#addEntry").show();
+
+				}
+			});
+		}
 	});
 }
 
-
-var _table_ = document.createElement('table'),
-    _tr_ = document.createElement('tr'),
-    _th_ = document.createElement('th'),
-    _td_ = document.createElement('td');
-
-// Builds the HTML Table out of myList json data from Ivy restful service.
-function buildHtmlTable(arr) {
-    //textBoxes = arr[0].length;
-    var table = _table_.cloneNode(false),
-        columns = addAllColumnHeaders(arr, table);
-    textBoxes = columns.length;
-    for (var i = 0, maxi = arr.length; i < maxi; ++i) {
-        var tr = _tr_.cloneNode(false);
-        for (var j = 0, maxj = columns.length; j < maxj; ++j) {
-            var td = _td_.cloneNode(false);
-            cellValue = arr[i][columns[j]];
-            td.appendChild(document.createTextNode(arr[i][columns[j]] || ''));
-            tr.appendChild(td);
-        }
-
-        tr = addEdit(tr);
-        tr = addDel(tr);
-
-        table.appendChild(tr);
-    }
-    //Unique(arr);
-
-
-
-    return table;
-}
-
-function addAllColumnHeaders(arr, table) {
-	var columnSet = [],
-			tr = _tr_.cloneNode(false);
-	for (var i = 0, l = arr.length; i < l; i++) {
-			for (var key in arr[i]) {
-					if (arr[i].hasOwnProperty(key) && columnSet.indexOf(key) === -1) {
-							columnSet.push(key);
-							var th = _th_.cloneNode(false);
-							th.appendChild(document.createTextNode(key));
-							tr.appendChild(th);
-					}
+let mainTable;
+function convertDataTable(newData) {
+	window.mainTable = $('#myTable').DataTable({
+		"iDisplayLength": 100,
+		"scrollY": "650px",
+		"scrollCollapse": true,
+		data: newData,
+		fixedHeader: {
+			header: true,
+			footer: true
+		},
+		"rowCallback": function (row, data, index) {
+			if (index % 2 == 0) {
+				$(row).removeClass('myodd myeven');
+				$(row).addClass('myodd');
+			} else {
+				$(row).removeClass('myodd myeven');
+				$(row).addClass('myeven');
 			}
+		},
+		"columnDefs": [{
+				"targets": -2,
+				"data": null,
+				"defaultContent": "<button class=\"editbtn\" value=\"Edit\" onclick=\"editData(this);\">Edit</button>"
+			},
+			{
+				"targets": -1,
+				"data": null,
+				"defaultContent": "<button class=\"delbtn\"  value=\"Delete\" onclick=\"deleteData(this);\">Delete</button>"
+			}
+		]
+	});
+	
+}
+
+
+function createTable() {
+	var tableHolder = document.getElementById("tableHolder");
+	tableHolder.innerHTML = "";
+	var table = document.createElement("TABLE");
+	tableHolder.appendChild(table);
+	table.innerHTML = "";
+	table.id = "myTable";
+	var headerInfo = ["<b>Date</b>", "<b>Active Vehicles</b>", "<b>Number of Trips</b>", "<b>Edit</b>", "<b>Delete</b>"]
+	var header = table.createTHead();
+	var row = header.insertRow(0);
+	for (var k = 0; k < headerInfo.length; k++) {
+		var cell = row.insertCell(k);
+		cell.innerHTML = headerInfo[k];
 	}
-	var editth = _th_.cloneNode(false);
-	editth.appendChild(document.createTextNode("Edit"));
-	tr.appendChild(editth);
-
-	var delth = _th_.cloneNode(false);
-	delth.appendChild(document.createTextNode("Delete"));
-	tr.appendChild(delth);
-
-	table.appendChild(tr);
-	return columnSet;
-}
-
-
-function addEdit(tr) {
-	var td = _td_.cloneNode(false);
-	var btn = document.createElement('input');
-	btn.type = "button";
-	btn.className = "editbtn";
-	btn.onclick = function () {
-			editData(this);
-	};
-	btn.value = "Edit";
-	td.appendChild(btn);
-	tr.appendChild(td);
-
-	return tr;
-}
-
-// Add delete buttons to each row of table
-function addDel(tr) {
-	var td = _td_.cloneNode(false);
-	var btn = document.createElement('input');
-	btn.type = "button";
-	btn.className = "delbtn";
-	btn.onclick = function () {
-			deleteData(this);
-	};
-	btn.value = "Delete";
-	td.appendChild(btn);
-	tr.appendChild(td);
-
-	return tr;
 }
 
 var previousData = []
 var editing = false;
 
 function editData(row) { //get which row, then after row is changed get what changed and send to server
-    var topParent = $(row).parents("tr");
-    var children = topParent.children("td");
-    if (row.value == "Edit") {
-        if (editing == false) {
-            previousData = [];
-            previousData = extractRowData(row);
-            row.value = "Save"
-            for (var x = 0; x < children.length - 2; x++) {
-                children[x].contentEditable = true;
-            }
-            editing = true;
-        } else {
-            var url = "http://localhost:3000/editActive?old=" + previousData;
-            $.get(url, function (data) {
-                var parent = document.getElementById('table');
-                if (data == false) {
-                    showPopUp("Error: Please only edit one entry at a time.");
-                }
-            });
-            console.log("Error: Please only edit one entry at a time.")
-        }
-    } else if (row.value == "Save") {
-        row.value = "Edit";
-        for (var x = 0; x < children.length - 2; x++) {
-            children[x].contentEditable = false;
-        }
-        var updatedData = extractRowData(row);
-        console.log("Old: ", previousData);
-        console.log("New: ", updatedData);
-        var url = "http://localhost:3000/edit?old=" + previousData + "&new=" + updatedData;
-        console.log("updating");
-        $.get(url, function (data) {
-            var parent = document.getElementById('table');
-            if (data == false) {
-                showPopUp("Error: Your new entry looks the same as before!");
-            } else if (data == true) {
-                showPopUp("Success! Ride was edited.");
-
-            }
-        });
-        editing = false;
-    }
+	var topParent = $(row).parents("tr");
+	var children = topParent.children("td");
+	if (row.innerHTML == "Edit") {
+		if (editing == false) {
+			previousData = [];
+			previousData = extractRowData(row);
+			row.innerHTML = "Save"
+			for (var x = 0; x < children.length - 2; x++) {
+				children[x].contentEditable = true;
+			}
+			editing = true;
+		} else {
+			var url = "http://localhost:3000/editActive?old=" + previousData;
+			$.get(url, function (data) {
+				var parent = document.getElementById('table');
+				if (data == false) {
+					showPopUp("Error: Please only edit one entry at a time.");
+				}
+			});
+			console.log("Error: Please only edit one entry at a time.")
+		}
+	} else if (row.innerHTML == "Save") {
+		row.innerHTML = "Edit";
+		for (var x = 0; x < children.length - 2; x++) {
+			children[x].contentEditable = false;
+		}
+		var updatedData = extractRowData(row);
+		console.log("Old: ", previousData);
+		console.log("New: ", updatedData);
+		var url = "http://localhost:3000/editActive?old=" + previousData + "&new=" + updatedData + "&type=" + window.type;
+		console.log("updating");
+		$.get(url, function (data) {
+			var parent = document.getElementById('table');
+			if (data == false) {
+				showPopUp("Error: Your new entry looks the same as before!");
+			} else if (data == true) {
+				showPopUp("Success! Ride was edited.");
+			}
+		});
+		editing = false;
+	}
 }
 
 function extractRowData(row) {
@@ -181,7 +156,7 @@ function extractRowData(row) {
 	var children = topParent.children("td");
 	var dataInfo = []
 	for (var x = 0; x < children.length - 2; x++) {
-			dataInfo[x] = children[x].textContent
+		dataInfo[x] = children[x].textContent
 
 	}
 	//console.log("THIS IS TOP PARENT",topParent);
@@ -199,73 +174,45 @@ function showPopUp(text) {
 
 function addData() {
 	var extractedDate = $("#date").val().replace(/[-]+/g, '.')
+	var date = extractedDate.split('.');
+	extractedDate = date[1].replace(/^0+/, '') + '.' + date[2].replace(/^0+/, '') + '.' + date[0].replace(/^0+/, '');
 	var extractedVehicle = $("#activeVehicle").val();
 	var extractedTrips = $("#trips").val();
-	var type = $("#data_selection").val();
-	var url = "http://localhost:3000/addVehicle?date=" + extractedDate + "&activeVehicle=" + extractedVehicle + "&trips=" + extractedTrips + "&type=" + type;
+	var url = "http://localhost:3000/addVehicle?date=" + extractedDate + "&activeVehicle=" + extractedVehicle + "&trips=" + extractedTrips + "&type=" + window.type;
 	console.log(url);
-	var tempArr = [];
-	tempArr.push(extractedDate);
-	tempArr.push(extractedVehicle);
-	tempArr.push(extractedTrips);
 	$.get(url, function (data, tempArr) {
-		
-			if (data == true) {
-					$(".entryText").fadeOut(300);
-					var sendKey = $("#searchBar").val();
-					var sendField = $("#data_selection").val();
-				/*
-					function buildMiniTable() {
-							var table = document.getElementById('table').childNodes[0];
-							var tr = _tr_.cloneNode(false);
-							var tempArr = [];
-	extractedDate = extractedDate.replace(/\b0/g, '').split('.');
-	extractedDate = extractedDate[1] + "." + extractedDate[2] + "." + extractedDate[0];
-							tempArr.push(extractedDate);
-							tempArr.push(extractedTime);
-							tempArr.push(extractedState.charAt(0).toUpperCase() + extractedState.slice(1).toLowerCase());
-							tempArr.push(extractedCity.charAt(0).toUpperCase() + extractedCity.slice(1).toLowerCase());
-							tempArr.push(extractedAddress);
-							for (var j = 0, maxj = tempArr.length; j < maxj; ++j) {
-									var td = _td_.cloneNode(false);
-									td.appendChild(document.createTextNode(tempArr[j] || ''));
-									tr.appendChild(td);
-							}
-							tr = addEdit(tr);
-							tr = addDel(tr);
-							table.appendChild(tr);
-					}
-					switch (sendField) {
-							case "Date":
-									if (sendKey.toLowerCase() == extractedDate.toLowerCase()) {
-											buildMiniTable();
-									}
-									break;
-							case "Time":
-									if (sendKey.toLowerCase() == extractedTime.toLowerCase()) {
-											buildMiniTable();
-									}
-									break;
-							case "State":
-									if (sendKey.toLowerCase() == extractedState.toLowerCase()) {
-											buildMiniTable();
-									}
-									break;
-							case "City":
-									if (sendKey.toLowerCase() == extractedCity.toLowerCase()) {
-											buildMiniTable();
-									}
-									break;
-							case "Address":
-									if (sendKey.toLowerCase() == extractedAddress.toLowerCase()) {
-											buildMiniTable();
-									}
-									break;
-					}*/
-					showPopUp("Data Submitted!");
 
-			} else {
-					showPopUp("Please Fill Out All Fields");
-			}
+		if (data == true) {
+			$(".entryText").fadeOut(300);
+			var row = window.mainTable.row.add([
+				extractedDate,
+				extractedVehicle,
+				extractedTrips,
+			]).draw(false);
+
+			showPopUp("Data Submitted!");
+
+		} else {
+			showPopUp("Please Fill Out All Fields");
+		}
 	});
+}
+
+function deleteData(row) {
+	if (editing == false) {
+		var tempData = extractRowData(row); //an array [date, time, state, city, address]
+		console.log("Deleting: ", tempData[0], tempData[1], tempData[2]);
+		var url = "http://localhost:3000/deleteActive?date=" + tempData[0] + "&activeVehicle=" + tempData[1] + "&trips=" + tempData[2] + "&type=" + window.type;
+		$.get(url, function (data) {
+			var parent = document.getElementById('table');
+			if (data == false) {
+				showPopUp("Error: Couldn't find any matching data.")
+			} else {
+				showPopUp("Success! Ride was deleted.");
+			}
+		});
+		window.mainTable.row( $(row).parents('tr') ).remove().draw();
+	} else {
+		showPopUp("Please save your edit first!")
+	}
 }
