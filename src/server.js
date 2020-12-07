@@ -339,6 +339,7 @@ app.get('/deleteActive', (req, res) => {
   var temptrips = req.query.trips.toLowerCase();
   var type = req.query.type.toLowerCase();
   console.log("Deleting this: ", tempDate, tempVehicle, temptrips, type);
+  incrementDesign.delAV(type, tempDate, tempVehicle)
   var data = operations.removeVehicleData(uberTripFrame, fhvTripFrame, type, tempDate, tempVehicle, temptrips);
   res.header("Content-Type", 'application/json');
   res.json(data);
@@ -385,6 +386,7 @@ app.get('/editActive', (req, res) => {
       console.log("To look like this: ", tempNew);
       console.log("Type: ", type);
       var data;
+      incrementDesign.updateAV(tempOld, tempNew, type);
       var data = operations.editVehicleData(uberTripFrame, fhvTripFrame, tempOld, tempNew, type);
       res.header("Content-Type", 'application/json');
       res.json(data);

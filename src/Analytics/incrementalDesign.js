@@ -266,12 +266,15 @@ function addAV(type, tempDate, tempVehicle){
 	AVinc(type, tempDate, tempVehicle);
 }
 
-function delAV(){
+function delAV(type, tempDate, tempVehicle){
 	AVincDel(type, tempDate, tempVehicle);
 }
 
-function updateAV(){
-
+function updateAV(tempOld, tempNew, type){
+	oldData = tempOld.split(',');
+	newData = tempNew.split(',');
+	AVinc(type, newData[0],  newData[1]);
+	AVincDel(type,  oldData[0],  oldData[1]);
 }
 
 

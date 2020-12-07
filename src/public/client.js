@@ -71,7 +71,7 @@ function searchTableCreate() {
                         newData.push(propertyNames);
                     }
                     createTable();
-                    convertDataTable(newData.slice(1, 50000));
+                    convertDataTable(newData.slice(0, 50000));
                     getUniqueValues();
                     $("#addEntry").show();
                     $('#myTable').dataTable();

@@ -8,3 +8,16 @@ Table to show needs a better design
 Process data is currently commented out
 Graph functionality needs certain rules, how many data to show, what type of data to show, need fix for search based on anything besides city
 Sprint 4
+
+- load df on any page
+- table change column 3 captial
+- edit to save
+- if not search dont show
+- backup all frames
+- make things 
+- incremental  (WORKS)
+- center load
+
+
+
+
