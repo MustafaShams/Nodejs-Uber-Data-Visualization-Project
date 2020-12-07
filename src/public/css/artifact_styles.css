@@ -76,8 +76,7 @@ input[type=search] {
     z-index: 99999;
 }
 
-.loader {
-    
+.loader {  
     position: fixed;
     display: none;
     border: 16px solid #f3f3f3;
@@ -91,7 +90,7 @@ input[type=search] {
     left: 50%;
     top: 50%;
     margin-top: -100px;
-    margin-bottom: -100px;
+    margin-left: -100px;
   }
 
   @keyframes spin {
@@ -149,7 +148,7 @@ label{
     font-size: 18px;
 }
 
-#population_submit, #submit_day, #submit_month, #hours_submit, #date_submit{
+#population_submit, #submit_day, #submit_month, #hours_submit, #date_submit, #switchGraph{
     padding: 6px;
     margin-top: 8px;
     margin-right: 20px;

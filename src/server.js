@@ -11,15 +11,14 @@ const fs = require('fs');
 const {
   performance
 } = require('perf_hooks');
-
+var dir = 'backup';
 var whichData = "none";
 var uberFrame = []
 var lyftFrame = []
 var dataFrame = []
 var fhvTripFrame = []
 var uberTripFrame = []
-
-
+var backup = []
 
 var key;
 var field;
@@ -31,14 +30,13 @@ function getBackUp() {
   uberTripFrame = []
   fhvTripFrame = []
   whichData = "backup";
-  console.log(whichData);
-  fs.readFile('inputFile/dataFrame.csv', 'utf8', function (err, data) {
-    if (err) {
-      console.error(err)
-      return
-    }
-    processData.processData(data)
-  });
+  //console.log(whichData);
+  dataFrame = backup[0];
+  uberFrame = backup[1];
+  lyftFrame = backup[2];
+  uberTripFrame = backup[3];
+  fhvTripFrame = backup[4];
+  //console.log("backup Loaded");
 }
 
 function getRawData() {
@@ -95,7 +93,7 @@ function getRawData() {
           uberFrame = processData.processUberData(data, uberFrame);
           total++;
           if(total == 7){
-            console.log("DONE Fetching all Data");
+            //console.log("DONE Fetching all Data");
           }
         });
     });
@@ -152,60 +150,33 @@ function uniqueValues(dataFrame) {
   var json = JSON.stringify(newArray);
   fs.writeFile('myjsonfile.json', json, 'utf8', function (err) {
     if (err) throw err;
-    console.log('complete');
+    //console.log('complete');
   });
 
 }
 
 function checkBackUp() {
-  if (fs.existsSync('inputFile/dataFrame.csv')) {
-    return true;
-  } else {
+  //console.log(backup.length);
+  if (backup.length < 1){
     return false;
+  } else {
+    return true;
   }
 }
 
 
-function exportData(arr) {
-  let csvContent = "Date, Time, State, City, Address, Street\n";
 
 
-  for (var x = 0; x < arr.length; x++) {
-    var address = arr[x].Address
-    var index = address.indexOf(" ");
-    var house = address.substr(0, index);
-    var street = address.substr(index + 1);
-    csvContent += arr[x].Date + "," + arr[x].Time + "," + arr[x].State + "," + arr[x].City + "," + house + "," + street + "\n";
-  }
-
-
-  try {
-    fs.writeFile('inputFile/dataFrame.csv', csvContent, 'utf8', function (err) {
-      if (err) {
-        console.log('Some error occured - file either not saved or corrupted file saved.');
-      } else {
-        console.log('It\'s saved!');
-      }
-    });
-  } catch (err) {
-    console.log(err);
-    return false;
-  }
+function exportData() {
+  backup = [dataFrame, uberFrame, lyftFrame, uberTripFrame, fhvTripFrame];
+  //console.log(backup.length)
+  //console.log("backup done");
+  
   return true;
 }
 
 function deleteBackup() {
-  const path = 'inputFile/dataFrame.csv'
-
-  try {
-    fs.unlinkSync(path)
-    //file removed
-  } catch (err) {
-    if (err.code == 'ENOENT') {
-      return false;
-    }
-  }
-  return true;
+  backup =  [];
 }
 
 function createJSON(tempDF) {
@@ -215,7 +186,7 @@ function createJSON(tempDF) {
   }
   var arrayToString = JSON.stringify(Object.assign({}, shortArray));
   var stringToJsonObject = JSON.parse(arrayToString);
-  console.log(stringToJsonObject);
+  //console.log(stringToJsonObject);
   return stringToJsonObject;
 }
 
@@ -239,8 +210,8 @@ app.get('/search', (req, res) => {
   var id = req.query.id;
   field = req.query.field; //already init field
   var key_name = id;
-  console.log("key name = " + key_name);
-  console.log("field name = " + field);
+  //console.log("key name = " + key_name);
+  //console.log("field name = " + field);
 
   var data = search.searchDataFrame(dataFrame, key_name, field);
 
@@ -250,7 +221,7 @@ app.get('/search', (req, res) => {
 
 app.get('/searchActive', (req, res) => {
   var id = req.query.id;
-  console.log("key name = " + id);
+  //console.log("key name = " + id);
   var data;
   if(id == "Uber"){
     data = uberTripFrame;
@@ -264,32 +235,34 @@ app.get('/searchActive', (req, res) => {
 
 
 app.get('/checkBackup', (req, res) => {
-  var exists = checkBackUp();
-  res.send(exists);
+  if(whichData != "backup"){
+    var exists = checkBackUp();
+    res.send(exists);
+  }
 });
 
 app.get('/getBackup', (req, res) => {
-  console.log("Getting Backup");
+  //console.log("Getting Backup");
   getBackUp();
   res.send(true);
 });
 
 app.get('/noBackup', (req, res) => {
   if (whichData != "real") {
-    console.log("Getting Real");
+    //console.log("Getting Real");
     getRawData();
   }
   res.send(true);
 });
 
 app.get('/exportData', (req, res) => {
-  console.log("exporting data");
+  //console.log("exporting data");
   var completed = exportData(dataFrame);
   res.send(completed);
 });
 
 app.get('/deleteBackup', (req, res) => {
-  console.log("deleting backup data");
+  //console.log("deleting backup data");
   var completed = deleteBackup();
   res.send(completed);
 });
@@ -301,14 +274,14 @@ app.get('/add', (req, res) => {
   var tempCity = req.query.city.toLowerCase();
   var tempAddress = req.query.address.toLowerCase();
   incrementDesign.addFHV(tempDate, tempTime, tempState, tempCity, tempAddress)
-  console.log("Adding this: ", tempDate, tempTime, tempState, tempCity, tempAddress);
+  //console.log("Adding this: ", tempDate, tempTime, tempState, tempCity, tempAddress);
   var data = operations.addData(dataFrame, tempDate, tempTime, tempState, tempCity, tempAddress, tempQuarter);
   res.header("Content-Type", 'application/json');
   res.json(data);
 });
 
 app.get('/addVehicle', (req, res) => {
-  console.log("Add vechicle called");
+  //console.log("Add vechicle called");
   var tempDate = req.query.date.toLowerCase();
   var tempVehicle = req.query.activeVehicle.toLowerCase();
   var temptrips = req.query.trips.toLowerCase();
@@ -326,7 +299,7 @@ app.get('/delete', (req, res) => {
   var tempState = req.query.state.toLowerCase();
   var tempCity = req.query.city.toLowerCase();
   var tempAddress = req.query.address.toLowerCase();
-  console.log("Deleting this: ", tempDate, tempTime, tempState, tempCity, tempAddress);
+  //console.log("Deleting this: ", tempDate, tempTime, tempState, tempCity, tempAddress);
   incrementDesign.deleteFHV(tempDate, tempTime, tempState, tempCity, tempAddress);
   var data = operations.deleteData(dataFrame, tempDate, tempTime, tempState, tempCity, tempAddress, tempQuarter);
   res.header("Content-Type", 'application/json');
@@ -338,7 +311,7 @@ app.get('/deleteActive', (req, res) => {
   var tempVehicle = req.query.activeVehicle.toLowerCase();
   var temptrips = req.query.trips.toLowerCase();
   var type = req.query.type.toLowerCase();
-  console.log("Deleting this: ", tempDate, tempVehicle, temptrips, type);
+  //console.log("Deleting this: ", tempDate, tempVehicle, temptrips, type);
   incrementDesign.delAV(type, tempDate, tempVehicle)
   var data = operations.removeVehicleData(uberTripFrame, fhvTripFrame, type, tempDate, tempVehicle, temptrips);
   res.header("Content-Type", 'application/json');
@@ -359,8 +332,8 @@ app.get('/edit', (req, res) => {
       res.json(data);
     } else {
       incrementDesign.updateFHV(tempOld, tempNew);
-      console.log("Editing this: ", tempOld);
-      console.log("To look like this: ", tempNew);
+      //console.log("Editing this: ", tempOld);
+      //console.log("To look like this: ", tempNew);
       var data = operations.editData(dataFrame, tempOld, tempNew, tempQuarter);
       res.header("Content-Type", 'application/json');
       res.json(data);
@@ -382,9 +355,9 @@ app.get('/editActive', (req, res) => {
       res.header("Content-Type", 'application/json');
       res.json(data);
     } else {
-      console.log("Editing this: ", tempOld);
-      console.log("To look like this: ", tempNew);
-      console.log("Type: ", type);
+      //console.log("Editing this: ", tempOld);
+      //console.log("To look like this: ", tempNew);
+      //console.log("Type: ", type);
       var data;
       incrementDesign.updateAV(tempOld, tempNew, type);
       var data = operations.editVehicleData(uberTripFrame, fhvTripFrame, tempOld, tempNew, type);
@@ -408,8 +381,8 @@ function getDateForCompare(tempCompare, startDate, endDate) {
         //tempLyftDate.push(tempCompare[3][i]);
 	//Object.assign(tempUberDate, analytics.getDateUnique(tempUberCompare));
 	//Object.assign(tempLyftDate, analytics.getDateUnique(tempLyftCompare));
-	    //console.log("THIS IS U-date: ", tempUberDate);
-	    //console.log("THIS IS L-date: ", tempLyftDate);
+	    ////console.log("THIS IS U-date: ", tempUberDate);
+	    ////console.log("THIS IS L-date: ", tempLyftDate);
     }
 	tempUberDate = tempCompare[2];
 	tempLyftDate = tempCompare[3]
@@ -418,10 +391,10 @@ function getDateForCompare(tempCompare, startDate, endDate) {
     tempTotalData.push(tempUberDate);
     tempTotalData.push(tempLyftDate);
 
-        console.log("THIS IS UBER: ", tempUberCompare);
-          console.log("THIS IS lyft: ", tempLyftCompare);
-          //console.log("THIS IS U-date: ", tempUberDate);
-          //console.log("THIS IS L-date: ", tempLyftDate);
+        //console.log("THIS IS UBER: ", tempUberCompare);
+          //console.log("THIS IS lyft: ", tempLyftCompare);
+          ////console.log("THIS IS U-date: ", tempUberDate);
+          ////console.log("THIS IS L-date: ", tempLyftDate);
 
     return tempTotalData;
 }
@@ -441,7 +414,7 @@ app.get('/population', (req, res) => {
   res.header("Content-Type", 'application/json');
   res.json(data);
   var t1 = performance.now()
-  console.log("Call to Analyze Population took " + (t1 - t0) + " milliseconds.")
+  //console.log("Call to Analyze Population took " + (t1 - t0) + " milliseconds.")
 });
 
 app.get('/busiest', (req, res) => {
@@ -451,7 +424,7 @@ app.get('/busiest', (req, res) => {
   var busyAddress = req.query.address.toLowerCase();
   var busyStreet = req.query.street.toLowerCase();
   var data = [];
-  //console.log("Target: " + busyState);
+  ////console.log("Target: " + busyState);
   if(busyStreet){
     data = incrementDesign.getBusyDesign(busyStreet);
     if(!data){
@@ -484,7 +457,7 @@ app.get('/busiest', (req, res) => {
   res.json(data);
 
   var t1 = performance.now()
-  console.log("Call to Analyze Busy Days took " + (t1 - t0) + " milliseconds.")
+  //console.log("Call to Analyze Busy Days took " + (t1 - t0) + " milliseconds.")
 });
 
 var tempCompare = "";
@@ -492,8 +465,8 @@ app.get('/compare', (req, res) => {
   var t0 = performance.now()
   var startDate = req.query.startDate;
   var endDate = req.query.endDate;
-  console.log("Start month: ", startDate);
-  console.log("End month: ", endDate);
+  //console.log("Start month: ", startDate);
+  //console.log("End month: ", endDate);
   var data = "";
   if (Number(startDate) > Number(endDate)) {
     data = "ErrorCode1";
@@ -509,7 +482,7 @@ app.get('/compare', (req, res) => {
   res.header("Content-Type", 'application/json');
   res.json(data);
   var t1 = performance.now()
-  console.log("Call to Analyze Comparison took " + (t1 - t0) + " milliseconds.")
+  //console.log("Call to Analyze Comparison took " + (t1 - t0) + " milliseconds.")
 });
 
 app.get('/timePopularity', (req, res) => {
@@ -519,7 +492,7 @@ app.get('/timePopularity', (req, res) => {
   if (data === undefined || data == 0) {
     data = analytics.timeOfDaySearch(dataFrame);
     incrementDesign.setTimeOfDayDesign(data);
-    //console.log("NEW");
+    ////console.log("NEW");
   }
   if (data.join() == "0,0,0,0") {
     data = "ErrorCode1";
@@ -527,12 +500,12 @@ app.get('/timePopularity', (req, res) => {
   res.header("Content-Type", 'application/json');
   res.json(data);
   var t1 = performance.now()
-  console.log("Call to Analyze Time of Day took " + (t1 - t0) + " milliseconds.")
+  //console.log("Call to Analyze Time of Day took " + (t1 - t0) + " milliseconds.")
 });
 
 app.get('/activeVehicle', (req, res) => {
   var t0 = performance.now()
-  console.log(uberTripFrame.length, fhvTripFrame.length);
+  //console.log(uberTripFrame.length, fhvTripFrame.length);
   var data = incrementDesign.getActiveDesign();
   if (data === undefined || data.length == 0) {
     data = analytics.activeVechicleTypeSearch(fhvTripFrame, uberTripFrame);
@@ -541,13 +514,13 @@ app.get('/activeVehicle', (req, res) => {
   res.header("Content-Type", 'application/json');
   res.json(data);
   var t1 = performance.now()
-  console.log("Call to Analyze Active Vehicles took " + (t1 - t0) + " milliseconds.")
+  //console.log("Call to Analyze Active Vehicles took " + (t1 - t0) + " milliseconds.")
 });
 
 var tempQuarter = "";
 app.get('/quarterPopularity', (req, res) => {
   var t0 = performance.now()
-  console.log("Init Quarter Pop Comparision");
+  //console.log("Init Quarter Pop Comparision");
 	var data;
 	if (tempQuarter == "") {
 		data = analytics.compareMonths(dataFrame, uberFrame, lyftFrame);
@@ -556,19 +529,19 @@ app.get('/quarterPopularity', (req, res) => {
 	else {
 		data = tempQuarter;
 	}
-  console.log("Done");
+  //console.log("Done");
   res.header("Content-Type", 'application/json');
   res.json(data);
   var t1 = performance.now()
-  console.log("Call to Popular Vehicle took " + (t1 - t0) + " milliseconds.")
+  //console.log("Call to Popular Vehicle took " + (t1 - t0) + " milliseconds.")
 });
 
 app.get('/searchLatLon', (req, res) => {
   var id = req.query.id;
   field = req.query.field; //already init field
   var key_name = id;
-  console.log("Lat lon key name = " + key_name);
-  console.log("field name = " + field);
+  //console.log("Lat lon key name = " + key_name);
+  //console.log("field name = " + field);
   var data = []
   data[0] = search.searchDataFrame(uberFrame, key_name, field);
   data[1] = search.searchDataFrame(lyftFrame, key_name, field);
@@ -578,7 +551,7 @@ app.get('/searchLatLon', (req, res) => {
 
 app.get('/addLatLon', (req, res) => {
   var addData = req.query.data;
-  console.log("Adding this:", addData);
+  //console.log("Adding this:", addData);
   var data = operations.addDataLatLon(uberFrame, lyftFrame, addData, tempQuarter, tempCompare);
   res.header("Content-Type", 'application/json');
   res.json(data);
@@ -597,8 +570,8 @@ app.get('/editLatLon', (req, res) => {
       res.header("Content-Type", 'application/json');
       res.json(data);
     } else {
-      console.log("Editing this:", tempOld);
-      console.log("To look like this:", tempNew);
+      //console.log("Editing this:", tempOld);
+      //console.log("To look like this:", tempNew);
       var data = operations.editLatLonData(uberFrame, lyftFrame, tempOld, tempNew, tempQuarter, tempCompare);
       
       res.header("Content-Type", 'application/json');
@@ -609,7 +582,7 @@ app.get('/editLatLon', (req, res) => {
 
 app.get('/deleteLatLon', (req, res) => {
     var deleteData = req.query.data;
-    console.log("deleting this:", deleteData);
+    //console.log("deleting this:", deleteData);
     var data = operations.deleteDataLatLon(uberFrame, lyftFrame, deleteData, tempQuarter, tempCompare);
     res.header("Content-Type", 'application/json');
     res.json(data);

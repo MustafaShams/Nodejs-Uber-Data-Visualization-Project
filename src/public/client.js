@@ -2,7 +2,6 @@ var edited = false;
 var textBoxes = 0;
 
 $(document).ready(function () {
-    backupCheck();
     searchTableCreate();
     addEntry();
 
@@ -22,47 +21,21 @@ $(document).ready(function () {
 	});
 });
 
-function backupCheck() {
-    var url = "http://localhost:3000/checkBackup";
-    $.get(url, function (data) {
-        if (data == true) {
-            var modal = document.getElementById("myModal");
-            modal.style.display = "block";
-            var span = document.getElementsByClassName("close")[0];
-            span.onclick = function () {
-                var url = "http://localhost:3000/noBackup";
-                $.get(url)
-                modal.style.display = "none";
-            }
-            $("#backupNo").click(function () {
-                var url = "http://localhost:3000/noBackup";
-                $.get(url);
-                modal.style.display = "none";
-            });
-            $("#backupYes").click(function () {
-                var url = "http://localhost:3000/getBackup";
-                $.get(url);
-                modal.style.display = "none";
-            });
-        } else {
-            var url = "http://localhost:3000/noBackup";
-            $.get(url);
-        }
-    });
-}
-
 function searchTableCreate() {
     var sendKey;
     var sendField;
+    
     $("#submit").click(function () {
+        
         sendKey = $("#searchBar").val();
         sendField = $("#data_selection").val();
-        console.log(sendField);
+        //console.log(sendField);
         if (sendKey) {
             var url = "http://localhost:3000/search?field=" + sendField + "&id=" + sendKey;
             $.get(url, function (data) {
                 if (data.length == 0) {
-                    $("#addEntry").hide();
+                    $('#myTable').hide();
+                    $("#addEntry").show();
                     showPopUp("No Data Found, Check Spelling.");
                 } else {
                     var newData = [];
@@ -75,6 +48,7 @@ function searchTableCreate() {
                     getUniqueValues();
                     $("#addEntry").show();
                     $('#myTable').dataTable();
+                    $('#myTable').show();
                 }
             });
         } else {
@@ -144,7 +118,7 @@ function addData() {
     var extractedCity = $("#city").val();
     var extractedAddress = $("#address").val();
     var url = "http://localhost:3000/add?date=" + extractedDate + "&time=" + extractedTime + "&state=" + extractedState + "&city=" + extractedCity + "&address=" + extractedAddress;
-    console.log(url);
+    //console.log(url);
     var tempArr = [];
     tempArr.push(extractedDate);
     tempArr.push(extractedTime);
@@ -240,7 +214,7 @@ function extractRowData(row) {
 function deleteData(row) {
     if (editing == false) {
         var tempData = extractRowData(row); //an array [date, time, state, city, address]
-        console.log("Deleting: ", tempData[0], tempData[1], tempData[2], tempData[3], tempData[4]);
+        //console.log("Deleting: ", tempData[0], tempData[1], tempData[2], tempData[3], tempData[4]);
         var url = "http://localhost:3000/delete?date=" + tempData[0] + "&time=" + tempData[1] + "&state=" + tempData[2] + "&city=" + tempData[3] + "&address=" + tempData[4];
         $.get(url, function (data) {
             var parent = document.getElementById('table');
@@ -263,11 +237,11 @@ var editing = false;
 function editData(row) { //get which row, then after row is changed get what changed and send to server
     var topParent = $(row).parents("tr");
     var children = topParent.children("td");
-    if (row.value == "Edit") {
+    if (row.innerHTML == "Edit") {
         if (editing == false) {
             previousData = [];
             previousData = extractRowData(row);
-            row.value = "Save"
+            row.innerHTML = "Save"
             for (var x = 0; x < children.length - 2; x++) {
                 children[x].contentEditable = true;
             }
@@ -280,21 +254,21 @@ function editData(row) { //get which row, then after row is changed get what cha
                     showPopUp("Error: Please only edit one entry at a time.");
                 }
             });
-            console.log("Error: Please only edit one entry at a time.")
+            //console.log("Error: Please only edit one entry at a time.")
         }
-    } else if (row.value == "Save") {
-        row.value = "Edit";
+    } else if (row.innerHTML == "Save") {
+        row.innerHTML = "Edit";
         for (var x = 0; x < children.length - 2; x++) {
             children[x].contentEditable = false;
         }
         var updatedData = extractRowData(row);
-        console.log("Old: ", previousData);
-        console.log("New: ", updatedData);
+        //console.log("Old: ", previousData);
+        //console.log("New: ", updatedData);
         getUniqueValues();
         //edit_Element(previousData, updatedData);
         //if (previousData.toString() != updatedData.toString()) { //check on server side instead
         var url = "http://localhost:3000/edit?old=" + previousData + "&new=" + updatedData;
-        console.log(url);
+        //console.log(url);
         $.get(url, function (data) {
             var parent = document.getElementById('table');
             if (data == false) {
@@ -305,18 +279,6 @@ function editData(row) { //get which row, then after row is changed get what cha
         });
         editing = false;
     }
-}
-
-function search_Unique(check_Arr, value) {
-    //console.log('search array');
-    for (var i = 0; i < check_Arr.length; ++i) {
-        //console.log('searching');
-        if (check_Arr[i] == value) {
-            return 0;
-        }
-
-    }
-    return 1;
 }
 
 function getUniqueValues() {
@@ -330,8 +292,8 @@ function getUniqueValues() {
 }
 
 function createChart(x_Axis, y_Axis) {
-    console.log(x_Axis);
-    console.log(y_Axis);
+    //console.log(x_Axis);
+    //console.log(y_Axis);
     var bgColor = [
         'rgba(255, 99, 132, 0.2)',
         'rgba(54, 162, 235, 0.2)',
@@ -400,30 +362,6 @@ function createChart(x_Axis, y_Axis) {
                     fontColor: "#ffffff",
                 }
             }
-        }
-    });
-}
-
-function saveBackup() {
-    console.log("SAVING");
-    var url = "http://localhost:3000/exportData";
-    $.get(url, function (data) {
-        if (data == true) {
-            showPopUp("Backup Completed!");
-        } else {
-            showPopUp("There was an error processing your backup. Please try again.");
-        }
-    });
-}
-
-function deleteBackup() {
-    console.log("Deleting");
-    var url = "http://localhost:3000/deleteBackup";
-    $.get(url, function (data) {
-        if (data) {
-            showPopUp("Backup Data file deleted.");
-        } else {
-            showPopUp("No Backup to delete.");
         }
     });
 }

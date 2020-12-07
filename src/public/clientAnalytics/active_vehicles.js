@@ -4,8 +4,8 @@ function activeVehicleArtifact(){
         if (data == "ErrorCode1") {
             showPopUp("Error: Your Entry Was Not Found In Our Database!");
         } else {
-            console.log(data);
-            console.log(data[1].length, data[0].length);
+            //console.log(data);
+            //console.log(data[1].length, data[0].length);
             activeVehicleGraph(data[1], data[0]);
                 }
         });

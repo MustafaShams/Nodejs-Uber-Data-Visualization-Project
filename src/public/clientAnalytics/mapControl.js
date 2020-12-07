@@ -27,9 +27,6 @@ require([
 			color: [0, 0, 0],
 			width: 1.5
 		},
-
-
-
 	};
 	var layer = new GraphicsLayer({
 		title: "LatLayer"
@@ -83,7 +80,7 @@ require([
 	};
 
 	function getAddress(lat, lon) {
-		console.log(lat, lon)
+		//console.log(lat, lon)
 		return "Hello";
 	}
 
@@ -108,7 +105,7 @@ require([
 			$.get(url, function (info) {
 				layerPoint.destroy();
 				view.ui.remove(editor);
-				//console.log(data);
+				////console.log(data);
 				var data = info[0];
 				for (var x = 0; x < data.length; x++) {
 					var lat = data[x].lat;
@@ -189,7 +186,7 @@ require([
 				view.popup.on("trigger-action", function (event) {
 					// If the zoom-out action is clicked, the following code executes
 					if (event.action.id === "edit-this") {
-						console.log("Editing")
+						//console.log("Editing")
 						editThis();
 					}
 				});
@@ -201,7 +198,7 @@ require([
 
 					// If the EditorViewModel's activeWorkflow is null, make the popup not visible
 					if (!editor.viewModel.activeWorkFlow) {
-						console.log("here")
+						//console.log("here")
 						var currPop = view.popup
 						currPop.visible = false;
 						// Call the Editor update feature edit workflow
@@ -245,6 +242,7 @@ require([
 				view.popup.watch("visible", function (event) {
 					// Check the Editor's viewModel state, if it is currently open and editing existing features, disable popups
 					if (editor.viewModel.state === "editing-existing-feature") {
+						console.log("closing")
 						view.popup.close();
 					} else {
 						// Grab the features of the popup
@@ -252,57 +250,55 @@ require([
 					}
 				});
 
+				layerPoint.on("edits", function(results){
+					//console.log(results);
+				})
+
 				layerPoint.on("apply-edits", function (results) {
-					console.log(results)
+					console.log(results);
 					view.ui.remove(editor);
 					view.ui.add(editor, "bottom-right");
 					if (results.edits.deleteFeatures) {
 						var previous = results.edits.deleteFeatures[0].attributes
 						var previousData = [previous.Date, previous.Time, previous.Latitude, previous.Longitude, previous.type]
-						console.log("Delete", previousData);
+						//console.log("Delete", previousData);
 						
 						var url = "http://localhost:3000/deleteLatLon?data=" + previousData;
 						$.get(url, function (data) {})
 						editor.viewModel.cancelWorkflow();
 					}
 					else if(results.edits.addFeatures){
-						console.log("Adding")
 						var addInfo = results.edits.addFeatures[0].attributes
 						addInfo.Latitude = results.edits.addFeatures[0].geometry.latitude
 						addInfo.Longitude = results.edits.addFeatures[0].geometry.longitude
-						console.log(addInfo);
+						results.edits.addFeatures[0].attributes.Latitude = addInfo.Latitude;
+						results.edits.addFeatures[0].attributes.Longitude = addInfo.Longitude;
 						view.popup.open({
 							features: addInfo
 						});
 						view.popup.close();
 						var previousData = [addInfo.Date, addInfo.Time, addInfo.Latitude, addInfo.Longitude, addInfo.type]
 						var url = "http://localhost:3000/addLatLon?data=" + previousData;
+						console.log(url);
 						$.get(url, function (data) {})
 						editor.viewModel.cancelWorkflow();
 					} 
 					else {
-
-						console.log("EDITS");
+						//console.log("EDITS");
 						// Once edits are applied to the layer, remove the Editor from the UI
-
-
-
 						// Iterate through the features
 						features.forEach(function (feature) {
 							// Reset the template for the feature if it was edited
 							feature.popupTemplate = template;
 						});
-
-
-
 						// Open the popup again and reset its content after updates were made on the feature
 						if (features) {
-							console.log("reseting popup");
+							//console.log("reseting popup");
 							var newFeature = features
-							view.popup.open({
+							var x = view.popup.open({
 								features: newFeature
 							});
-
+							console.log(x);
 						}
 						view.popup.close()
 						updated = view.popup.selectedFeature.attributes
@@ -310,19 +306,16 @@ require([
 						var previousData = [initial.Date, initial.Time, initial.Latitude, initial.Longitude, initial.type]
 						var updatedData = [updated.Date, updated.Time, updated.Latitude, updated.Longitude, initial.type]
 
-						console.log("Old:", previousData);
-						console.log("New:", updatedData);
+						//console.log("Old:", previousData);
+						//console.log("New:", updatedData);
 
 						var url = "http://localhost:3000/editLatLon?old=" + previousData + "&new=" + updatedData;
-						console.log("updating");
+						//console.log("updating");
 						$.get(url, function (data) {})
 						// Cancel the workflow so that once edits are applied, a new popup can be displayed
 						editor.viewModel.cancelWorkflow();
 
 					}
-
-
-
 				});
 
 			});
@@ -400,7 +393,7 @@ require([
 
 	function showPopup(address, pt, info) {
 
-		console.log(info);
+		//console.log(info);
 		var popContent = "A call from " + address + " was made on " + info.Date + " at " + info.Time
 
 		view.popup.open({
@@ -409,7 +402,7 @@ require([
 			location: pt,
 			actions: [editThisAction],
 		});
-		console.log(view.popup);
+		//console.log(view.popup);
 	}
 
 	view.popup.dockOptions = {
@@ -424,7 +417,7 @@ require([
 	map.on("click", function (e) {
 		//get the associated node info when the graphic is clicked
 		var node = e.graphic.getNode();
-		console.log(node);
+		//console.log(node);
 	});
 
 

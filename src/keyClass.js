@@ -72,12 +72,12 @@ class keyClass {
                     }
                     break;
                 default:
-                    console.log(`No cases found for field: ${this.field} and key ${this.key}`)
+                    //console.log(`No cases found for field: ${this.field} and key ${this.key}`)
                     break;
             }
         }
 
-        console.log(tempDF.length)
+        //console.log(tempDF.length)
         return tempDF;
     }
 

@@ -43,10 +43,10 @@ function showPopUp(text) {
 }
 
 function selectingMonth(months, dialArray,dialPercent, uberArray,uberPercent, lyftArray,lyftPercent){
-	console.log(" I am being called ");
+	//console.log(" I am being called ");
 	var firstMonth = months[0] 
 	var lastMonth = months[months.length - 1];
-	console.log(firstMonth, lastMonth);
+	//console.log(firstMonth, lastMonth);
 	var begin = 0;
 	var end = 0;
 	switch(firstMonth){
@@ -80,7 +80,7 @@ function selectingMonth(months, dialArray,dialPercent, uberArray,uberPercent, ly
 }
 
 function comparison_over_yearChart(x_Axis,dialArray,dialPercent, uberArray,uberPercent, lyftArray,lyftPercent){
-	console.log("Creating chart")
+	//console.log("Creating chart")
 	var weeks;
 	
 
@@ -166,8 +166,8 @@ function comparison_over_yearChart(x_Axis,dialArray,dialPercent, uberArray,uberP
 						return data['labels'][tooltipItem[0]['index']];
 					},
 					label: function(tooltipItem, data) {
-						//console.log(tooltipItem['index']);
-						//console.log(data['datasets'][0].data[tooltipItem['index']]);
+						////console.log(tooltipItem['index']);
+						////console.log(data['datasets'][0].data[tooltipItem['index']]);
 						var outputString = [];
 						data['datasets'].forEach(function(element){
 							outputString.push(element.label + ": " + element.data[tooltipItem['index']]);

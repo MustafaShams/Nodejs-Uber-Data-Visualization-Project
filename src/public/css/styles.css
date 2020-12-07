@@ -94,6 +94,7 @@ body {
     background-color: inherit;
     font-family: inherit; 
     margin: 0; 
+    padding: .5em;
     z-index: 999;
   }
   
@@ -447,7 +448,7 @@ table.dataTable tbody tr.myodd {
     font-size: 12px;
 }
 
-.tableHolder table td:nth-child(3) {
+.tableHolder #myTable td:nth-child(3)  {
     text-transform: uppercase;
 }
 

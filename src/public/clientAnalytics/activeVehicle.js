@@ -15,7 +15,7 @@ $(document).ready(function () {
 	
 
 	$('#addData').on('click', function () {
-		console.log("clicked");
+		//console.log("clicked");
 		addData();
 	});
 	
@@ -28,11 +28,11 @@ function searchTableCreate() {
 	$(".active_vehicles").click(function (evt) {
 		sendField = evt.target.value;
 		window.type = sendField;
-		console.log(window.type);
+		//console.log(window.type);
 		if (sendField) {
 			var url = "http://localhost:3000/searchActive?id=" + sendField;
 			$.get(url, function (data) {
-				console.log(data);
+				//console.log(data);
 				if (data.length == 0) {
 					$("#addEntry").hide();
 					showPopUp("No Data Found, Check Spelling.");
@@ -127,7 +127,7 @@ function editData(row) { //get which row, then after row is changed get what cha
 					showPopUp("Error: Please only edit one entry at a time.");
 				}
 			});
-			console.log("Error: Please only edit one entry at a time.")
+			//console.log("Error: Please only edit one entry at a time.")
 		}
 	} else if (row.innerHTML == "Save") {
 		row.innerHTML = "Edit";
@@ -135,10 +135,10 @@ function editData(row) { //get which row, then after row is changed get what cha
 			children[x].contentEditable = false;
 		}
 		var updatedData = extractRowData(row);
-		console.log("Old: ", previousData);
-		console.log("New: ", updatedData);
+		//console.log("Old: ", previousData);
+		//console.log("New: ", updatedData);
 		var url = "http://localhost:3000/editActive?old=" + previousData + "&new=" + updatedData + "&type=" + window.type;
-		console.log("updating");
+		//console.log("updating");
 		$.get(url, function (data) {
 			var parent = document.getElementById('table');
 			if (data == false) {
@@ -159,8 +159,8 @@ function extractRowData(row) {
 		dataInfo[x] = children[x].textContent
 
 	}
-	//console.log("THIS IS TOP PARENT",topParent);
-	//console.log("DATAINFO!!!!!!!!", dataInfo);
+	////console.log("THIS IS TOP PARENT",topParent);
+	////console.log("DATAINFO!!!!!!!!", dataInfo);
 	return dataInfo;
 }
 
@@ -179,7 +179,7 @@ function addData() {
 	var extractedVehicle = $("#activeVehicle").val();
 	var extractedTrips = $("#trips").val();
 	var url = "http://localhost:3000/addVehicle?date=" + extractedDate + "&activeVehicle=" + extractedVehicle + "&trips=" + extractedTrips + "&type=" + window.type;
-	console.log(url);
+	//console.log(url);
 	$.get(url, function (data, tempArr) {
 
 		if (data == true) {
@@ -201,7 +201,7 @@ function addData() {
 function deleteData(row) {
 	if (editing == false) {
 		var tempData = extractRowData(row); //an array [date, time, state, city, address]
-		console.log("Deleting: ", tempData[0], tempData[1], tempData[2]);
+		//console.log("Deleting: ", tempData[0], tempData[1], tempData[2]);
 		var url = "http://localhost:3000/deleteActive?date=" + tempData[0] + "&activeVehicle=" + tempData[1] + "&trips=" + tempData[2] + "&type=" + window.type;
 		$.get(url, function (data) {
 			var parent = document.getElementById('table');

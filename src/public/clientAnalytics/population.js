@@ -9,13 +9,13 @@ function populationSearch() {
     var searchTarget = $("#searchbar").val()
         var url = "http://localhost:3000/population?search=" + searchTarget;
         $.get(url, function (data) {
-        console.log(data);
+        //console.log(data);
                 var separatorIndex = data.indexOf("SEPARATOR");
                 var citiesInState = data.slice(0, separatorIndex);
                 var citiesCount = data.slice(separatorIndex + 1);
                 data = sortAArray(citiesInState, citiesCount);
-                console.log("Unique City Array: ", citiesInState);
-                        console.log("Number of Calls from City Array: ", citiesCount);
+                //console.log("Unique City Array: ", citiesInState);
+                        //console.log("Number of Calls from City Array: ", citiesCount);
                 if (citiesInState != 0 && citiesCount != 0) {
 
 
@@ -53,7 +53,7 @@ function sortAArray(names, count){
 }
 
 function citiesChart(x_Axis,y_Axis){
-    console.log("Cities Chart");
+    //console.log("Cities Chart");
     var bgColor = [
         'rgba(255, 99, 235, 0.2)'
         ];
@@ -78,9 +78,9 @@ function citiesChart(x_Axis,y_Axis){
                     //borderWidth: 1,
                     //barPercentage: 50,
                     fill: false,
-                    pointRadius:7,
+                    pointRadius:15,
                     showLine: false,
-                    pointHoverRadius: 7,
+                    pointHoverRadius: 15,
                 }
             ]
         },

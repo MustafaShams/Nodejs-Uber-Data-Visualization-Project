@@ -8,7 +8,7 @@ function daysArtifact() {
         if (data == "ErrorCode1") {
             showPopUp("Error: Your Entry Was Not Found In Our Database!");
         } else {
-            console.log(data);
+            //console.log(data);
             //do graph here
             daysChart(data);
             showPopUp("Success");

@@ -62,15 +62,15 @@ function compareSearch(dataFrame, uberFrame, lyftFrame, startDate, endDate) {
 	var tempCounter = 7; //start date
   	while (tempCounter != 10) {//(Number(startMonth) != Number(endMonth) + 1) {
     		let keycls = new keyClass("Month", (Number(tempCounter)).toString());
-    		console.log("Comparing This Month rn: ", (Number(tempCounter).toString()));
+    		//console.log("Comparing This Month rn: ", (Number(tempCounter).toString()));
     		var uberArr = keycls.keySearch(uberFrame);
     		var lyftArr = keycls.keySearch(lyftFrame);
 
     		Object.assign(dateUber, getDateUnique(uberArr));
     		Object.assign(dateLyFt, getDateUnique(lyftArr));
     
-    		console.log("Uber size for this month: ", uberArr.length);
-    		console.log("Lyft size for this month: ", lyftArr.length);
+    		//console.log("Uber size for this month: ", uberArr.length);
+    		//console.log("Lyft size for this month: ", lyftArr.length);
     		uberCompArr.push((monthGenerator(Number(tempCounter).toString()) + ": " + uberArr.length).toString());
     		lyftCompArr.push((monthGenerator(Number(tempCounter).toString()) + ": " + lyftArr.length).toString());
     		//startMonth = Number(startMonth) + 1;
@@ -83,8 +83,8 @@ function compareSearch(dataFrame, uberFrame, lyftFrame, startDate, endDate) {
   	totalArr.push(dateLyFt);
 
 
-	//console.log("This is dateLyft: ", totalArr[3]);
-	//console.log("This is dateUber: ", totalArr[2]);
+	////console.log("This is dateLyft: ", totalArr[3]);
+	////console.log("This is dateUber: ", totalArr[2]);
   	return totalArr; //will return null if no data in both sets
 }
 	
@@ -213,25 +213,25 @@ function searchDaysOfWeek(dataFrame, state, city, address, street) {
 
   if (state != "") {
     let keycls = new keyClass("State", state.toLowerCase());
-    console.log("Searching state");
+    //console.log("Searching state");
     searchDF = keycls.keySearch(searchDF);
     tempCheck = 0;
   }
   if (city != "") {
     let keycls = new keyClass("City", city.toLowerCase());
-    console.log("Searching city");
+    //console.log("Searching city");
     searchDF = keycls.keySearch(searchDF);
     tempCheck = 0;
   }
   if (address != "") {
     let keycls = new keyClass("Address", address.toLowerCase());
-    console.log("Searching address");
+    //console.log("Searching address");
     searchDF = keycls.keySearch(searchDF);
     tempCheck = 0;
   }
   if (street != "") {
     let keycls = new keyClass("Street", street.toLowerCase());
-    console.log("Searching Street");
+    //console.log("Searching Street");
     searchDF = keycls.keySearch(searchDF);
     tempCheck = 0;
   }
@@ -262,12 +262,12 @@ function popCitiesSearch(dataFrame, key) {
 
 function weekDaysSearch(dataFrame) {
         var tempDF = [0, 0, 0, 0, 0, 0, 0];
-        console.log("Total dataframe for parsing: ", dataFrame.length);
+        //console.log("Total dataframe for parsing: ", dataFrame.length);
         for (var i = 0; i < dataFrame.length; i++) {
             var date = new Date(dataFrame[i].date);
             tempDF[date.getDay()]++;
         }
-        console.log("Add these numbers, they must equal to above: ", tempDF.join());
+        //console.log("Add these numbers, they must equal to above: ", tempDF.join());
         return tempDF;
 }
 
@@ -277,32 +277,32 @@ function timeOfDaySearch(dataFrame) {
 	for (var i = 0; i < dataFrame.length; i++) {
 
 		var hour = (dataFrame[i].time).split(':');
-		// console.log(hour);
+		// //console.log(hour);
 
 		if (hour[0] < 6) {
-			// console.log("night: " + dataFrame[i].time);
+			// //console.log("night: " + dataFrame[i].time);
 			tempDF[0]++;
 		}
 		else if (hour[0] >= 6 && hour[0] < 12) {
-			// console.log("morning: " + dataFrame[i].time);
+			// //console.log("morning: " + dataFrame[i].time);
 			tempDF[1]++;
 		}
 		else if (dataFrame[i].time >= "12:00" && dataFrame[i].time < "18:00") {
 			if(dataFrame[i].time > "18:00"){
 
 			}
-			// console.log("afternoon: " + dataFrame[i].time);
+			// //console.log("afternoon: " + dataFrame[i].time);
 			tempDF[2]++;
 		}
 		else if (dataFrame[i].time >= "18:00" && dataFrame[i].time <= "23:59") {
-			// console.log("evening: " + dataFrame[i].time);
+			// //console.log("evening: " + dataFrame[i].time);
 			tempDF[3]++;
 		}
 		else {
-			// console.log("Invalid time: " + dataFrame[i].time);
+			// //console.log("Invalid time: " + dataFrame[i].time);
 		}
 	}
-	console.log("Total dataframe for parsing for timeOfDaySearch: ", dataFrame.length);
+	//console.log("Total dataframe for parsing for timeOfDaySearch: ", dataFrame.length);
 	console.dir(tempDF);
 	return tempDF;
 }
@@ -356,7 +356,7 @@ function activeVehicleLoop(dataFrame) {
 			}
 		}
 		// else {
-		// 	console.log("Date is: " + date);
+		// 	//console.log("Date is: " + date);
 		// }
 	}
 	console.dir(tempDF);

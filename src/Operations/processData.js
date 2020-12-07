@@ -13,7 +13,7 @@ function processTripData(allText, type, fhvTripFrame, uberTripFrame) {
     if (data.length == headers.length) { //make sure to check if data exists
       if(data[2] == "03/01/2015"){
         console.log("Finished fhvTripFrame, Size:",fhvTripFrame.length);
-        console.log("Sample", fhvTripFrame[0]);
+        //console.log("Sample", fhvTripFrame[0]);
         return fhvTripFrame;
       }
       var e = new callInfo(); //create a new callInfo object
@@ -38,7 +38,7 @@ function processTripData(allText, type, fhvTripFrame, uberTripFrame) {
     }
   }
   console.log("Finished uberTripFrame, Size:",uberTripFrame.length);
-  console.log("Sample", uberTripFrame[0]);
+  //console.log("Sample", uberTripFrame[0]);
   switch(type) {
 	  case "uber":
 		return uberTripFrame;
@@ -69,7 +69,7 @@ function processUberData(allText, uberFrame) {
   }
   if(uberFrame.length > 2000000){
     console.log("Finished uberFrame, Size:", uberFrame.length);
-    console.log("Sample", uberFrame[0]);
+    //console.log("Sample", uberFrame[0]);
   }
  return uberFrame; 
 }
@@ -101,7 +101,7 @@ function processLyftData(allText, lyftFrame) {
     }
   }
   console.log("Finished lyftFrame, Size:", lyftFrame.length);
-  console.log("Sample", lyftFrame[0]);
+  //console.log("Sample", lyftFrame[0]);
   return lyftFrame;
 }
 
@@ -135,12 +135,12 @@ function processData(allText, dataFrame) {
         });
         dataFrame.push(e);
       } catch (err) {
-        console.log('PROBLEM Creating Data Frame', err)
+        //console.log('PROBLEM Creating Data Frame', err)
       }
     }
   }
   console.log("Finished dataFrame, Size:", dataFrame.length);
-  console.log("Sample", dataFrame[0]);
+  //console.log("Sample", dataFrame[0]);
   return dataFrame;
 }
 
