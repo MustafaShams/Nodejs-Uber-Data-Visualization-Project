@@ -4,8 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <title>Uber Team Dataset</title>
-    <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="artifact_styles.css">
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/artifact_styles.css">
     </link>
     <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"> </script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.1.6/Chart.bundle.min.js">
@@ -13,7 +13,7 @@
     <script src="https://cdn.jsdelivr.net/timepicker.js/latest/timepicker.min.js"></script>
     <link href="https://cdn.jsdelivr.net/timepicker.js/latest/timepicker.min.css" rel="stylesheet" />
 
-    <script src="client.js"></script>
+    <script src="../clientAnalytics/time_popularity.js"></script>
 </head>
 </head>
 
@@ -22,7 +22,7 @@
         <nav class="nav main_nav">
             <ul>
                 <li>
-                    <a href="index.html"> Home </a>
+                    <a href="../index.html"> Home </a>
                 </li>
                 <li>
                     <div class="menu_dropdown">
@@ -38,7 +38,7 @@
                 </li>
                 <li>
                     <div class="menu_dropdown">
-                        <buton class="menu">Artifact Menu
+                        <buton class="menu">Analyze
                             <i class="fa fa-caret-down"></i>
                         </buton>
                         <div class="menu_content">
@@ -47,7 +47,8 @@
                             <a href="platform_comparison.html">Platform Comparison</a>
                             <a href="time_popularity.html">Traffic Time of Day</a>
 							<a href="active_vehicles.html">Types of Active Vehicles</a>
-							<a href="year_popularity.html">Increase/Decrease in Platforms</a>
+                            <a href="year_popularity.html">Increase/Decrease in Platforms</a>
+                            
                         </div>
                     </div>
                 </li>
@@ -65,23 +66,32 @@
         </div>
     </header>
 
-    <header>
-        <div class="boxes">
-            <!--State, City, Address, Street-->
-            <input type="search" placeholder="State" name="state_search" id="state_search">
-            <input type="search" placeholder="City" name="city_search" id="city_search">
-            <input type="search" placeholder="Address" name="address_search" id="address_search">
-            <input type="search" placeholder="Street" name="street_search" id="street_search">
-            <button id="submit_day" onclick=daysArtifact()>Go</div>
-        </div>
-
-    </header>
+     <div class="hours_dropdown">
+        <li>
+            <!---<div class="hours_menu">
+                <form action="">
+                   <label for="hours_selection" id="hours-selection">Range of Hours</label>
+                    <select name="hours_selection" id="hours_selection">
+                         <option value="Night">Night (0-6)</option>
+                        <option value="Morning">Morning (6-12)</option>
+                        <option value="Afternoon">Afternoon (12-18)</option>
+                        <option value="Evening">Evening (18-24)</option>
+                    </select>
+                </form>
+            </div> --->
+        </li>
+	<p style="text-align: center; font-size: 20px; font-family: Arial; padding-bottom: 20px;">
+		Compare the total amount of calls for each 6 hour timeframe in our Dial7 dataset.
+	</p>
+	<li>
+	</li>
+        <li>
+            <button id="hours_submit" onclick=timesArtifact()>Show Graph</div>
+        </li>
+    </div>
     <div id="mainContainer">
-        <div class="busyHolder">
-            <canvas id="busyChart"></canvas>
+        <div class="timeHolder">
+            <canvas id="timeGraph"></canvas>
         </div>
     </div>
-
 </body>
-
-</html>

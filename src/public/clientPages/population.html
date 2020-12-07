@@ -4,15 +4,15 @@
     <head>
         <meta charset="UTF-8">
         <title>Uber Team Dataset</title>
-        <link rel="stylesheet" href="styles.css">
-        <link rel="stylesheet" href="artifact_styles.css">
+        <link rel="stylesheet" href="../css/styles.css">
+        <link rel="stylesheet" href="../css/artifact_styles.css">
         </link>
         <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"> </script>
         <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.1.6/Chart.bundle.min.js"></script>
         <script src="https://cdn.jsdelivr.net/timepicker.js/latest/timepicker.min.js"></script>
         <link href="https://cdn.jsdelivr.net/timepicker.js/latest/timepicker.min.css" rel="stylesheet"/>
         
-        <script src="client.js"></script>
+        <script src="../clientAnalytics/population.js"></script>
     </head>
     </head>
     
@@ -21,7 +21,7 @@
             <nav class="nav main_nav">
                 <ul>
 					<li>
-						<a href="index.html"> Home </a>
+						<a href="../index.html"> Home </a>
 					</li>
 					<li>
 						<div class="menu_dropdown">
@@ -73,6 +73,9 @@
                
             </div>
         </header>
+	<p style="text-align: center; font-size: 20px; font-family: Arial; padding-top: 15px;">
+        	The highest amount of calls per city in a given state for our Dial7 dataset.
+        </p>
         <div id="mainContainer">
             <div class="populationHolder">
                 <canvas id="populationChart"></canvas>

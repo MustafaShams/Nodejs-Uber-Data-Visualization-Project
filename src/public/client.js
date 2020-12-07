@@ -1,7 +1,6 @@
 var edited = false;
 var textBoxes = 0;
 
-
 $(document).ready(function () {
     backupCheck();
     searchTableCreate();
@@ -120,7 +119,6 @@ function convertDataTable(myData) {
     });
 }
 
-
 function createTable() {
 	var tableHolder = document.getElementById("tableHolder");
 	tableHolder.innerHTML = "";
@@ -136,9 +134,6 @@ function createTable() {
 		cell.innerHTML = headerInfo[k];
 	}
 }
-
-
-
 
 function addData() {
     var extractedDate = $("#date").val().replace(/[-]+/g, '.')
@@ -238,7 +233,6 @@ function extractRowData(row) {
     var dataInfo = []
     for (var x = 0; x < children.length - 2; x++) {
         dataInfo[x] = children[x].textContent
-
     }
     return dataInfo;
 }
@@ -307,7 +301,6 @@ function editData(row) { //get which row, then after row is changed get what cha
                 showPopUp("Error: Your new entry looks the same as before!");
             } else if (data == true) {
                 showPopUp("Success! Ride was edited.");
-
             }
         });
         editing = false;
@@ -319,17 +312,12 @@ function search_Unique(check_Arr, value) {
     for (var i = 0; i < check_Arr.length; ++i) {
         //console.log('searching');
         if (check_Arr[i] == value) {
-
             return 0;
         }
 
     }
     return 1;
 }
-
-
-
-
 
 function getUniqueValues() {
     const x_Axis = ['Date', 'Time', 'State', 'City', 'Address'];
@@ -340,8 +328,6 @@ function getUniqueValues() {
     }
     createChart(x_Axis, y_Axis);
 }
-
-
 
 function createChart(x_Axis, y_Axis) {
     console.log(x_Axis);
@@ -415,11 +401,8 @@ function createChart(x_Axis, y_Axis) {
                 }
             }
         }
-
     });
-
 }
-
 
 function saveBackup() {
     console.log("SAVING");
@@ -445,586 +428,9 @@ function deleteBackup() {
     });
 }
 
-
 function showPopUp(text) {
     $('.popup').clearQueue();
     $('.popup').stop();
     $("#myPopup").html(text);
     $('.popup').fadeIn(800).delay(4000).fadeOut(800);
-}
-
-function populationSearch() {
-    var searchTarget = $("#searchbar").val()
-        var url = "http://localhost:3000/population?search=" + searchTarget;
-        $.get(url, function (data) {
-        console.log(data);
-		var separatorIndex = data.indexOf("SEPARATOR");
-		var citiesInState = data.slice(0, separatorIndex);
-                var citiesCount = data.slice(separatorIndex + 1);
-                data = sortAArray(citiesInState, citiesCount);
-                console.log("Unique City Array: ", citiesInState);
-		        console.log("Number of Calls from City Array: ", citiesCount);
-                if (citiesInState != 0 && citiesCount != 0) {
-                
-
-                citiesInState = citiesInState.slice(0, 100);
-                citiesCount = citiesCount.slice(0, 100);
-                
-                citiesChart(citiesInState,citiesCount);
-			showPopUp("Success!");
-                }
-                else {
-			showPopUp("Error: Your Entry Was Not Found In Our Database!");
-                }
-        });
-        
-}
-
-function sortAArray(names, count){
-    var list = [];
-    for (var j = 0; j < names.length; j++) 
-        list.push({'name': names[j], 'count': count[j]});
-
-    //2) sort:
-    list.sort(function(a, b) {
-        return ((a.count > b.count) ? -1 : ((a.count == b.count) ? 0 : 1));
-        //Sort could be modified to, for example, sort on the age 
-        // if the name is the same.
-    });
-
-    //3) separate them back out:
-    for (var k = 0; k < list.length; k++) {
-        names[k] = list[k].name;
-        count[k] = list[k].count;
-    }
-    return [names,count];
-}
-
-function daysArtifact() {
-    var busyState = $("#state_search").val()
-    var busyCity = $("#city_search").val()
-    var busyAddress = $("#address_search").val()
-    var busyStreet = $("#street_search").val()
-    var url = "http://localhost:3000/busiest?state=" + busyState + "&city=" + busyCity + "&address=" + busyAddress + "&street=" + busyStreet;
-    $.get(url, function (data) {
-        if (data == "ErrorCode1") {
-            showPopUp("Error: Your Entry Was Not Found In Our Database!");
-        } else {
-            console.log(data);
-            //do graph here
-            daysChart(data);
-            showPopUp("Success");
-            
-		}
-	});
-}
-
-function timesArtifact() {
-    var url = "http://localhost:3000/timePopularity";
-    $.get(url, function (data) {
-        if (data == "ErrorCode1") {
-            showPopUp("Error: Your Entry Was Not Found In Our Database!");
-        } else {
-            console.log(data);
-            timeRange(data);
-		}
-	});
-}
-
-function activeVehicleArtifact(){
-    var url = "http://localhost:3000/activeVehicle";
-    $.get(url, function (data) {
-        if (data == "ErrorCode1") {
-            showPopUp("Error: Your Entry Was Not Found In Our Database!");
-        } else {
-            console.log(data);
-            console.log(data[1].length, data[0].length);
-            activeVehicleGraph(data[1], data[0]);
-		}
-	});
-}
-
-
-function compareArtifact() {
-    $('#comparisonChart').remove();
-    $('.comparisonHolder').html('<canvas id="comparisonChart"></canvas>');
-    var startDate = $("#month1_selection").val()
-    var endDate = $("#month2_selection").val()
-    var url = "http://localhost:3000/compare?startDate=" + startDate + "&endDate=" + endDate;
-    $("#switchGraph").hide();
-    $(".loader").show();
-    $.get(url, function (data) {
-        $(".loader").hide()
-        console.log("data length: ", data.length);
-        if (data == "ErrorCode1") {
-            showPopUp("Error: Incorrect month format! The ending month must be after the starting month!");
-        } else if (data) {
-            if (data.length == 0) { //theres nothing inside except separator
-                showPopUp("Failed to Compare! Those Months Aren't In Our Data Set"); // cant happen with current setup
-            } else {
-                /*var separatorIndex = data.indexOf("SEPARATOR");
-				var uberArray = data.slice(0, separatorIndex);
-                var lyftArray = data.slice(separatorIndex + 1)*/
-                
-                var uberArray = data[0];
-                var lyftArray = data[1];
-                var dateUber = data[2];
-                var dateLyft = data[3];
-                console.log("uberArray: ", uberArray);
-                console.log("lyftArray: ", lyftArray);
-
-                var labelArr = Object.keys(dateUber);
-                console.log(labelArr)
-                var uberDateArr = []
-                var lyftDateArr = []
-                for (var key in dateUber) {
-                    uberDateArr.push(dateUber[key]);
-                    lyftDateArr.push(dateLyft[key]);
-                }
-                console.log("dateUber:", uberDateArr)
-                console.log("dateLyft:", lyftDateArr)
-
-                separatorObject(uberArray, lyftArray);
-                $('#switchGraph').val("Date");
-                $( "#switchGraph" ).unbind('click').click(function() {
-                    console.log($('#switchGraph').val())
-                    if($('#switchGraph').val()== 'Date'){
-                        compareChart('line',labelArr, uberDateArr, lyftDateArr)
-                        $('#switchGraph').val('Month')
-                    }
-                    else if($('#switchGraph').val()== 'Month'){
-                        separatorObject(uberArray, lyftArray);
-                        $('#switchGraph').val('Date')
-                    }
-                });
-            
-                showPopUp("Success!")
-            }
-        } else {
-            showPopUp("Fatal Error: Comparing Went Wrong!") //testing purposes: will never reach here
-        }
-    });
-
-}
-function separatorObject(sArr, sArr2){
-  const monthVal = [];
-
-  for (var i = 0; i < sArr.length; ++i){
-      var tmp = sArr[i].split(':');
-      var sp = tmp.splice(0,1);
-     
-      monthVal.push(sp[0]);
-      
-  }
-  console.log(monthVal);
-
-  const uber_Arr = [];
-  for (var i = 0; i < sArr.length; ++i){
-    var tmp = sArr[i].split(':');
-    var sp = tmp.splice(1,1);
-    uber_Arr.push(sp[0]);
-  }
-  console.log(uber_Arr);
-
-  const lyft_Arr = [];
-  for (var i = 0; i < sArr2.length; ++i){
-    var tmp = sArr2[i].split(':');
-    var sp = tmp.splice(1,1);
-    lyft_Arr.push(sp[0]);
-  }
-  console.log(lyft_Arr);
-
- compareChart("horizontalBar",monthVal, uber_Arr,lyft_Arr);
-}
-
-function compareChart(charType, y_Ax, uber_Arr, lyft_Arr) {
-    console.log("Called Compare");
-    $( "#switchGraph" ).show();
-    var bgColor = [
-        'rgba(255, 99, 132, 0.2)',
-        'rgba(54, 162, 235, 0.2)'
-    ];
-
-    var bdColor = [
-        'rgba(255, 99, 132, 1)',
-        'rgba(54, 162, 235, 1)'
-    ];
-
-    $('#comparisonChart').remove();
-    $('.comparisonHolder').html('<canvas id="comparisonChart"></canvas>');
-    var ctx = document.getElementById('comparisonChart').getContext('2d');
-
-    var comparisonChart = new Chart(ctx, {
-        type: charType,
-        data: {
-            labels: y_Ax,
-
-            datasets: [{
-                    // label: 'Number of between Uber vs Lyft',
-
-                    label: 'Uber',
-                    data: uber_Arr,
-                    backgroundColor: bgColor[0],
-                    borderColor: bdColor[0],
-                    borderWidth: 1
-                },
-
-                {
-                    label: 'Lyft',
-                    data: lyft_Arr,
-                    backgroundColor: bgColor[1],
-                    borderColor: bdColor[1],
-                    borderWidth: 1
-                },
-            ]
-
-
-        },
-        options: {
-            maintainAspectRatio: false,
-            scales: {
-                xAxes: [{
-                    gridLines: {
-                        color: "rgba(255,255,255,.2)"
-                    },
-                    ticks: {
-                        fontSize: 20,
-                        fontColor: "white"
-                    }
-                }],
-                yAxes: [{
-                    gridLines: {
-                        color: "rgba(255,255,255,.2)"
-                    },
-                    ticks: {
-                        fontSize: 20,
-                        fontColor: "white"
-                    }
-                }]
-            },
-            legend: {
-                display: true,
-                position: 'bottom',
-                labels: {
-                    fontColor: "#FFFFFF",
-                    fontSize: 20,
-                },
-            },
-            tooltips: {
-               titleFontSize: 25,
-               bodyFontSize: 25
-             }
-
-        }
-
-
-    });
-    return comparisonChart;
-}
-
-function activeVehicleGraph(uber_Arr, fhv_Arr) {
-    var bgColor = [
-        'rgba(255, 99, 132, 0.2)',
-        'rgba(54, 162, 235, 0.2)'
-    ];
-
-    var bdColor = [
-        'rgba(255, 99, 132, 1)',
-        'rgba(54, 162, 235, 1)'
-    ];
-
-    $('#activeVehicleChart').remove();
-    $('.activeVehicleHolder').html('<canvas id="activeVehicleChart"></canvas>');
-    var ctx = document.getElementById('activeVehicleChart').getContext('2d');
-
-    var activeVehicleChart = new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: ["Jan 2015 Week 1","Jan 2015 Week 2","Jan 2015 Week 3","Jan 2015 Week 4", "Feb 2015 Week 1","Feb 2015 Week 2","Feb 2015 Week 3","Feb 2015 Week 4"],
-            datasets: [{
-                    // label: 'Number of between Uber vs Lyft',
-
-                    label: 'Uber',
-                    data: uber_Arr,
-                    backgroundColor: bgColor[0],
-                    borderColor: bdColor[0],
-                    borderWidth: 1
-                },
-
-                {
-                    label: 'For Hire Vehicle',
-                    data: fhv_Arr,
-                    backgroundColor: bgColor[1],
-                    borderColor: bdColor[1],
-                    borderWidth: 1
-                },
-            ]
-
-
-        },
-        options: {
-            maintainAspectRatio: false,
-            scales: {
-                xAxes: [{
-                    ticks: {
-                        fontSize: 20,
-                        fontColor: "white"
-                    }
-                }],
-                yAxes: [{
-                    ticks: {
-                        fontSize: 20,
-                        fontColor: "white"
-                    }
-                }]
-            },
-            legend: {
-                display: true,
-                position: 'bottom',
-                labels: {
-                    fontColor: "white",
-                    fontSize: 20,
-                },
-            },
-            title:{
-                display: true,
-                text: 'Number of Active Vehicles Uber vs For Hire Vehicle',
-                fontSize: 20,
-                fontColor: "white"
-            },
-            tooltips:{
-				mode: 'label',
-				intersect: false
-			},
-
-        }
-
-
-    });
-    return activeVehicleChart;
-}
-
-//Line chart for busy days 
-function daysChart(y_Axis){
-    
-    const  x_Axis = ["Sunday","Monday","Tuesday","Wednesday",
-            "Thursday", "Friday", "Saturday"];
-    
-
-    var bgColor = [
-        'rgba(255, 99, 132, 0.2)',
-        'rgba(54, 162, 235, 0.2)'
-    ];
-
-    var bdColor = [
-        'rgba(255, 99, 132, 1)',
-        'rgba(54, 162, 235, 1)'
-    ];
-
-    $('#busyChart').remove();
-    $('.busyHolder').html('<canvas id="busyChart"></canvas>');
-    var ctx = document.getElementById('busyChart').getContext('2d');
-    var busyChart = new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: x_Axis,
-            datasets: [{
-                label: "Days of Week",
-                data: y_Axis,
-                backgroundColor: bgColor[0],
-                borderColor: bdColor[0],
-                fill: false,
-                lineTension: 0,
-                pointRadius: 15,
-            }]
-        },
-        options: {
-            maintainAspectRatio: false,
-            scales: {
-                xAxes: [{
-                    gridLines: {
-                        color: "rgba(255,255,255,.2)"
-                    },
-                    ticks: {
-                        fontSize: 20,
-                        fontColor: "white"
-                    }
-                }],
-                yAxes: [{
-                    gridLines: {
-                        color: "rgba(255,255,255,.2)"
-                    },
-                    ticks: {
-                        fontSize: 20,
-                        fontColor: "white"
-                    }
-                }]
-            },
-            legend: {
-                display: true,
-                text: 'Busiest Days of Week Based on Calls',
-                position: 'bottom',
-                labels: {
-                    fontColor: "#FFFFFF",
-                    fontSize: 20,
-                },
-            },
-            tooltips: {
-               titleFontSize: 25,
-               bodyFontSize: 25
-             }
-        }
-
-    });
-
-}
-
-
-function timeRange(y_Axis){
-    
-    const  x_Axis = ["12:00 AM - 05:59 AM","06:00 AM - 11:59 AM","12:00 PM - 05:59 PM","06:00 PM - 11:59 PM"];
-    console.log("Called Time Range");
-    console.log("X_axis",x_Axis);
-    console.log("Y_axis",y_Axis);
-
-    var bgColor = [
-        'rgba(255, 255, 255, 0.3)',
-        'rgba(255, 255, 255, 0.3)'
-    ];
-
-    var bdColor = [
-        'rgba(255, 99, 132, 1)',
-        'rgba(54, 162, 235, 1)'
-    ];
-
-    $('#timeGraph').remove();
-    $('.timeHolder').html('<canvas id="timeGraph"></canvas>');
-    var ctx = document.getElementById('timeGraph').getContext('2d');
-    var busyChart = new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: x_Axis,
-            datasets: [{
-                label: "Days of Week",
-                data: y_Axis,
-                backgroundColor: bgColor[0],
-                borderColor: bdColor[0],
-                fill: false,
-                lineTension: 0,
-            }]
-        },
-        options: {
-            maintainAspectRatio: false,
-            scales: {
-                xAxes: [{
-                    ticks: {
-                        fontSize: 20,
-                        fontColor: "white"
-                    }
-                }],
-                yAxes: [{
-                    ticks: {
-                        fontSize: 20,
-                        fontColor: "white"
-                    }
-                }]
-            },
-            legend: {
-                display: true,
-                text: 'Busiest Days of Week Based on Calls',
-                position: 'bottom',
-                labels: {
-                    fontColor: "white",
-                    fontSize: 20,
-                },
-            },
-            title:{
-                display: true,
-                text: 'What Time of Day is the Busiest',
-                fontSize: 20,
-                fontColor: "white"
-            },
-        }
-
-    });
-
-}
-
-function citiesChart(x_Axis,y_Axis){
-    console.log("Cities Chart");
-    var bgColor = [
-        'rgba(255, 99, 235, 0.2)'
-        ];
-    var bdColor = [
-        'rgba(255, 99, 132, 1)'
-           
-        ];
-    $('#populationChart').remove();
-    $('.populationHolder').html('<canvas id="populationChart"></canvas>');
-    var ctx = document.getElementById('populationChart').getContext('2d');
-    var populationChart = new Chart(ctx,{
-        type: 'line',
-        
-        data: {
-            labels: x_Axis,
-            datasets:[
-                {
-                    label: "Cities",
-                    data: y_Axis,
-                    backgroundColor: bgColor[0],
-                    borderColor: bdColor[0],
-                    //borderWidth: 1,
-                    //barPercentage: 50,
-                    fill: false,
-                    pointRadius:7,
-                    showLine: false,
-                    pointHoverRadius: 7,  
-                }
-            ]
-        },
-        options: {
-            maintainAspectRatio: false,
-            scales: {
-                xAxes: [{
-                    gridLines: {
-                        color: "rgba(255,255,255,.2)"
-                    },
-                    ticks: {
-                        fontSize: 18,
-                        fontColor: "white"
-                    }
-                }],
-                yAxes: [{
-                    gridLines: {
-                        color: "rgba(255,255,255,.2)"
-                    },
-                    ticks: {
-                        fontSize: 20,
-                        fontColor: "white"
-                    }
-                }]
-            },
-            responsive: true,
-            title:{
-                display: true,
-                text: 'Number of calls per city',
-                fontSize: 20,
-                fontColor: "white"
-            },
-             legend: {
-                display: true,
-                position: 'bottom',
-                labels: {
-                    fontColor: "white",
-                }
-             },
-             tooltips: {
-                titleFontSize: 25,
-                bodyFontSize: 25
-              }
-            
-        }
-
-    });
-
 }

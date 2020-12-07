@@ -4,8 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <title>Uber Team Dataset</title>
-    <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="artifact_styles.css">
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/artifact_styles.css">
     </link>
     <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"> </script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.1.6/Chart.bundle.min.js">
@@ -13,7 +13,7 @@
     <script src="https://cdn.jsdelivr.net/timepicker.js/latest/timepicker.min.js"></script>
     <link href="https://cdn.jsdelivr.net/timepicker.js/latest/timepicker.min.css" rel="stylesheet" />
 
-    <script src="quarterCompare.js"></script>
+    <script src="../clientAnalytics/platform_comparison.js"></script>
 </head>
 </head>
 
@@ -22,7 +22,7 @@
         <nav class="nav main_nav">
             <ul>
                 <li>
-                    <a href="index.html"> Home </a>
+                    <a href="../index.html"> Home </a>
                 </li>
                 <li>
                     <div class="menu_dropdown">
@@ -36,7 +36,6 @@
                         </div>
                     </div>
                 </li>
-                <li>
                     <div class="menu_dropdown">
                         <buton class="menu">Analyze
                             <i class="fa fa-caret-down"></i>
@@ -57,28 +56,52 @@
                 <li>
                     <a onclick=deleteBackup()>Delete Backup </a>
                 </li>
-
             </ul>
         </nav>
         <div class="popup">
             <a class="popuptext" id="myPopup">Notification Popup</a>
         </div>
     </header>
-    <div class="loader"></div>
 
+    <header>
+        <div class="search_terms">
+            <li>
+                <form action="">
+                    <label for="month_selection">Start Month</label>
+                    <select name="month1_selection" id="month1_selection">
+                        <option value="7">July</option>
+                        <option value="8">August</option>
+                        <option value="9">September</option>
+                    </select>
+                </form>
+            </li>
+            <li>
+                <form action="">
+                    <label for="month_selection2">End Month</label>
+                    <select name="month2_selection" id="month2_selection">
+                        <option value="7">July</option>
+                        <option value="8">August</option>
+                        <option value="9">September</option>
+                    </select>
+                </form>
+            </li>
+            <li><button id="submit_month" onclick=compareArtifact()>Go</button></li>
+		<p style="text-align: center; font-size: 20px; font-family: Arial; padding-top: 15px;">
+                        Compare the number of calls per month from our Uber and Lyft datasets.
+                </p>
+        </div>
+        <div class="loader"></div>
+
+
+    </header>
     <div id="mainContainer">
-        <!---->
-        <fieldset id="checkArray">
-            <label>Show Graph for:</label>
-            <input type="checkbox" id="July" name="July" class="chk" value="July" checked/>
-            <label for="July">July</label>
-            <input type="checkbox" id="August" name="August" class="chk" value="August" checked/>
-            <label for="August">August</label>
-            <input type="checkbox" id="September" name="September" class="chk" value="September" checked />
-            <label for="September">September</label>
-        </fieldset>
-        <div class="containerYearHolder">
-            <canvas id="containerYearChart"></canvas>
+        <input type="button" id="switchGraph">
+        <div class="comparisonHolder">
+            <canvas id="comparisonChart"></canvas>
+            
         </div>
     </div>
+
 </body>
+
+</html>

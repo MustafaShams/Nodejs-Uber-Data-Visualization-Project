@@ -4,8 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <title>Uber Team Dataset</title>
-    <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="artifact_styles.css">
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/artifact_styles.css">
     </link>
     <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"> </script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.1.6/Chart.bundle.min.js">
@@ -13,7 +13,7 @@
     <script src="https://cdn.jsdelivr.net/timepicker.js/latest/timepicker.min.js"></script>
     <link href="https://cdn.jsdelivr.net/timepicker.js/latest/timepicker.min.css" rel="stylesheet" />
 
-    <script src="client.js"></script>
+    <script src="../clientAnalytics/active_vehicles.js"></script>
 </head>
 </head>
 
@@ -22,7 +22,7 @@
         <nav class="nav main_nav">
             <ul>
                 <li>
-                    <a href="index.html"> Home </a>
+                    <a href="../index.html"> Home </a>
                 </li>
                 <li>
                     <div class="menu_dropdown">
@@ -47,8 +47,7 @@
                             <a href="platform_comparison.html">Platform Comparison</a>
                             <a href="time_popularity.html">Traffic Time of Day</a>
 							<a href="active_vehicles.html">Types of Active Vehicles</a>
-                            <a href="year_popularity.html">Increase/Decrease in Platforms</a>
-                            
+							<a href="year_popularity.html">Increase/Decrease in Platforms</a>
                         </div>
                     </div>
                 </li>
@@ -66,27 +65,33 @@
         </div>
     </header>
 
-     <div class="hours_dropdown">
+    <div class="date_container">
+        <ul> <!---
         <li>
-            <!---<div class="hours_menu">
-                <form action="">
-                   <label for="hours_selection" id="hours-selection">Range of Hours</label>
-                    <select name="hours_selection" id="hours_selection">
-                         <option value="Night">Night (0-6)</option>
-                        <option value="Morning">Morning (6-12)</option>
-                        <option value="Afternoon">Afternoon (12-18)</option>
-                        <option value="Evening">Evening (18-24)</option>
-                    </select>
-                </form>
-            </div> --->
+            <div class="start_date_menu">
+                <label for="start_date">Start Date</label>
+                <input type="date" id="start_date" name="start_date" min="2015-01-01" max="2015-02-28" value="2015-01-01">
+            </div>
         </li>
         <li>
-            <button id="hours_submit" onclick=timesArtifact()>Show Graph</div>
+            <div class="end_date_menu">
+                <label for="end_start_date">End Date</label>
+                <input type="date" id="end_date" name="end_date" min="2015-01-01" max="2015-02-28" value="2015-01-01">
+            </div>
+        </li> --->
+	<p style="text-align: center; font-size: 20px; color: white; font-family: Arial; padding-top: 15px; padding-bottom: 15px;">
+		Compare the total number of active vehicles that Uber and other For-Hire-Vehicles have.
+	</p>
+        <li>
+            <button id="date_submit" onclick="activeVehicleArtifact()">Show Weekly Graph</button>
         </li>
+    </ul>
     </div>
+
     <div id="mainContainer">
-        <div class="timeHolder">
-            <canvas id="timeGraph"></canvas>
+        <!---->
+        <div class="activeVehicleHolder">
+            <canvas id="activeVehicleChart"></canvas>
         </div>
     </div>
 </body>
