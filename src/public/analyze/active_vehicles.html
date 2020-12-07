@@ -13,7 +13,7 @@
     <script src="https://cdn.jsdelivr.net/timepicker.js/latest/timepicker.min.js"></script>
     <link href="https://cdn.jsdelivr.net/timepicker.js/latest/timepicker.min.css" rel="stylesheet" />
 
-    <script src="../clientAnalytics/year_popularity.js"></script>
+    <script src="../clientAnalytics/active_vehicles.js"></script>
 </head>
 </head>
 
@@ -30,9 +30,9 @@
                             <i class="fa fa-caret-down"></i>
                         </a>
                         <div class="menu_content">
-                            <a href="search.html">For-Hire Vehicle</a>
-                            <a href="map.html">Uber/Lyft</a>
-                            <a href="activeVehicle.html">Active Vehicles</a>
+                            <a href="../search/search.html">For-Hire Vehicle</a>
+                            <a href="../search/map.html">Uber/Lyft</a>
+                            <a href="../search/activeVehicle.html">Active Vehicles</a>
                         </div>
                     </div>
                 </li>
@@ -64,24 +64,34 @@
             <a class="popuptext" id="myPopup">Notification Popup</a>
         </div>
     </header>
-	<p style="text-align: center; font-size: 20px; font-family: Arial; padding-top: 20px;">
-        	Compare the increase/decrease in popularity in each month for our Uber, Lyft and Dial7 datasets.
-        </p>
-    <div class="loader"></div>
+
+    <div class="date_container">
+        <ul> <!---
+        <li>
+            <div class="start_date_menu">
+                <label for="start_date">Start Date</label>
+                <input type="date" id="start_date" name="start_date" min="2015-01-01" max="2015-02-28" value="2015-01-01">
+            </div>
+        </li>
+        <li>
+            <div class="end_date_menu">
+                <label for="end_start_date">End Date</label>
+                <input type="date" id="end_date" name="end_date" min="2015-01-01" max="2015-02-28" value="2015-01-01">
+            </div>
+        </li> --->
+	<p style="text-align: center; font-size: 20px; color: white; font-family: Arial; padding-top: 15px; padding-bottom: 15px;">
+		Compare the total number of active vehicles that Uber and other For-Hire-Vehicles have.
+	</p>
+        <li>
+            <button id="date_submit" onclick="activeVehicleArtifact()">Show Weekly Graph</button>
+        </li>
+    </ul>
+    </div>
 
     <div id="mainContainer">
         <!---->
-        <fieldset id="checkArray">
-            <label>Show Graph for:</label>
-            <input type="checkbox" id="July" name="July" class="chk" value="July" checked/>
-            <label for="July">July</label>
-            <input type="checkbox" id="August" name="August" class="chk" value="August" checked/>
-            <label for="August">August</label>
-            <input type="checkbox" id="September" name="September" class="chk" value="September" checked />
-            <label for="September">September</label>
-        </fieldset>
-        <div class="containerYearHolder">
-            <canvas id="containerYearChart"></canvas>
+        <div class="activeVehicleHolder">
+            <canvas id="activeVehicleChart"></canvas>
         </div>
     </div>
 </body>
