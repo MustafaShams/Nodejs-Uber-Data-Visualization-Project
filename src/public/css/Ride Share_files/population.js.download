@@ -19,8 +19,8 @@ function populationSearch() {
                 if (citiesInState != 0 && citiesCount != 0) {
 
 
-                citiesInState = citiesInState.slice(0, 35);
-                citiesCount = citiesCount.slice(0, 35);
+                citiesInState = citiesInState.slice(0, 15);
+                citiesCount = citiesCount.slice(0, 15);
 
                 citiesChart(citiesInState,citiesCount);
                         showPopUp("Success!");
@@ -29,7 +29,6 @@ function populationSearch() {
                         showPopUp("Error: Your Entry Was Not Found In Our Database!");
                 }
         });
-
 }
 
 function sortAArray(names, count){

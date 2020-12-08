@@ -360,8 +360,27 @@ function createChart(x_Axis, y_Axis) {
                 position: 'bottom',
                 labels: {
                     fontColor: "#ffffff",
+                    fontSize: 20
                 }
-            }
+            },
+            scales: {
+                xAxes: [{
+                    ticks: {
+                        fontSize: 20,
+                        fontColor: "white"
+                    }
+                }],
+                yAxes: [{
+                    ticks: {
+                        fontSize: 20,
+                        fontColor: "white"
+                    }
+                }]
+            },
+            tooltips: {
+                titleFontSize: 20,
+                bodyFontSize: 20
+              }
         }
     });
 }
