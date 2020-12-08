@@ -4,7 +4,6 @@ function timesArtifact() {
         if (data == "ErrorCode1") {
             showPopUp("Error: Your Entry Was Not Found In Our Database!");
         } else {
-            //console.log(data);
             timeRange(data);
                 }
         });
@@ -13,9 +12,6 @@ function timesArtifact() {
 function timeRange(y_Axis){
 
     const  x_Axis = ["12:00 AM - 05:59 AM","06:00 AM - 11:59 AM","12:00 PM - 05:59 PM","06:00 PM - 11:59 PM"];
-    //console.log("Called Time Range");
-    //console.log("X_axis",x_Axis);
-    //console.log("Y_axis",y_Axis);
 
     var bgColor = [
         'rgba(255, 255, 255, 0.3)',

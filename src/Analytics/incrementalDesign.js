@@ -159,12 +159,9 @@ function deleteFHV(date, time, state, city, address){
 function updateFHV(oldData, newData){
  oldData = oldData.split(',')
  newData = newData.split(',')
- //console.log(oldData, newData);
  deleteFHV(oldData[0],oldData[1], oldData[2], oldData[3], oldData[4])
  addFHV(newData[0],newData[1], newData[2], newData[3], newData[4])
 }
-
-
 
 function getActiveDesign(){
  return ActiveVechicleType;
@@ -175,7 +172,6 @@ function setActiveDesign(data){
 function AVinc(type, tempDate, tempVehicle){
   if(ActiveVechicleType.length > 0){
     var index;
-    //console.log(type);
     if(type == "uber"){
       index = 1;
     }
@@ -183,10 +179,8 @@ function AVinc(type, tempDate, tempVehicle){
       index = 0;
     }
     var date = new Date(tempDate);
-    //console.log("index",index,"day",date.getDate(),"month",date.getMonth())
     if (date.getMonth() == 0) {
 			if (date.getDate() < 8) {
-        //console.log(ActiveVechicleType[index][0])
 				ActiveVechicleType[index][0] =  +ActiveVechicleType[index][0] + +tempVehicle;
 			}
 			else if (date.getDate() < 15) {
@@ -220,7 +214,6 @@ function AVinc(type, tempDate, tempVehicle){
 function AVincDel(type, tempDate, tempVehicle){
   if(ActiveVechicleType.length > 0){
     var index;
-    //console.log(type);
     if(type == "uber"){
       index = 1;
     }
@@ -228,10 +221,8 @@ function AVincDel(type, tempDate, tempVehicle){
       index = 0;
     }
     var date = new Date(tempDate);
-    //console.log("index",index,"day",date.getDate(),"month",date.getMonth())
     if (date.getMonth() == 0) {
 			if (date.getDate() < 8) {
-        //console.log(ActiveVechicleType[index][0])
 				ActiveVechicleType[index][0] =  +ActiveVechicleType[index][0] - +tempVehicle;
 			}
 			else if (date.getDate() < 15) {
@@ -276,7 +267,6 @@ function updateAV(tempOld, tempNew, type){
 	AVinc(type, newData[0],  newData[1]);
 	AVincDel(type,  oldData[0],  oldData[1]);
 }
-
 
 module.exports = 
 {

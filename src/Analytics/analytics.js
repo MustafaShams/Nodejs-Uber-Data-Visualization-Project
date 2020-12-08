@@ -69,8 +69,6 @@ function compareSearch(dataFrame, uberFrame, lyftFrame, startDate, endDate) {
     		Object.assign(dateUber, getDateUnique(uberArr));
     		Object.assign(dateLyFt, getDateUnique(lyftArr));
     
-    		//console.log("Uber size for this month: ", uberArr.length);
-    		//console.log("Lyft size for this month: ", lyftArr.length);
     		uberCompArr.push((monthGenerator(Number(tempCounter).toString()) + ": " + uberArr.length).toString());
     		lyftCompArr.push((monthGenerator(Number(tempCounter).toString()) + ": " + lyftArr.length).toString());
     		//startMonth = Number(startMonth) + 1;
@@ -82,9 +80,6 @@ function compareSearch(dataFrame, uberFrame, lyftFrame, startDate, endDate) {
   	totalArr.push(dateUber);
   	totalArr.push(dateLyFt);
 
-
-	////console.log("This is dateLyft: ", totalArr[3]);
-	////console.log("This is dateUber: ", totalArr[2]);
   	return totalArr; //will return null if no data in both sets
 }
 	
@@ -213,25 +208,21 @@ function searchDaysOfWeek(dataFrame, state, city, address, street) {
 
   if (state != "") {
     let keycls = new keyClass("State", state.toLowerCase());
-    //console.log("Searching state");
     searchDF = keycls.keySearch(searchDF);
     tempCheck = 0;
   }
   if (city != "") {
     let keycls = new keyClass("City", city.toLowerCase());
-    //console.log("Searching city");
     searchDF = keycls.keySearch(searchDF);
     tempCheck = 0;
   }
   if (address != "") {
     let keycls = new keyClass("Address", address.toLowerCase());
-    //console.log("Searching address");
     searchDF = keycls.keySearch(searchDF);
     tempCheck = 0;
   }
   if (street != "") {
     let keycls = new keyClass("Street", street.toLowerCase());
-    //console.log("Searching Street");
     searchDF = keycls.keySearch(searchDF);
     tempCheck = 0;
   }
@@ -273,11 +264,9 @@ function weekDaysSearch(dataFrame) {
 
 function timeOfDaySearch(dataFrame) {
 	var tempDF = [0, 0, 0, 0];
-
 	for (var i = 0; i < dataFrame.length; i++) {
 
 		var hour = (dataFrame[i].time).split(':');
-		// //console.log(hour);
 
 		if (hour[0] < 6) {
 			// //console.log("night: " + dataFrame[i].time);
@@ -302,7 +291,6 @@ function timeOfDaySearch(dataFrame) {
 			// //console.log("Invalid time: " + dataFrame[i].time);
 		}
 	}
-	//console.log("Total dataframe for parsing for timeOfDaySearch: ", dataFrame.length);
 	console.dir(tempDF);
 	return tempDF;
 }
@@ -311,10 +299,8 @@ function activeVechicleTypeSearch(fhvTripFrame, uberTripFrame) {
 	var tempDF = [];
 	var uberDates = [];
 	var fhvDates = [];
-	
 	fhvDates = activeVehicleLoop(fhvTripFrame);
 	uberDates = activeVehicleLoop(uberTripFrame);
-
 	tempDF.push(fhvDates);
 	tempDF.push(uberDates);
 	return tempDF;
@@ -355,9 +341,6 @@ function activeVehicleLoop(dataFrame) {
 				tempDF[7]= +tempDF[7] + +dataFrame[i].ActiveVehicle;
 			}
 		}
-		// else {
-		// 	//console.log("Date is: " + date);
-		// }
 	}
 	console.dir(tempDF);
 	return tempDF;

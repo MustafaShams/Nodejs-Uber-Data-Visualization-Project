@@ -4,8 +4,6 @@ function activeVehicleArtifact(){
         if (data == "ErrorCode1") {
             showPopUp("Error: Your Entry Was Not Found In Our Database!");
         } else {
-            //console.log(data);
-            //console.log(data[1].length, data[0].length);
             activeVehicleGraph(data[1], data[0]);
                 }
         });
@@ -31,8 +29,6 @@ function activeVehicleGraph(uber_Arr, fhv_Arr) {
         data: {
             labels: ["Jan 2015 Week 1","Jan 2015 Week 2","Jan 2015 Week 3","Jan 2015 Week 4", "Feb 2015 Week 1","Feb 2015 Week 2","Feb 2015 Week 3","Feb 2015 Week 4"],
             datasets: [{
-                    // label: 'Number of between Uber vs Lyft',
-
                     label: 'Uber',
                     data: uber_Arr,
                     backgroundColor: bgColor[0],
@@ -48,7 +44,6 @@ function activeVehicleGraph(uber_Arr, fhv_Arr) {
                     borderWidth: 1
                 },
             ]
-
 
         },
         options: {
@@ -85,10 +80,7 @@ function activeVehicleGraph(uber_Arr, fhv_Arr) {
                                 mode: 'label',
                                 intersect: false
                         },
-
         }
-
-
     });
     return activeVehicleChart;
 }

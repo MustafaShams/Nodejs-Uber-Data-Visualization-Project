@@ -8,7 +8,6 @@ function compareArtifact() {
     $(".loader").show();
     $.get(url, function (data) {
         $(".loader").hide()
-        //console.log("data length: ", data.length);
         if (data == "ErrorCode1") {
             showPopUp("Error: Incorrect month format! The ending month must be after the starting month!");
         } else if (data) {
@@ -19,24 +18,17 @@ function compareArtifact() {
                 var lyftArray = data[1];
                 var dateUber = data[2];
                 var dateLyft = data[3];
-                //console.log("uberArray: ", uberArray);
-                //console.log("lyftArray: ", lyftArray);
-
                 var labelArr = Object.keys(dateUber);
-                //console.log(labelArr)
                 var uberDateArr = []
                 var lyftDateArr = []
                 for (var key in dateUber) {
                     uberDateArr.push(dateUber[key]);
                     lyftDateArr.push(dateLyft[key]);
                 }
-                //console.log("dateUber:", uberDateArr)
-                //console.log("dateLyft:", lyftDateArr)
 
                 separatorObject(uberArray, lyftArray);
                 $('#switchGraph').val("Date");
                 $( "#switchGraph" ).unbind('click').click(function() {
-                    //console.log($('#switchGraph').val())
                     if($('#switchGraph').val()== 'Date'){
                         compareChart('line',labelArr, uberDateArr, lyftDateArr)
                         $('#switchGraph').val('Month')
@@ -58,15 +50,11 @@ function compareArtifact() {
 
 function separatorObject(sArr, sArr2){
   const monthVal = [];
-
   for (var i = 0; i < sArr.length; ++i){
       var tmp = sArr[i].split(':');
       var sp = tmp.splice(0,1);
-
       monthVal.push(sp[0]);
-
   }
-  //console.log(monthVal);
 
   const uber_Arr = [];
   for (var i = 0; i < sArr.length; ++i){
@@ -74,7 +62,6 @@ function separatorObject(sArr, sArr2){
     var sp = tmp.splice(1,1);
     uber_Arr.push(sp[0]);
   }
-  //console.log(uber_Arr);
 
   const lyft_Arr = [];
   for (var i = 0; i < sArr2.length; ++i){
@@ -82,13 +69,11 @@ function separatorObject(sArr, sArr2){
     var sp = tmp.splice(1,1);
     lyft_Arr.push(sp[0]);
   }
-  //console.log(lyft_Arr);
 
  compareChart("horizontalBar",monthVal, uber_Arr,lyft_Arr);
 }
 
 function compareChart(charType, y_Ax, uber_Arr, lyft_Arr) {
-    //console.log("Called Compare");
     $( "#switchGraph" ).show();
     var bgColor = [
         'rgba(255, 99, 132, 0.2)',
@@ -110,8 +95,6 @@ function compareChart(charType, y_Ax, uber_Arr, lyft_Arr) {
             labels: y_Ax,
 
             datasets: [{
-                    // label: 'Number of between Uber vs Lyft',
-
                     label: 'Uber',
                     data: uber_Arr,
                     backgroundColor: bgColor[0],

@@ -29,7 +29,6 @@ function searchTableCreate() {
         
         sendKey = $("#searchBar").val();
         sendField = $("#data_selection").val();
-        //console.log(sendField);
         if (sendKey) {
             var url = "http://localhost:3000/search?field=" + sendField + "&id=" + sendKey;
             $.get(url, function (data) {
@@ -118,7 +117,6 @@ function addData() {
     var extractedCity = $("#city").val();
     var extractedAddress = $("#address").val();
     var url = "http://localhost:3000/add?date=" + extractedDate + "&time=" + extractedTime + "&state=" + extractedState + "&city=" + extractedCity + "&address=" + extractedAddress;
-    //console.log(url);
     var tempArr = [];
     tempArr.push(extractedDate);
     tempArr.push(extractedTime);
@@ -137,54 +135,6 @@ function addData() {
                 extractedCity,
                 extractedAddress
 			]).draw(false);
-            /*
-            function buildMiniTable() {
-                var table = document.getElementById('table').childNodes[0];
-                var tr = _tr_.cloneNode(false);
-                var tempArr = [];
-		extractedDate = extractedDate.replace(/\b0/g, '').split('.');
-		extractedDate = extractedDate[1] + "." + extractedDate[2] + "." + extractedDate[0];
-                tempArr.push(extractedDate);
-                tempArr.push(extractedTime);
-                tempArr.push(extractedState.charAt(0).toUpperCase() + extractedState.slice(1).toLowerCase());
-                tempArr.push(extractedCity.charAt(0).toUpperCase() + extractedCity.slice(1).toLowerCase());
-                tempArr.push(extractedAddress);
-                for (var j = 0, maxj = tempArr.length; j < maxj; ++j) {
-                    var td = _td_.cloneNode(false);
-                    td.appendChild(document.createTextNode(tempArr[j] || ''));
-                    tr.appendChild(td);
-                }
-                tr = addEdit(tr);
-                tr = addDel(tr);
-                table.appendChild(tr);
-            }
-            switch (sendField) {
-                case "Date":
-                    if (sendKey.toLowerCase() == extractedDate.toLowerCase()) {
-                        buildMiniTable();
-                    }
-                    break;
-                case "Time":
-                    if (sendKey.toLowerCase() == extractedTime.toLowerCase()) {
-                        buildMiniTable();
-                    }
-                  break;
-                case "State":
-                    if (sendKey.toLowerCase() == extractedState.toLowerCase()) {
-                        buildMiniTable();
-                    }
-                    break;
-                case "City":
-                    if (sendKey.toLowerCase() == extractedCity.toLowerCase()) {
-                        buildMiniTable();
-                    }
-                    break;
-                case "Address":
-                    if (sendKey.toLowerCase() == extractedAddress.toLowerCase()) {
-                        buildMiniTable();
-                    }
-                    break;
-            }*/
             showPopUp("Data Submitted!");
             getUniqueValues()
         } else {
@@ -254,7 +204,6 @@ function editData(row) { //get which row, then after row is changed get what cha
                     showPopUp("Error: Please only edit one entry at a time.");
                 }
             });
-            //console.log("Error: Please only edit one entry at a time.")
         }
     } else if (row.innerHTML == "Save") {
         row.innerHTML = "Edit";
@@ -265,10 +214,7 @@ function editData(row) { //get which row, then after row is changed get what cha
         //console.log("Old: ", previousData);
         //console.log("New: ", updatedData);
         getUniqueValues();
-        //edit_Element(previousData, updatedData);
-        //if (previousData.toString() != updatedData.toString()) { //check on server side instead
         var url = "http://localhost:3000/edit?old=" + previousData + "&new=" + updatedData;
-        //console.log(url);
         $.get(url, function (data) {
             var parent = document.getElementById('table');
             if (data == false) {
@@ -292,8 +238,6 @@ function getUniqueValues() {
 }
 
 function createChart(x_Axis, y_Axis) {
-    //console.log(x_Axis);
-    //console.log(y_Axis);
     var bgColor = [
         'rgba(255, 99, 132, 0.2)',
         'rgba(54, 162, 235, 0.2)',

@@ -1,7 +1,5 @@
 $(document).ready(function () {
-
 	searchTableCreate();
-	
 	$("#addEntry").click(function (data) {
 		$("#date").val("");
 		$("#activeVehicle").val("");
@@ -12,14 +10,9 @@ $(document).ready(function () {
 	$('#closePop').click(function () {
 		$('.entryText').hide();
 	});
-	
-
 	$('#addData').on('click', function () {
-		//console.log("clicked");
 		addData();
 	});
-	
-
 });
 let type;
 
@@ -28,11 +21,9 @@ function searchTableCreate() {
 	$(".active_vehicles").click(function (evt) {
 		sendField = evt.target.value;
 		window.type = sendField;
-		//console.log(window.type);
 		if (sendField) {
 			var url = "http://localhost:3000/searchActive?id=" + sendField;
 			$.get(url, function (data) {
-				//console.log(data);
 				if (data.length == 0) {
 					$("#addEntry").hide();
 					showPopUp("No Data Found, Check Spelling.");
@@ -127,7 +118,6 @@ function editData(row) { //get which row, then after row is changed get what cha
 					showPopUp("Error: Please only edit one entry at a time.");
 				}
 			});
-			//console.log("Error: Please only edit one entry at a time.")
 		}
 	} else if (row.innerHTML == "Save") {
 		row.innerHTML = "Edit";
@@ -138,7 +128,6 @@ function editData(row) { //get which row, then after row is changed get what cha
 		//console.log("Old: ", previousData);
 		//console.log("New: ", updatedData);
 		var url = "http://localhost:3000/editActive?old=" + previousData + "&new=" + updatedData + "&type=" + window.type;
-		//console.log("updating");
 		$.get(url, function (data) {
 			var parent = document.getElementById('table');
 			if (data == false) {
@@ -159,8 +148,6 @@ function extractRowData(row) {
 		dataInfo[x] = children[x].textContent
 
 	}
-	////console.log("THIS IS TOP PARENT",topParent);
-	////console.log("DATAINFO!!!!!!!!", dataInfo);
 	return dataInfo;
 }
 
@@ -179,7 +166,6 @@ function addData() {
 	var extractedVehicle = $("#activeVehicle").val();
 	var extractedTrips = $("#trips").val();
 	var url = "http://localhost:3000/addVehicle?date=" + extractedDate + "&activeVehicle=" + extractedVehicle + "&trips=" + extractedTrips + "&type=" + window.type;
-	//console.log(url);
 	$.get(url, function (data, tempArr) {
 
 		if (data == true) {
