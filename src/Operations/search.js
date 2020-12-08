@@ -10,4 +10,4 @@ function searchDataFrame(dataFrame, key, field) { //returns an array of callInfo
   return tempDF;
 }
 
-module.exports = { searchDataFrame }//, searchPopulatedCities, searchDaysOfWeek };
+module.exports = { searchDataFrame }

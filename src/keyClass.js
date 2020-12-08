@@ -76,8 +76,6 @@ class keyClass {
                     break;
             }
         }
-
-        //console.log(tempDF.length)
         return tempDF;
     }
 

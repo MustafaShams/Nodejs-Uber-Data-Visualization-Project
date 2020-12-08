@@ -142,17 +142,17 @@ require([
 						},
 						{
 							name: "Time",
-							alias: "Time",
+							alias: "Time (ex: 0:03)",
 							type: "string"
 						},
 						{
 							name: "Date",
-							alias: "Date",
+							alias: "Date (ex: 7.1.2014)",
 							type: "string"
 						},
 						{
 							name: "type",
-							alias: "Type",
+							alias: "Type (ex: uber or lyft)",
 							type: "string"
 						}
 					],

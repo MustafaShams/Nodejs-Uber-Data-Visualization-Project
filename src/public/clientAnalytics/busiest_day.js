@@ -8,20 +8,15 @@ function daysArtifact() {
         if (data == "ErrorCode1") {
             showPopUp("Error: Your Entry Was Not Found In Our Database!");
         } else {
-            //console.log(data);
-            //do graph here
             daysChart(data);
             showPopUp("Success");
-
                 }
         });
 }
 
 function daysChart(y_Axis){
-
     const  x_Axis = ["Sunday","Monday","Tuesday","Wednesday",
             "Thursday", "Friday", "Saturday"];
-
 
     var bgColor = [
         'rgba(255, 99, 132, 0.2)',

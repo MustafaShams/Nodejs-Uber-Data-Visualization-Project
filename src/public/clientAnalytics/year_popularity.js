@@ -43,10 +43,8 @@ function showPopUp(text) {
 }
 
 function selectingMonth(months, dialArray,dialPercent, uberArray,uberPercent, lyftArray,lyftPercent){
-	//console.log(" I am being called ");
 	var firstMonth = months[0] 
 	var lastMonth = months[months.length - 1];
-	//console.log(firstMonth, lastMonth);
 	var begin = 0;
 	var end = 0;
 	switch(firstMonth){
@@ -80,11 +78,7 @@ function selectingMonth(months, dialArray,dialPercent, uberArray,uberPercent, ly
 }
 
 function comparison_over_yearChart(x_Axis,dialArray,dialPercent, uberArray,uberPercent, lyftArray,lyftPercent){
-	//console.log("Creating chart")
 	var weeks;
-	
-
-
 
 	$('#containerYearChart').remove();
 	$('.containerYearHolder').html('<canvas id="containerYearChart"></canvas>');
@@ -157,8 +151,6 @@ function comparison_over_yearChart(x_Axis,dialArray,dialPercent, uberArray,uberP
 			tooltips:{
 				mode: 'label',
 				intersect: false
-
-
 			},
 			tooltips: {
 				callbacks: {
@@ -166,8 +158,6 @@ function comparison_over_yearChart(x_Axis,dialArray,dialPercent, uberArray,uberP
 						return data['labels'][tooltipItem[0]['index']];
 					},
 					label: function(tooltipItem, data) {
-						////console.log(tooltipItem['index']);
-						////console.log(data['datasets'][0].data[tooltipItem['index']]);
 						var outputString = [];
 						data['datasets'].forEach(function(element){
 							outputString.push(element.label + ": " + element.data[tooltipItem['index']]);
@@ -204,8 +194,6 @@ function comparison_over_yearChart(x_Axis,dialArray,dialPercent, uberArray,uberP
 		},
 
 		}
-	
-
 	});
 
 }
@@ -248,5 +236,4 @@ function getPercentageString(index, dialPercent, uberPercent, lyftPercent){
 	percentString.push(uberString);
 	percentString.push(lyftString);
 	return percentString;
-
 }

@@ -13,7 +13,6 @@ function processTripData(allText, type, fhvTripFrame, uberTripFrame) {
     if (data.length == headers.length) { //make sure to check if data exists
       if(data[2] == "03/01/2015"){
         console.log("Finished fhvTripFrame, Size:",fhvTripFrame.length);
-        //console.log("Sample", fhvTripFrame[0]);
         return fhvTripFrame;
       }
       var e = new callInfo(); //create a new callInfo object
@@ -38,7 +37,6 @@ function processTripData(allText, type, fhvTripFrame, uberTripFrame) {
     }
   }
   console.log("Finished uberTripFrame, Size:",uberTripFrame.length);
-  //console.log("Sample", uberTripFrame[0]);
   switch(type) {
 	  case "uber":
 		return uberTripFrame;
@@ -46,7 +44,6 @@ function processTripData(allText, type, fhvTripFrame, uberTripFrame) {
 		return fhvTripFrame;
   }
 }
-
 
 function processUberData(allText, uberFrame) {
   allText = allText.replace(/['"]+/g, '') //remove all " from input
@@ -69,11 +66,9 @@ function processUberData(allText, uberFrame) {
   }
   if(uberFrame.length > 2000000){
     console.log("Finished uberFrame, Size:", uberFrame.length);
-    //console.log("Sample", uberFrame[0]);
   }
  return uberFrame; 
 }
-
 
 function processLyftData(allText, lyftFrame) {
   allText = allText.replace(/['"]+/g, '') //remove all " from input
@@ -96,15 +91,12 @@ function processLyftData(allText, lyftFrame) {
       Object.assign(e.Time = res[1]); //assign time
       Object.assign(e.Lat = data[1]); //assign Latitude
       Object.assign(e.Lon = data[2]); //assign Longitude
-      //Object.assign(e.Date = data[0]);
       lyftFrame.push(e); //Push the object callInfo into the data frame
     }
   }
   console.log("Finished lyftFrame, Size:", lyftFrame.length);
-  //console.log("Sample", lyftFrame[0]);
   return lyftFrame;
 }
-
 
 function processData(allText, dataFrame) {
   dataFrame = [];
@@ -114,7 +106,6 @@ function processData(allText, dataFrame) {
   var headers = allTextLines[0].split(','); //Split the first line and get the headers based on comma
   for (var i = 1; i < allTextLines.length - 1; i++) { //travarse all lines
     var data = allTextLines[i].split(',');
-
     if (data[3].trim() != "" && data[4].trim() != "" && data[5].trim() != "") {
       try {
         var e = new callInfo(); //create a new callInfo object
@@ -140,7 +131,6 @@ function processData(allText, dataFrame) {
     }
   }
   console.log("Finished dataFrame, Size:", dataFrame.length);
-  //console.log("Sample", dataFrame[0]);
   return dataFrame;
 }
 
