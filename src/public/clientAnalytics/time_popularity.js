@@ -11,7 +11,7 @@ function timesArtifact() {
 
 function timeRange(y_Axis){
 
-    const  x_Axis = ["12:00 AM - 05:59 AM","06:00 AM - 11:59 AM","12:00 PM - 05:59 PM","06:00 PM - 11:59 PM"];
+    const  x_Axis = ["12:00 AM - 5:59 AM","6:00 AM - 11:59 AM","12:00 PM - 5:59 PM","6:00 PM - 11:59 PM"];
 
     var bgColor = [
         'rgba(255, 255, 255, 0.3)',
@@ -31,7 +31,7 @@ function timeRange(y_Axis){
         data: {
             labels: x_Axis,
             datasets: [{
-                label: "Days of Week",
+                label: "Calls",
                 data: y_Axis,
                 backgroundColor: bgColor[0],
                 borderColor: bdColor[0],

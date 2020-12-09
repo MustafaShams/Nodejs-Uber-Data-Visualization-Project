@@ -24,6 +24,7 @@ function getPopulationDesign(state){
 		}
 	}
 }
+
 function setPopulationDesign(state, data){
 	if(state == 'ny'){
 		PopulatedCitiesNY = data;
@@ -32,6 +33,7 @@ function setPopulationDesign(state, data){
 		PopulatedCitiesNJ = data;
 	}
 }
+
 function popInc(state, city){
   if(PopulatedCitiesNY.length > 0){
     if(state == "ny"){
@@ -47,6 +49,7 @@ function popInc(state, city){
     }
   }
 }
+
 function popIncDel(state, city){
 	if(PopulatedCitiesNY.length > 0){
     if(state == "ny"){
@@ -62,52 +65,57 @@ function popIncDel(state, city){
   }
 }
 
-
-
-function setBusyDesign(key, data){
-	BusyDaysOfWeek[key] = data;
+function setBusyDesign(key, data, busyId){
+	if (data.join() != "0,0,0,0,0,0,0") {
+		BusyDaysOfWeek[key + busyId] = data;
+	}
 }
-function getBusyDesign(key){
+
+function getBusyDesign(key, busyId){
   if(BusyDaysOfWeek.length == 0){
 		return 0;
 	}
 	else{
-		return BusyDaysOfWeek[key];
+		return BusyDaysOfWeek[key + busyId];
 	}
 }
+
 function busyInc(date, state, city, address){
   var currDate = new Date(date);
   var index = currDate.getDay()
-  if(state in BusyDaysOfWeek){
-    BusyDaysOfWeek[state][index] = BusyDaysOfWeek[state][index] +  1;
+  if(state+"s" in BusyDaysOfWeek){
+    BusyDaysOfWeek[state+"s"][index] = BusyDaysOfWeek[state+"s"][index] +  1;
   }
-  if(city in BusyDaysOfWeek){
-    BusyDaysOfWeek[city][index] = BusyDaysOfWeek[city][index] +  1;
+  if(city+"c" in BusyDaysOfWeek){
+    BusyDaysOfWeek[city+"c"][index] = BusyDaysOfWeek[city+"c"][index] +  1;
   }
-  if(address in BusyDaysOfWeek){
-    BusyDaysOfWeek[address][index] = BusyDaysOfWeek[address][index] +  1;
+  if(address+"a" in BusyDaysOfWeek){
+    BusyDaysOfWeek[address+"a"][index] = BusyDaysOfWeek[address+"a"][index] +  1;
   }
 }
+
 function busyIncDel(date, state, city, address){
   var currDate = new Date(date);
   var index = currDate.getDay()
-  if(state in BusyDaysOfWeek){
-    BusyDaysOfWeek[state][index] = BusyDaysOfWeek[state][index] -  1;
+  if(state+"s" in BusyDaysOfWeek){
+    BusyDaysOfWeek[state+"s"][index] = BusyDaysOfWeek[state+"s"][index] -  1;
   }
-  if(city in BusyDaysOfWeek){
-    BusyDaysOfWeek[city][index] = BusyDaysOfWeek[city][index] -  1;
+  if(city+"c" in BusyDaysOfWeek){
+    BusyDaysOfWeek[city+"c"][index] = BusyDaysOfWeek[city+"c"][index] -  1;
   }
-  if(address in BusyDaysOfWeek){
-    BusyDaysOfWeek[address][index] = BusyDaysOfWeek[address][index] -  1;
+  if(address+"a" in BusyDaysOfWeek){
+    BusyDaysOfWeek[address+"a"][index] = BusyDaysOfWeek[address+"a"][index] -  1;
   }
 }
 
 function setTimeOfDayDesign(data){
 	TimeOfDay = data;
 }
+
 function getTimeOfDayDesign(){
 	return TimeOfDay;
 }
+
 function timeOfDayInc(time){
   if(TimeOfDay.length > 0){
     var hour = time.split(':')[0];
@@ -126,6 +134,7 @@ function timeOfDayInc(time){
   }
 
 }
+
 function timeOfDayDel(time){
   if(TimeOfDay.length > 0){
     var hour = time.split(':')[0];
@@ -145,30 +154,33 @@ function timeOfDayDel(time){
 
 }
 
-
 function addFHV(date, time, state, city, address){
 	popInc(state, city);
 	busyInc(date, state, city, address);
   timeOfDayInc(time);
 }
+
 function deleteFHV(date, time, state, city, address){
 	popIncDel(state, city);
 	busyIncDel(date, state, city, address);
   timeOfDayDel(time);
 }
-function updateFHV(oldData, newData){
+
+function updateFHV(oldData, newData, id){
  oldData = oldData.split(',')
  newData = newData.split(',')
- deleteFHV(oldData[0],oldData[1], oldData[2], oldData[3], oldData[4])
- addFHV(newData[0],newData[1], newData[2], newData[3], newData[4])
+ deleteFHV(oldData[0],oldData[1], oldData[2], oldData[3], oldData[4], id)
+ addFHV(newData[0],newData[1], newData[2], newData[3], newData[4], id)
 }
 
 function getActiveDesign(){
  return ActiveVechicleType;
 }
+
 function setActiveDesign(data){
 	ActiveVechicleType = data;
 }
+
 function AVinc(type, tempDate, tempVehicle){
   if(ActiveVechicleType.length > 0){
     var index;
@@ -278,7 +290,7 @@ module.exports =
 	updateAV,
 	setBusyDesign,
 	getBusyDesign,
-  setTimeOfDayDesign,
+	setTimeOfDayDesign,
 	getTimeOfDayDesign,
 	getPopulationDesign,
 	setPopulationDesign,

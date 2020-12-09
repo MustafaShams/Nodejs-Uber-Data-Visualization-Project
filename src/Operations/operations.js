@@ -39,6 +39,7 @@ function editVehicleData(uberTripFrame, fhvTripFrame, tempOld, tempNew, type){
         var newData = tempNew.split(',');
         addVehicleData(uberTripFrame, fhvTripFrame, type , newData[0], newData[1], newData[2]);
         removeVehicleData(uberTripFrame, fhvTripFrame, type , oldData[0], oldData[1], oldData[2]);
+	return true;
 }       
 
 function addData(dataFrame, date, time, state, city, address, tempQuarter) {

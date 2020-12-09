@@ -395,6 +395,7 @@ app.get('/population', (req, res) => {
   //console.log("Call to Analyze Population took " + (t1 - t0) + " milliseconds.")
 });
 
+
 app.get('/busiest', (req, res) => {
   var t0 = performance.now()
   var busyState = req.query.state.toLowerCase();
@@ -402,35 +403,43 @@ app.get('/busiest', (req, res) => {
   var busyAddress = req.query.address.toLowerCase();
   var busyStreet = req.query.street.toLowerCase();
   var data = [];
+	var busyId;
   ////console.log("Target: " + busyState);
-  if(busyStreet){
-    data = incrementDesign.getBusyDesign(busyStreet);
+  if(busyStreet != ""){
+	  busyId = "st";
+    data = incrementDesign.getBusyDesign(busyStreet, busyId);
     if(!data){
-      data = analytics.searchDaysOfWeek(dataFrame, busyState, busyCity, busyAddress, busyStreet);;
-      incrementDesign.setBusyDesign(busyStreet, data);
+      data = analytics.searchDaysOfWeek(dataFrame, busyState, busyCity, busyAddress, busyStreet);
+      incrementDesign.setBusyDesign(busyStreet, data, busyId);
     }
   }
-  else if(busyAddress){
-    data = incrementDesign.getBusyDesign(busyAddress);
+  else if(busyAddress != ""){
+	  busyId = "a";
+    data = incrementDesign.getBusyDesign(busyAddress, busyId);
     if(!data){
-      data = analytics.searchDaysOfWeek(dataFrame, busyState, busyCity, busyAddress, busyStreet);;
-      incrementDesign.setBusyDesign(busyAddress, data);
+      data = analytics.searchDaysOfWeek(dataFrame, busyState, busyCity, busyAddress, busyStreet);
+      incrementDesign.setBusyDesign(busyAddress, data, busyId);
     }
   }
-  else if(busyCity){
-    data = incrementDesign.getBusyDesign(busyCity);
+  else if(busyCity != ""){
+	  busyId = "c";
+    data = incrementDesign.getBusyDesign(busyCity, busyId);
     if(!data){
-      data = analytics.searchDaysOfWeek(dataFrame, busyState, busyCity, busyAddress, busyStreet);;
-      incrementDesign.setBusyDesign(busyCity, data);
+      data = analytics.searchDaysOfWeek(dataFrame, busyState, busyCity, busyAddress, busyStreet);
+      incrementDesign.setBusyDesign(busyCity, data, busyId);
     }
   }
-  else if(busyState){
-    data = incrementDesign.getBusyDesign(busyState);
+  else if(busyState != ""){
+	  busyId = "s";
+    data = incrementDesign.getBusyDesign(busyState, busyId);
     if(!data){
-      data = analytics.searchDaysOfWeek(dataFrame, busyState, busyCity, busyAddress, busyStreet);;
-      incrementDesign.setBusyDesign(busyState, data);
+      data = analytics.searchDaysOfWeek(dataFrame, busyState, busyCity, busyAddress, busyStreet);
+      incrementDesign.setBusyDesign(busyState, data, busyId);
     }
   }
+	if (data.join() == "0,0,0,0,0,0,0") {
+		data = "ErrorCode1";
+	}
   res.header("Content-Type", 'application/json');
   res.json(data);
 
