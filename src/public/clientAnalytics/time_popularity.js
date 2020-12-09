@@ -31,7 +31,7 @@ function timeRange(y_Axis){
         data: {
             labels: x_Axis,
             datasets: [{
-                label: "Days of Week",
+                label: "Calls Made",
                 data: y_Axis,
                 backgroundColor: bgColor[0],
                 borderColor: bdColor[0],
@@ -70,6 +70,10 @@ function timeRange(y_Axis){
                 fontSize: 20,
                 fontColor: "white"
             },
+            tooltips: {
+                titleFontSize: 25,
+                bodyFontSize: 25
+              }
         }
 
     });

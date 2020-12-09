@@ -170,8 +170,8 @@ function comparison_over_yearChart(x_Axis,dialArray,dialPercent, uberArray,uberP
 						return percentString;
 					}
 				},
-				titleFontSize: 16,
-				bodyFontSize: 14,
+				titleFontSize: 25,
+				bodyFontSize: 25,
 				displayColors: false
 			},
 			hover:{

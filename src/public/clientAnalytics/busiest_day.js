@@ -36,13 +36,14 @@ function daysChart(y_Axis){
         data: {
             labels: x_Axis,
             datasets: [{
-                label: "Days of Week",
+                label: "Calls Made",
                 data: y_Axis,
                 backgroundColor: bgColor[0],
                 borderColor: bdColor[0],
                 fill: false,
                 lineTension: 0,
                 pointRadius: 15,
+                pointHoverRadius: 15,
             }]
         },
         options: {

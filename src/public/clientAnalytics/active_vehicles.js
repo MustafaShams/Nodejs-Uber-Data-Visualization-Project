@@ -1,12 +1,12 @@
-function activeVehicleArtifact(){
+function activeVehicleArtifact() {
     var url = "http://localhost:3000/activeVehicle";
     $.get(url, function (data) {
         if (data == "ErrorCode1") {
             showPopUp("Error: Your Entry Was Not Found In Our Database!");
         } else {
             activeVehicleGraph(data[1], data[0]);
-                }
-        });
+        }
+    });
 }
 
 function activeVehicleGraph(uber_Arr, fhv_Arr) {
@@ -27,7 +27,7 @@ function activeVehicleGraph(uber_Arr, fhv_Arr) {
     var activeVehicleChart = new Chart(ctx, {
         type: 'line',
         data: {
-            labels: ["Jan 2015 Week 1","Jan 2015 Week 2","Jan 2015 Week 3","Jan 2015 Week 4", "Feb 2015 Week 1","Feb 2015 Week 2","Feb 2015 Week 3","Feb 2015 Week 4"],
+            labels: ["Jan 2015 Week 1", "Jan 2015 Week 2", "Jan 2015 Week 3", "Jan 2015 Week 4", "Feb 2015 Week 1", "Feb 2015 Week 2", "Feb 2015 Week 3", "Feb 2015 Week 4"],
             datasets: [{
                     label: 'Uber',
                     data: uber_Arr,
@@ -37,7 +37,7 @@ function activeVehicleGraph(uber_Arr, fhv_Arr) {
                 },
 
                 {
-                    label: 'For Hire Vehicle',
+                    label: 'Dial7',
                     data: fhv_Arr,
                     backgroundColor: bgColor[1],
                     borderColor: bdColor[1],
@@ -63,23 +63,25 @@ function activeVehicleGraph(uber_Arr, fhv_Arr) {
                 }]
             },
             legend: {
-		    display: true,
+                display: true,
                 position: 'bottom',
                 labels: {
                     fontColor: "white",
                     fontSize: 20,
                 },
             },
-            title:{
+            title: {
                 display: true,
                 text: 'Number of Active Vehicles Uber vs For Hire Vehicle',
                 fontSize: 20,
                 fontColor: "white"
             },
-            tooltips:{
-                                mode: 'label',
-                                intersect: false
-                        },
+            tooltips: {
+                mode: 'label',
+                intersect: false,
+                titleFontSize: 25,
+                bodyFontSize: 25
+            },
         }
     });
     return activeVehicleChart;
