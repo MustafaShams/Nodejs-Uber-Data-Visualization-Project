@@ -166,7 +166,14 @@ function exportData() {
 }
 
 function deleteBackup() {
-  backup =  [];
+  if(backup.length == 0){
+    return false;
+  }
+  else{
+    backup =  [];
+    return true
+  }
+  
 }
 
 function createJSON(tempDF) {

@@ -33,7 +33,7 @@ function searchTableCreate() {
             var url = "http://localhost:3000/search?field=" + sendField + "&id=" + sendKey;
             $.get(url, function (data) {
                 if (data.length == 0) {
-                    $('#myTable').hide();
+                    $('#myTable_wrapper').hide();
                     $("#addEntry").show();
                     showPopUp("No Data Found, Check Spelling.");
                 } else {

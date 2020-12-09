@@ -180,6 +180,9 @@ require([
 					layer: layerPoint
 				});
 				view.ui.add(editor, "bottom-right");
+
+
+
 				
 
 
@@ -250,12 +253,8 @@ require([
 					}
 				});
 
-				layerPoint.on("edits", function(results){
-					//console.log(results);
-				})
 
 				layerPoint.on("apply-edits", function (results) {
-					console.log(results);
 					view.ui.remove(editor);
 					view.ui.add(editor, "bottom-right");
 					if (results.edits.deleteFeatures) {
@@ -268,6 +267,7 @@ require([
 						editor.viewModel.cancelWorkflow();
 					}
 					else if(results.edits.addFeatures){
+						
 						var addInfo = results.edits.addFeatures[0].attributes
 						addInfo.Latitude = results.edits.addFeatures[0].geometry.latitude
 						addInfo.Longitude = results.edits.addFeatures[0].geometry.longitude
@@ -361,6 +361,7 @@ require([
 
 	view.on("click", function (evt) {
 		view.hitTest(evt).then(function (response) {
+			console.log(response);
 			if (response.results.length) {
 				try {
 					var graphic = response.results.filter(function (result) {
