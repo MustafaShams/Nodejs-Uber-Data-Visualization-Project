@@ -37,7 +37,7 @@ function activeVehicleGraph(uber_Arr, fhv_Arr) {
                 },
 
                 {
-                    label: 'Dial7',
+                    label: 'For-Hire Vehicles',
                     data: fhv_Arr,
                     backgroundColor: bgColor[1],
                     borderColor: bdColor[1],
@@ -72,7 +72,7 @@ function activeVehicleGraph(uber_Arr, fhv_Arr) {
             },
             title: {
                 display: true,
-                text: 'Number of Active Vehicles Uber vs For Hire Vehicle',
+                text: 'Number of Active Vehicles Uber vs For-Hire Vehicles',
                 fontSize: 20,
                 fontColor: "white"
             },

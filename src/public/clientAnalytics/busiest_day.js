@@ -36,7 +36,7 @@ function daysChart(y_Axis){
         data: {
             labels: x_Axis,
             datasets: [{
-                label: "Calls Made",
+                label: "Calls",
                 data: y_Axis,
                 backgroundColor: bgColor[0],
                 borderColor: bdColor[0],
